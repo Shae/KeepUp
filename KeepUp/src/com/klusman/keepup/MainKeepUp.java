@@ -1,15 +1,10 @@
 package com.klusman.keepup;
 
 
-import java.awt.Point;
-
-import aurelienribon.tweenengine.Tween;
-import aurelienribon.tweenengine.TweenAccessor;
-import aurelienribon.tweenengine.TweenManager;
-
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -65,6 +60,7 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 	private BitmapFont font; 
 	
 	boolean kidMove;
+	public static Music bgMusic;
 
 
 	
@@ -79,6 +75,12 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 		SpinPos = true;
 		SpinPos2 = true;
 		kidMove = false;
+		
+		bgMusic = Gdx.audio.newMusic(Gdx.files.internal("audio/Ttimes.mp3"));
+		
+	    bgMusic.setLooping(false);  // Didn't want to kill u with this bad loop
+	    bgMusic.setVolume(0.05f);
+	    bgMusic.play();
 		
 		font = new BitmapFont(); 
 		font.setColor(0.0f, 0.0f, 1.0f, 1.0f); // tint font blue
@@ -170,7 +172,7 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 			kid.draw(batch);
 			ball.draw(batch);
 			ball2.draw(batch);
-			//font.draw(batch, "HELLO", 0, 0);
+			//font.draw(batch, "HELLO", 0, 0);  /// GRRRR  DOES NOT WORK
 		batch.end();
 			
 		ball1CheckAndSet();
@@ -437,40 +439,41 @@ class man {
     }
 }
 
-class manAccessor implements TweenAccessor<man> {
-
-    // The following lines define the different possible tween types.
-    // It's up to you to define what you need :-)
-
-    public static final int POSITION_X = 1;
-    public static final int POSITION_Y = 2;
-    public static final int POSITION_XY = 3;
-
-
-	@Override
-	public int getValues(man target, int tweenType, float[] returnValues) {
-		 switch (tweenType) {
-         case POSITION_X: returnValues[0] = target.getX(); return 1;
-         case POSITION_Y: returnValues[0] = target.getY(); return 1;
-         case POSITION_XY:
-             returnValues[0] = target.getX();
-             returnValues[1] = target.getY();
-             return 2;
-         default: assert false; return -1;
-     }
-	}
-
-	@Override
-	public void setValues(man target, int tweenType, float[] newValues) {
-		 switch (tweenType) {
-         case POSITION_X: target.setX(newValues[0]); break;
-         case POSITION_Y: target.setY(newValues[0]); break;
-         case POSITION_XY:
-             target.setX(newValues[0]);
-             target.setY(newValues[1]);
-             break;
-         default: assert false; break;
-     }
-	}
-}
+///// FAILED  //////////
+//class manAccessor implements TweenAccessor<man> {
+//
+//    // The following lines define the different possible tween types.
+//    // It's up to you to define what you need :-)
+//
+//    public static final int POSITION_X = 1;
+//    public static final int POSITION_Y = 2;
+//    public static final int POSITION_XY = 3;
+//
+//
+//	@Override
+//	public int getValues(man target, int tweenType, float[] returnValues) {
+//		 switch (tweenType) {
+//         case POSITION_X: returnValues[0] = target.getX(); return 1;
+//         case POSITION_Y: returnValues[0] = target.getY(); return 1;
+//         case POSITION_XY:
+//             returnValues[0] = target.getX();
+//             returnValues[1] = target.getY();
+//             return 2;
+//         default: assert false; return -1;
+//     }
+//	}
+//
+//	@Override
+//	public void setValues(man target, int tweenType, float[] newValues) {
+//		 switch (tweenType) {
+//         case POSITION_X: target.setX(newValues[0]); break;
+//         case POSITION_Y: target.setY(newValues[0]); break;
+//         case POSITION_XY:
+//             target.setX(newValues[0]);
+//             target.setY(newValues[1]);
+//             break;
+//         default: assert false; break;
+//     }
+//	}
+//}
 
