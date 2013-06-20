@@ -56,6 +56,7 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 	boolean kidMovable;
 	boolean kidMove;
 	boolean ballCollision;
+	boolean gameOver;
 	
 	private Texture bgTx;
 	private Sprite bg;
@@ -96,6 +97,7 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 		screenYRefactor = (int) (screenRatio * screenXRefactor);
 		Gdx.input.setInputProcessor(this);
 		pauseGame = false;
+		gameOver = false;
 		camera = new OrthographicCamera(screenXRefactor, screenYRefactor);
 
 		//		Gdx.app.log(TAG, "SCREEN RATIO Y = " + screenYRefactor);
@@ -169,20 +171,20 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 		//// Pause
 		pauseTx = new Texture(Gdx.files.internal("data/PauseTabs.png"));
 		pauseTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		pauseRegion = new TextureRegion(pauseTx, 0, 64, pauseTx.getWidth(), 64);
+		pauseRegion = new TextureRegion(pauseTx, 0, 0, pauseTx.getWidth(), 64);
 		pause = new Sprite(pauseRegion);
 		pause.setSize(150f , 100f );
 		pause.setOrigin(pause.getWidth()/2, pause.getHeight()/2);
 		pause.setPosition(0 - pause.getWidth()/2, screenYRefactor/2 - pause.getHeight());	
 
 		//// Restart Btn
-		restartBtnTx = new Texture(Gdx.files.internal("data/PauseTabs.png"));
+		restartBtnTx = new Texture(Gdx.files.internal("data/restartBtn.png"));
 		restartBtnTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		TextureRegion restartRegion = new TextureRegion(restartBtnTx, 0, 0, restartBtnTx.getWidth(), restartBtnTx.getHeight());
 		restartBtn = new Sprite(restartRegion);
-		restartBtn.setSize(150f , 100f );
+		restartBtn.setSize(300f , 150f );
 		restartBtn.setOrigin(restartBtn.getWidth()/2, restartBtn.getHeight()/2);
-		restartBtn.setPosition(0 - restartBtn.getWidth()/2, -(screenYRefactor/2 + restartBtn.getHeight()));	
+		restartBtn.setPosition(0 - restartBtn.getWidth()/2, -600);	
 
 	} // END CREATE
 	
@@ -244,6 +246,7 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 
 		Balls.add(ball);
 	}
+	
 
 	public void levelBallSet(int level){
 		for(int i = 1; i <= level; i++){
@@ -259,6 +262,7 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 		goTx.dispose();
 		pauseTx.dispose();
 		psTx.dispose();
+		restartBtnTx.dispose();
 		
 		if(Balls.size > 0){
 			for(Ball ball: Balls) {
@@ -271,8 +275,6 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 				marks.lifeTx.dispose();
 			};
 		}
-		
-	
 	}
 
 	@Override
@@ -293,7 +295,7 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 			break;
 		case GAME_OVER:
 			//Gdx.app.log(TAG, "Game Over");
-			//gameOverBool = true;
+			gameOver = true;
 			gameOver();
 			break;
 		}
@@ -370,7 +372,7 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 		batch.begin();
 		bg.draw(batch);
 		kid.draw(batch);
-
+		
 		if(Balls.size > 0){
 			for(Ball ball: Balls) {
 				ball.draw(batch);
@@ -383,8 +385,8 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 			};
 		}
 
-		//pause.draw(batch);
 		go.draw(batch);
+		restartBtn.draw(batch);
 		//font.draw(batch, "HELLO", 0, 0);  /// GRRRR  DOES NOT WORK
 		batch.end();
 
@@ -542,12 +544,13 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 		}
 	}
 
-	@Override
-	public void resize(int width, int height) {
-	}
 
 ////////  APP FUNCTIONS  /////////	
 
+	@Override
+	public void resize(int width, int height) {
+	}
+	
 	@Override
 	public void pause() {
 	}
@@ -590,13 +593,20 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 
 		if(touchPause == true){
 			if(pauseGame == true){
-				pauseRegion = new TextureRegion(pauseTx, 0, 64, pauseTx.getWidth(), 64);
+				pauseRegion = new TextureRegion(pauseTx, 0, 0, pauseTx.getWidth(), 64);
 				pause.setRegion(pauseRegion);
 			}else{
-				pauseRegion = new TextureRegion(pauseTx, 0, 0, pauseTx.getWidth(), 64);
+				pauseRegion = new TextureRegion(pauseTx, 0,64, pauseTx.getWidth(), 64);
 				pause.setRegion(pauseRegion);
 			}
 			checkUnPause();
+		}
+		if(gameOver == true){
+			boolean touchRestart = restartBtn.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
+			
+			if(touchRestart == true){
+				gameRestart();
+			}
 		}
 		kidMove = false;
 		return true;
