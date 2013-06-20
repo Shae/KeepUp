@@ -28,13 +28,13 @@ public class Ball {
 		
 		
 		textureAddress = "data/grnBall.png";
-		sizeX = .09f;
-		sizeY = .09f;
-		xSpeed = 0.005f;
-		ySpeed = 0.005f;;
-		PositionX = -0.49f;  // change this one
+		sizeX = 90f; //.09f;
+		sizeY = 90f; //.09f;
+		xSpeed = 5f; //0.005f;
+		ySpeed = 5f; //0.005f;;
+		//PositionX = 0; //-0.49f;  // change this one
 		//Gdx.app.log(TAG, "xPos:" + PositionX);
-		PositionY = -0.22f;
+		PositionY = 600f;
 		rotationSpeed = 5;
 		rotationDirection = true;
 		collision = false;
