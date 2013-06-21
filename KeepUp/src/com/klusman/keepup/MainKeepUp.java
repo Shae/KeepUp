@@ -1,8 +1,6 @@
 package com.klusman.keepup;
 
 
-import java.util.TimerTask;
-
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
@@ -22,15 +20,15 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Timer;
-import com.badlogic.gdx.utils.Timer.Task;
+
+
 
 
 
 public class MainKeepUp implements ApplicationListener, InputProcessor {
-	
-///////  WORLD VARIABLES ///////////
-	
+
+	///////  WORLD VARIABLES ///////////
+
 	private static String TAG = "KeepUp";
 
 	public static final int GAME_READY = 0; 
@@ -42,33 +40,32 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
-	
+
 	float x;
 	float y;
 	float screenRatio;
 	float deltaTime;
 	float elapsedTime;
-	float elapsedStarTime;
 	float ticker;
-	float timeLimit = 0.1f;
-	
+	float timeLimit = 30.0f;
+
 	public static int screenXRefactor;
 	public static int screenYRefactor;
-	
+
 	int Level;
 	int starLoop;
-	
+
 	double randNumXLoc;
 	double randNumSize;
 	double randNumSpeed;
-	
+
 	boolean pauseGame;
 	boolean kidMovable;
 	boolean kidMove;
 	boolean ballCollision;
 	boolean gameOver;
 	boolean kidHit;
-	
+
 	private Texture bgTx;
 	private Sprite bg;
 
@@ -83,16 +80,16 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 	TextureRegion starRegion8;
 	TextureRegion starRegion0;
 	Array<TextureRegion> starHolder;
-	Timer timer;
-	
+
+
 	private Sprite starSprite;
-	
+
 	private Texture psTx;
 	private Sprite ps;
 
 	private Texture goTx;
 	private Sprite go;
-	
+
 	private Texture restartBtnTx;
 	private Sprite restartBtn;
 
@@ -108,16 +105,16 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 	public static Sound bounce;
 	public static Music bgMusic;
 	public TextureAtlas starTextures;
-	
+
 	int frameLength;
 	int currentFrame;
-	
+
 	public Array<Ball> Balls;
 	public static Array<LifeMarks> Marks;
 	public Array<Sprite> starArray;
 	Animation starAnimation;
 
-/////////  CREATE  ///////////
+	/////////  CREATE  ///////////
 
 	@Override
 	public void create() {
@@ -131,12 +128,6 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 		pauseGame = false;
 		gameOver = false;
 		camera = new OrthographicCamera(screenXRefactor, screenYRefactor);
-
-		//		Gdx.app.log(TAG, "SCREEN RATIO Y = " + screenYRefactor);
-		//		Gdx.app.log(TAG, "DEVICE Width:" + x);  
-		//		Gdx.app.log(TAG, "WORLD screenXRefactor:" + screenXRefactor);  
-		//		Gdx.app.log(TAG, "DEVICE Height:" + y);  
-		//		Gdx.app.log(TAG, "WORLD screenYRefactor:" + screenYRefactor);  
 
 		bgMusic = Gdx.audio.newMusic(Gdx.files.internal("audio/Ttimes.mp3"));	
 		bgMusic.setLooping(false);  
@@ -152,9 +143,9 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 		kidMovable = true;
 		kidMove = false;
 		kidHit = false;
-		
+
 		deltaTime = Gdx.graphics.getDeltaTime();
-		
+
 		batch = new SpriteBatch();
 
 		/// AUDIO  ///
@@ -173,7 +164,7 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 		bg.setPosition(0 - bg.getWidth()/2, 0f - bg.getHeight()/2);
 
 		//// PAUSE SCREEN
-		psTx = new Texture(Gdx.files.internal("data/pauseScreen.png"));
+		psTx = new Texture(Gdx.files.internal("data/pausedScreen.png"));
 		psTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);	
 		TextureRegion psRegion = new TextureRegion(psTx, 0, 0, psTx.getWidth(), psTx.getHeight());
 		ps = new Sprite(psRegion);
@@ -200,7 +191,7 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 		kid.setPosition(0 - (kid.getWidth()/2), -screenYRefactor/2 );	
 
 
-		//// Pause
+		//// PAUSE
 		pauseTx = new Texture(Gdx.files.internal("data/PauseTabs.png"));
 		pauseTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		pauseRegion = new TextureRegion(pauseTx, 0, 0, pauseTx.getWidth(), 64);
@@ -208,11 +199,13 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 		pause.setSize(150f , 100f );
 		pause.setOrigin(pause.getWidth()/2, pause.getHeight()/2);
 		pause.setPosition(0 - pause.getWidth()/2, screenYRefactor/2 - pause.getHeight());	
-		
+
 		//// STAR SPRITE
 		starHolder = new Array<TextureRegion>();
 		star2Tx = new Texture(Gdx.files.internal("data/stars2.png"));
 		star2Tx.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		
+		// Hard coded regions (I was having trouble understanding so I did it the long route) /////
 		starRegion1 = new TextureRegion(star2Tx, 0, 0, star2Tx.getWidth(), 64);
 		starHolder.add(starRegion1);
 		starRegion2 = new TextureRegion(star2Tx, 0, 64, star2Tx.getWidth(), 64);
@@ -231,13 +224,13 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 		starHolder.add(starRegion8);
 		starRegion0 = new TextureRegion(star2Tx, 0, 512, star2Tx.getWidth(), 64);
 		starHolder.add(starRegion0);
+		
 		starSprite = new Sprite(starRegion0);
 		starSprite.setSize(100f , 100f );
 		starSprite.setOrigin(starSprite.getWidth()/2, starSprite.getHeight()/2);
 		starSprite.setPosition(kid.getX(), kid.getY() + kid.getHeight());	
-		//starSprite.setPosition(0, 0);	
 		starLoop = 0;
-		
+
 		//// Restart Btn
 		restartBtnTx = new Texture(Gdx.files.internal("data/restartBtn.png"));
 		restartBtnTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);
@@ -248,9 +241,9 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 		restartBtn.setPosition(0 - restartBtn.getWidth()/2, -600);	
 
 	} // END CREATE
-	
-/////////  ALTER GAME  ////////
-	
+
+	/////////  ALTER GAME  ////////
+
 	public void addLifeMark(){
 		LifeMarks mark = new LifeMarks();
 		Marks.add(mark);
@@ -270,18 +263,18 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 			rand2 = rand - ((90 - rand ) * 2);  // makes a number less than 90
 		}
 		float r = (float) (rand2);
-		Gdx.app.log(TAG, "Random Size: " + r);
+	//	Gdx.app.log(TAG, "Random Size: " + r);
 
 		ball.setSizeXY(r, r);
-		Gdx.app.log(TAG, "ball X:" + ball.getSizeX());  
-		Gdx.app.log(TAG, "ball Y:" + ball.getSizeY()); 
+		//Gdx.app.log(TAG, "ball X:" + ball.getSizeX());  
+		//Gdx.app.log(TAG, "ball Y:" + ball.getSizeY()); 
 
 
 		//// SPEED
 		randNumSpeed = Math.random();
 		double sp = ((randNumSize * 5) + 3);
 		int spInt = (int)sp;
-		Gdx.app.log(TAG, "Speed random " + spInt);
+		//Gdx.app.log(TAG, "Speed random " + spInt);
 
 		ball.setXSpeed((float) -spInt);
 		ball.setYSpeed((float) -spInt);
@@ -291,7 +284,7 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 		//// STARTING LOCATION
 		randNumXLoc = Math.random();
 		double xLoc = (randNumXLoc * screenXRefactor) + 1;
-		Gdx.app.log(TAG, "Location random " + xLoc);
+		//Gdx.app.log(TAG, "Location random " + xLoc);
 		int xInt = (int)xLoc;
 		if(xInt <= (screenXRefactor/2)){
 			xFloat = (float) (xLoc * -1);
@@ -308,51 +301,25 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 		Balls.add(ball);
 	}
 	
+
 	public void updateSTARS(float dt){
-        
-             ticker+=dt;
-             if(ticker>timeLimit){
-                 ticker-=timeLimit;
-                 currentFrame=(currentFrame+1);
-                 Gdx.app.log(TAG, "updateSTARS = " + currentFrame );
-                 starSprite.setRegion(starHolder.get(currentFrame));
-                 if(currentFrame == starHolder.size - 1){
-                	 kidHit= false;
-                	 currentFrame = 0;
-                 }
-                 
-             }
 
-        
-   }
-	
-	public void hitByBallAnimation(){
-		
-		try {
-			for(int i = 0; i < starHolder.size ; i++){
-				starSprite.setRegion(starHolder.get(i));
-				Gdx.app.log(TAG, "STARLOOP = " + i );
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		ticker+=dt;
+		if(ticker>timeLimit){
+			//ticker-=timeLimit;
+			currentFrame=(currentFrame+1);
+			//Gdx.app.log(TAG, "updateSTARS = " + currentFrame );
+			starSprite.setRegion(starHolder.get(currentFrame));
+			kid.rotate(45);
+			if(currentFrame == starHolder.size - 1){
+				kidHit= false;
+				currentFrame = 0;
+				kid.setRotation(0);
+			} 
 		}
-		
-//		if(starLoop <= 8){
-//			starSprite.setRegion(starHolder.get(starLoop));
-//			starLoop++;
-//			
-//		}else{
-//			starLoop = 0;
-//			starSprite.setRegion(starHolder.get(starLoop));
-//		}
-		
-		Gdx.app.log(TAG, "HIT by BALL ANIMATION" );
-		Gdx.app.log(TAG, "STARLOOP = " + starLoop );
-
-		
 	}
-	
-	
+
+
 	public void levelBallSet(int level){
 		for(int i = 1; i <= level; i++){
 			makeNewBall();
@@ -368,13 +335,14 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 		pauseTx.dispose();
 		psTx.dispose();
 		restartBtnTx.dispose();
-		
+		star2Tx.dispose();
+
 		if(Balls.size > 0){
 			for(Ball ball: Balls) {
 				ball.ballTx.dispose();
 			};
 		}
-		
+
 		if(Marks.size > 0){
 			for(LifeMarks marks: Marks) {
 				marks.lifeTx.dispose();
@@ -414,22 +382,22 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 			makeNewBall();
 		}
 	}
-	
-	
+
+
 	public void gameRestart(){
 		dispose();
 		create();
 	}
-	
-/////////  GAME STATES  //////////////
-	
+
+	/////////  GAME STATES  //////////////
+
 	public void gameReady(){
 
 	}
 
 	private void gameRunning() {
 		checkStrikeOut();
-		
+
 		deltaTime += Gdx.graphics.getDeltaTime();   
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
@@ -440,7 +408,7 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 		kid.draw(batch);
 		//starArray.get(currentFrame).draw(batch);
 		starSprite.draw(batch);
-		
+
 		if(Balls.size > 0){
 			for(Ball ball: Balls) {
 				ball.draw(batch);
@@ -460,7 +428,7 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 		if(kidHit == true){
 			updateSTARS(deltaTime);
 		}
-		
+
 		if(Balls.size > 0){
 			for(Ball ball: Balls) {
 				ballLoopCheckAndSet(ball);
@@ -473,7 +441,6 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 
 	private void gameOver() {
 		kidMovable = false;
-		//Gdx.app.log(TAG, "GAME OVER!");
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		camera.update();
@@ -482,7 +449,7 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 		batch.begin();
 		bg.draw(batch);
 		kid.draw(batch);
-		
+
 		if(Balls.size > 0){
 			for(Ball ball: Balls) {
 				ball.draw(batch);
@@ -548,8 +515,8 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 	}
 
 
-////////  SPRITE CHECKS  //////////////////
-	
+	////////  SPRITE CHECKS  //////////////////
+
 	public void checkStrikeOut(){
 		if(Marks.size >= 3){
 			gameState = GAME_OVER;
@@ -656,23 +623,23 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 	}
 
 
-////////  APP FUNCTIONS  /////////	
+	////////  APP FUNCTIONS  /////////	
 
 	@Override
 	public void resize(int width, int height) {
 	}
-	
+
 	@Override
 	public void pause() {
 	}
-	
+
 	@Override
 	public void resume() {
 	}
-	
 
-////////  APP INTERACTIONS  ///////////
-	
+
+	////////  APP INTERACTIONS  ///////////
+
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		Vector2 touchPos = new Vector2();
@@ -712,15 +679,15 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 			}
 			checkUnPause();
 		}
-		
+
 		if(gameOver == true){
 			boolean touchRestart = restartBtn.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
-			
+
 			if(touchRestart == true){
 				gameRestart();
 			}
 		}
-		
+
 		kidMove = false;
 		return true;
 	}
@@ -750,23 +717,23 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 		return false;
 	}
 
-//////////  DESKTOP ONLY FUNCTIONS  //////////////
+	//////////  DESKTOP ONLY FUNCTIONS  //////////////
 
 	@Override
 	public boolean keyDown(int keycode) {
 		return false;
 	}
-	
+
 	@Override
 	public boolean keyUp(int keycode) {
 		return false;
 	}
-	
+
 	@Override
 	public boolean keyTyped(char character) {
 		return false;
 	}
-	
+
 }  // END MAIN
 
 
