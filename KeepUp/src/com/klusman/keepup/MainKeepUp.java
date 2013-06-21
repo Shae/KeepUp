@@ -1,6 +1,8 @@
 package com.klusman.keepup;
 
 
+import java.util.TimerTask;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
@@ -13,11 +15,15 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 
 
 
@@ -42,11 +48,15 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 	float screenRatio;
 	float deltaTime;
 	float elapsedTime;
+	float elapsedStarTime;
+	float ticker;
+	float timeLimit = 0.1f;
 	
 	public static int screenXRefactor;
 	public static int screenYRefactor;
 	
 	int Level;
+	int starLoop;
 	
 	double randNumXLoc;
 	double randNumSize;
@@ -57,10 +67,26 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 	boolean kidMove;
 	boolean ballCollision;
 	boolean gameOver;
+	boolean kidHit;
 	
 	private Texture bgTx;
 	private Sprite bg;
 
+	private Texture star2Tx;
+	TextureRegion starRegion1;
+	TextureRegion starRegion2;
+	TextureRegion starRegion3;
+	TextureRegion starRegion4;
+	TextureRegion starRegion5;
+	TextureRegion starRegion6;
+	TextureRegion starRegion7;
+	TextureRegion starRegion8;
+	TextureRegion starRegion0;
+	Array<TextureRegion> starHolder;
+	Timer timer;
+	
+	private Sprite starSprite;
+	
 	private Texture psTx;
 	private Sprite ps;
 
@@ -81,9 +107,15 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 	public static Sound buzzer;
 	public static Sound bounce;
 	public static Music bgMusic;
-
+	public TextureAtlas starTextures;
+	
+	int frameLength;
+	int currentFrame;
+	
 	public Array<Ball> Balls;
 	public static Array<LifeMarks> Marks;
+	public Array<Sprite> starArray;
+	Animation starAnimation;
 
 /////////  CREATE  ///////////
 
@@ -119,10 +151,10 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 		levelBallSet(Level);
 		kidMovable = true;
 		kidMove = false;
-
+		kidHit = false;
+		
 		deltaTime = Gdx.graphics.getDeltaTime();
-
-
+		
 		batch = new SpriteBatch();
 
 		/// AUDIO  ///
@@ -176,7 +208,36 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 		pause.setSize(150f , 100f );
 		pause.setOrigin(pause.getWidth()/2, pause.getHeight()/2);
 		pause.setPosition(0 - pause.getWidth()/2, screenYRefactor/2 - pause.getHeight());	
-
+		
+		//// STAR SPRITE
+		starHolder = new Array<TextureRegion>();
+		star2Tx = new Texture(Gdx.files.internal("data/stars2.png"));
+		star2Tx.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		starRegion1 = new TextureRegion(star2Tx, 0, 0, star2Tx.getWidth(), 64);
+		starHolder.add(starRegion1);
+		starRegion2 = new TextureRegion(star2Tx, 0, 64, star2Tx.getWidth(), 64);
+		starHolder.add(starRegion2);
+		starRegion3 = new TextureRegion(star2Tx, 0, 128, star2Tx.getWidth(), 64);
+		starHolder.add(starRegion3);
+		starRegion4 = new TextureRegion(star2Tx, 0, 192, star2Tx.getWidth(), 64);
+		starHolder.add(starRegion4);
+		starRegion5 = new TextureRegion(star2Tx, 0, 256, star2Tx.getWidth(), 64);
+		starHolder.add(starRegion5);
+		starRegion6 = new TextureRegion(star2Tx, 0, 320, star2Tx.getWidth(), 64);
+		starHolder.add(starRegion6);
+		starRegion7 = new TextureRegion(star2Tx, 0, 384, star2Tx.getWidth(), 64);
+		starHolder.add(starRegion7);
+		starRegion8 = new TextureRegion(star2Tx, 0, 448, star2Tx.getWidth(), 64);
+		starHolder.add(starRegion8);
+		starRegion0 = new TextureRegion(star2Tx, 0, 512, star2Tx.getWidth(), 64);
+		starHolder.add(starRegion0);
+		starSprite = new Sprite(starRegion0);
+		starSprite.setSize(100f , 100f );
+		starSprite.setOrigin(starSprite.getWidth()/2, starSprite.getHeight()/2);
+		starSprite.setPosition(kid.getX(), kid.getY() + kid.getHeight());	
+		//starSprite.setPosition(0, 0);	
+		starLoop = 0;
+		
 		//// Restart Btn
 		restartBtnTx = new Texture(Gdx.files.internal("data/restartBtn.png"));
 		restartBtnTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);
@@ -247,7 +308,51 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 		Balls.add(ball);
 	}
 	
+	public void updateSTARS(float dt){
+        
+             ticker+=dt;
+             if(ticker>timeLimit){
+                 ticker-=timeLimit;
+                 currentFrame=(currentFrame+1);
+                 Gdx.app.log(TAG, "updateSTARS = " + currentFrame );
+                 starSprite.setRegion(starHolder.get(currentFrame));
+                 if(currentFrame == starHolder.size - 1){
+                	 kidHit= false;
+                	 currentFrame = 0;
+                 }
+                 
+             }
 
+        
+   }
+	
+	public void hitByBallAnimation(){
+		
+		try {
+			for(int i = 0; i < starHolder.size ; i++){
+				starSprite.setRegion(starHolder.get(i));
+				Gdx.app.log(TAG, "STARLOOP = " + i );
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+//		if(starLoop <= 8){
+//			starSprite.setRegion(starHolder.get(starLoop));
+//			starLoop++;
+//			
+//		}else{
+//			starLoop = 0;
+//			starSprite.setRegion(starHolder.get(starLoop));
+//		}
+		
+		Gdx.app.log(TAG, "HIT by BALL ANIMATION" );
+		Gdx.app.log(TAG, "STARLOOP = " + starLoop );
+
+		
+	}
+	
+	
 	public void levelBallSet(int level){
 		for(int i = 1; i <= level; i++){
 			makeNewBall();
@@ -285,7 +390,7 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 			gameReady();
 			break;
 		case GAME_RUNNING:
-			update(deltaTime);
+			updateBallTimer(deltaTime);
 			//Gdx.app.log(TAG, "Game Running");
 			gameRunning();
 			break;
@@ -303,12 +408,13 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 
 	}// END RENDER
 
-	public void update(float deltaTime){
+	public void updateBallTimer(float deltaTime){
 		elapsedTime = deltaTime;
 		if(elapsedTime / 5 > Balls.size){  // Make a new ball every 5 seconds
 			makeNewBall();
 		}
 	}
+	
 	
 	public void gameRestart(){
 		dispose();
@@ -323,16 +429,18 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 
 	private void gameRunning() {
 		checkStrikeOut();
+		
 		deltaTime += Gdx.graphics.getDeltaTime();   
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		camera.update();
-
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		bg.draw(batch);
 		kid.draw(batch);
-
+		//starArray.get(currentFrame).draw(batch);
+		starSprite.draw(batch);
+		
 		if(Balls.size > 0){
 			for(Ball ball: Balls) {
 				ball.draw(batch);
@@ -349,8 +457,10 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 
 		//font.draw(batch, "HELLO", 0, 0);  /// GRRRR  DOES NOT WORK
 		batch.end();
-
-
+		if(kidHit == true){
+			updateSTARS(deltaTime);
+		}
+		
 		if(Balls.size > 0){
 			for(Ball ball: Balls) {
 				ballLoopCheckAndSet(ball);
@@ -513,6 +623,7 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 		if(kidVSBallOverlap == true){
 			if(ball.collision == false){  //  check for current collision
 				addLifeMark();
+				kidHit = true;
 				buzzer.play(.05f);
 				ball.collision = true;  // sets current collision
 			}
@@ -601,6 +712,7 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 			}
 			checkUnPause();
 		}
+		
 		if(gameOver == true){
 			boolean touchRestart = restartBtn.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
 			
@@ -608,6 +720,7 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 				gameRestart();
 			}
 		}
+		
 		kidMove = false;
 		return true;
 	}
@@ -620,6 +733,8 @@ public class MainKeepUp implements ApplicationListener, InputProcessor {
 			Ray cameraRay = camera.getPickRay(touchPos.x, touchPos.y);
 			kid.setX(cameraRay.origin.x - kid.getHeight()/2);
 			kid.setY(cameraRay.origin.y - kid.getWidth()/2);
+			starSprite.setX(kid.getX());
+			starSprite.setY(kid.getY() + kid.getHeight());
 			return true;
 		}
 		return false;
