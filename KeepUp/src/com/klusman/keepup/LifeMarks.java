@@ -6,9 +6,10 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import come.klusman.keepup.screens.Game;
 
 public class LifeMarks {
-	private static String TAG = "KeepUp";
+	//private static String TAG = "KeepUp";
 	public Texture lifeTx;
 	private Sprite lifeSprite;
 	float sizeX;
@@ -25,8 +26,8 @@ public class LifeMarks {
 		lifeSprite = new Sprite(lifeRegion);
 		lifeSprite.setSize(sizeX , sizeY );
 		lifeSprite.setOrigin(lifeSprite.getWidth()/2, lifeSprite.getHeight()/2);
-		PositionX = ((MainKeepUp.screenXRefactor/2) - ( sizeX  * (MainKeepUp.Marks.size +1) ) );
-		PositionY = (MainKeepUp.screenYRefactor/2 - lifeSprite.getHeight()) - 10;
+		PositionX = ((Game.screenXRefactor/2) - ( sizeX  * (Game.Marks.size +1) ) );
+		PositionY = (Game.screenYRefactor/2 - lifeSprite.getHeight()) - 10;
 		lifeSprite.setPosition(PositionX, PositionY);	
 	
 	}

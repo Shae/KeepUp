@@ -6,10 +6,10 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Interpolation;
+
 
 public class Ball {
-	private static String TAG = "KeepUp";
+	//private static String TAG = "KeepUp";
 	public Texture ballTx;
 	public String textureAddress;
 	private Sprite ballSprite;
@@ -20,8 +20,8 @@ public class Ball {
 	float PositionX;  
 	float PositionY;
 	int rotationSpeed;
-	boolean rotationDirection;
-	boolean collision;
+	public boolean rotationDirection;
+	public boolean collision;
 	
 	
 	public Ball (){
@@ -32,8 +32,6 @@ public class Ball {
 		sizeY = 90f; //.09f;
 		xSpeed = 5f; //0.005f;
 		ySpeed = 5f; //0.005f;;
-		//PositionX = 0; //-0.49f;  // change this one
-		//Gdx.app.log(TAG, "xPos:" + PositionX);
 		PositionY = 600f;
 		rotationSpeed = 5;
 		rotationDirection = true;
