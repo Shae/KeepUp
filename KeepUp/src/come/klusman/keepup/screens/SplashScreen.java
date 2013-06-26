@@ -117,7 +117,7 @@ public class SplashScreen implements Screen{
 	
 	@Override
 	public void hide() {
-		
+		dispose();
 		
 	}
 

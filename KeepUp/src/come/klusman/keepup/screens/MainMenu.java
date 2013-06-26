@@ -45,7 +45,7 @@ public class MainMenu implements Screen, InputProcessor{
 	
 	public MainMenu (MainKeepUp game){
 		this.game = game;
-		Gdx.app.log(MainKeepUp.TAG, "MAIN MENU CONSTRUCT");
+		
 	}
 
 	
@@ -125,10 +125,14 @@ public class MainMenu implements Screen, InputProcessor{
 		batch.end();
 		
 	}
+	public void runGame(MainKeepUp game){
+		//game.setScreen(new GameScreen(game));
+		game.setScreen(new Game(game));
+	}
 
 	@Override
 	public void hide() {
-	 dispose();
+	 //dispose();
 		
 	}
 
@@ -190,12 +194,16 @@ public class MainMenu implements Screen, InputProcessor{
 
 		if(playBool == true){
 			
-			game.setScreen(new Game(game));
+			//game.setScreen(new Game(game));
+			Gdx.app.log(MainKeepUp.TAG, "PLAY Btn Clicked!");
+			runGame(game);
+			
 		}
 		
 		if(CreditBool == true){
 			
 			Gdx.app.log(MainKeepUp.TAG, "Credits Btn Clicked!");
+			game.setScreen(new CreditsScreen(game));
 		}
 
 		if(instructionBool == true){

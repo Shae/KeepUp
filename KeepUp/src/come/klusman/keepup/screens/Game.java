@@ -25,6 +25,7 @@ import com.klusman.keepup.MainKeepUp;
 public class Game implements Screen, InputProcessor {
 
 	MainKeepUp game;
+	
 	private static String TAG = "KeepUp";
 	public static final int GAME_READY = 0; 
 	public static final int GAME_RUNNING = 1; 
@@ -32,6 +33,7 @@ public class Game implements Screen, InputProcessor {
 	public static final int GAME_OVER = 4;
 
 	public static int gameState;
+	boolean invincibility;
 
 	private OrthographicCamera camera;
 	public static int screenXRefactor;
@@ -47,6 +49,9 @@ public class Game implements Screen, InputProcessor {
 	float elapsedTime;
 	float ticker;
 	float timeLimit = 20.0f;
+	
+	float invincTicker;
+	float invincLimit = 10.0f;
 
 
 	int Level;
@@ -113,41 +118,8 @@ public class Game implements Screen, InputProcessor {
 
 	
 	public Game( MainKeepUp game){
+		Gdx.app.log(TAG, "STEP Main Construct1");
 		this.game = game;
-	}
-	
-	
-	@Override
-	public void render(float delta) {
-		switch (gameState) {
-		case GAME_READY:
-			//Gdx.app.log(TAG, "Game Rdy");
-			gameReady();
-			break;
-		case GAME_RUNNING:
-			updateBallTimer(deltaTime);
-			//Gdx.app.log(TAG, "Game Running");
-			gameRunning();
-			break;
-		case GAME_PAUSED:
-			//Gdx.app.log(TAG, "Game Paused");
-			gamePaused();
-			break;
-		case GAME_OVER:
-			//Gdx.app.log(TAG, "Game Over");
-			gameOver = true;
-			gameOver();
-			break;
-		}
-	}
-
-
-
-	
-	@Override
-	public void show() {
-		gameState = GAME_RUNNING;
-		
 		x = Gdx.graphics.getWidth();
 		y = Gdx.graphics.getHeight();
 		screenXRefactor = 1000;
@@ -156,8 +128,14 @@ public class Game implements Screen, InputProcessor {
 		camera = new OrthographicCamera(screenXRefactor, screenYRefactor);
 		
 		deltaTime = Gdx.graphics.getDeltaTime();
-		
 		Gdx.input.setInputProcessor(this);
+	}
+	
+	@Override
+	public void show() {
+
+		gameState = GAME_RUNNING;
+		invincibility = false;
 		pauseGame = false;
 		gameOver = false;
 		
@@ -216,8 +194,9 @@ public class Game implements Screen, InputProcessor {
 		kidTx = new Texture(Gdx.files.internal("data/kid.png"));
 		kidTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		TextureRegion kidRegion = new TextureRegion(kidTx, 0, 0, kidTx.getWidth(), kidTx.getHeight());
+		float stretchRatioKid = (float) kidTx.getHeight() / kidTx.getWidth();
 		kid = new Sprite(kidRegion);
-		kid.setSize(100f , 130f );
+		kid.setSize(110f , 100 * stretchRatioKid );
 		kid.setOrigin(kid.getWidth()/2, kid.getHeight()/2);
 		kid.setPosition(0 - (kid.getWidth()/2), -screenYRefactor/2 );	
 
@@ -274,12 +253,39 @@ public class Game implements Screen, InputProcessor {
 	}
 
 	@Override
+	public void render(float delta) {
+		Gdx.app.log(TAG, "STEP Render");
+		switch (gameState) {
+		case GAME_READY:
+			//Gdx.app.log(TAG, "Game Rdy");
+			gameReady();
+			break;
+		case GAME_RUNNING:
+			updateBallTimer(deltaTime);
+			//Gdx.app.log(TAG, "Game Running");
+			gameRunning();
+			break;
+		case GAME_PAUSED:
+			//Gdx.app.log(TAG, "Game Paused");
+			gamePaused();
+			break;
+		case GAME_OVER:
+			//Gdx.app.log(TAG, "Game Over");
+			gameOver = true;
+			gameOver();
+			break;
+		}
+	}
+	
+	
+	
+	@Override
 	public void resize(int width, int height) {
 	}
 	
 	@Override
 	public void hide() {
-		dispose();
+	
 		
 	}
 
@@ -391,6 +397,7 @@ public class Game implements Screen, InputProcessor {
 				kidHit= false;
 				currentFrame = 0;
 				kid.setRotation(0);
+				invincibility = false;
 			} 
 		}
 	}
@@ -412,6 +419,7 @@ public class Game implements Screen, InputProcessor {
 
 	public void gameRestart(){
 		dispose();
+		game.setScreen(new Game(game));
 		
 	}
 
@@ -615,16 +623,22 @@ public class Game implements Screen, InputProcessor {
 		boolean kidVSBallOverlap = ballSprite.getBoundingRectangle().overlaps(kid.getBoundingRectangle());
 		if(kidVSBallOverlap == true){
 			if(ball.collision == false){  //  check for current collision
-				addLifeMark();
-				kidHit = true;
-				buzzer.play(.05f);
-				ball.collision = true;  // sets current collision
+				if(invincibility == false){
+					// TODO
+					invincibility = true;
+					addLifeMark();
+					kidHit = true;
+					buzzer.play(.05f);
+					ball.collision = true;  // sets current collision
+				}
 			}
 		}else{
 			ball.collision = false;  // resets to false after overlap ends
 		}
 
 	}
+	
+
 
 	public void ballLoopCheckOnPause(Ball ball){
 		Sprite ballSprite = ball.getBallSprite();
