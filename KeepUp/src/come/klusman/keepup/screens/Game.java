@@ -1,6 +1,5 @@
 package come.klusman.keepup.screens;
 
-import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
@@ -23,7 +22,7 @@ import com.klusman.keepup.Ball;
 import com.klusman.keepup.LifeMarks;
 import com.klusman.keepup.MainKeepUp;
 
-public abstract class Game implements Screen, ApplicationListener, InputProcessor {
+public class Game implements Screen, InputProcessor {
 
 	MainKeepUp game;
 	private static String TAG = "KeepUp";
@@ -280,7 +279,7 @@ public abstract class Game implements Screen, ApplicationListener, InputProcesso
 	
 	@Override
 	public void hide() {
-	
+		dispose();
 		
 	}
 
@@ -413,7 +412,7 @@ public abstract class Game implements Screen, ApplicationListener, InputProcesso
 
 	public void gameRestart(){
 		dispose();
-		create();
+		
 	}
 
 	/////////  GAME STATES  //////////////

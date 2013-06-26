@@ -3,7 +3,6 @@ package come.klusman.keepup.screens;
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
-import aurelienribon.tweenengine.TweenEquation;
 import aurelienribon.tweenengine.TweenEquations;
 import aurelienribon.tweenengine.TweenManager;
 
@@ -73,10 +72,10 @@ public class SplashScreen implements Screen{
 			}
 		};
 		
-		Tween.to(titleSprite, SpriteTween.ALPHA, 2f)
+		Tween.to(titleSprite, SpriteTween.ALPHA, 1.5f)
 			.target(1)
 			.ease(TweenEquations.easeInQuad)
-			.repeatYoyo(1, 2f)  // repeat once after X 
+			.repeatYoyo(1, 1f)  // repeat once after X 
 			.setCallback(cb)  // set a callback listener
 			.setCallbackTriggers(TweenCallback.COMPLETE)  // set the trigger for the listener
 			.start(manager);  // start the tween using the passed in manager
@@ -99,9 +98,9 @@ public class SplashScreen implements Screen{
 		Gdx.gl.glClearColor(0, 0, 0, 1);  // set the clear color
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);  // clear the screen before the rebuild using the clear color
 		
+		batch.setProjectionMatrix(camera.combined);
 		manager.update(delta);  // update manager using the delta time
 		camera.update();  // update the camera
-		batch.setProjectionMatrix(camera.combined);
 		
 		batch.begin();
 			titleSprite.draw(batch);
