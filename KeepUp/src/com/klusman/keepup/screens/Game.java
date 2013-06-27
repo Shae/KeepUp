@@ -1,8 +1,9 @@
-package come.klusman.keepup.screens;
+package com.klusman.keepup.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL10;
@@ -15,6 +16,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.math.Interpolation;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
@@ -25,7 +27,7 @@ import com.klusman.keepup.MainKeepUp;
 public class Game implements Screen, InputProcessor {
 
 	MainKeepUp game;
-	
+
 	private static String TAG = "KeepUp";
 	public static final int GAME_READY = 0; 
 	public static final int GAME_RUNNING = 1; 
@@ -33,7 +35,6 @@ public class Game implements Screen, InputProcessor {
 	public static final int GAME_OVER = 4;
 
 	public static int gameState;
-	boolean invincibility;
 
 	private OrthographicCamera camera;
 	public static int screenXRefactor;
@@ -41,14 +42,16 @@ public class Game implements Screen, InputProcessor {
 	float x;
 	float y;
 	float screenRatio;
-	
-	
+
+
 	private SpriteBatch batch;
 
 	float deltaTime;
 	float elapsedTime;
+	float deltaShieldTime;
 	float ticker;
 	float timeLimit = 20.0f;
+	float invincibilityTime;
 	
 	float invincTicker;
 	float invincLimit = 10.0f;
@@ -67,6 +70,7 @@ public class Game implements Screen, InputProcessor {
 	boolean ballCollision;
 	boolean gameOver;
 	boolean kidHit;
+	boolean invincibility;
 
 	private Texture bgTx;
 	private Sprite bg;
@@ -116,7 +120,7 @@ public class Game implements Screen, InputProcessor {
 	public Array<Sprite> starArray;
 	Animation starAnimation;
 
-	
+
 	public Game( MainKeepUp game){
 		Gdx.app.log(TAG, "STEP Main Construct1");
 		this.game = game;
@@ -126,11 +130,12 @@ public class Game implements Screen, InputProcessor {
 		screenRatio = y/x;
 		screenYRefactor = (int) (screenRatio * screenXRefactor);
 		camera = new OrthographicCamera(screenXRefactor, screenYRefactor);
-		
+
 		deltaTime = Gdx.graphics.getDeltaTime();
 		Gdx.input.setInputProcessor(this);
+		Gdx.input.setCatchBackKey(true);
 	}
-	
+
 	@Override
 	public void show() {
 
@@ -138,7 +143,7 @@ public class Game implements Screen, InputProcessor {
 		invincibility = false;
 		pauseGame = false;
 		gameOver = false;
-		
+		invincibilityTime = 0;
 
 		bgMusic = Gdx.audio.newMusic(Gdx.files.internal("audio/Ttimes.mp3"));	
 		bgMusic.setLooping(false);  
@@ -155,8 +160,8 @@ public class Game implements Screen, InputProcessor {
 		kidMove = false;
 		kidHit = false;
 		
-		batch = new SpriteBatch();
 
+		batch = new SpriteBatch();
 		/// AUDIO  ///
 		metalDing = Gdx.audio.newSound(Gdx.files.internal("audio/Metalping.wav"));
 		buzzer = Gdx.audio.newSound(Gdx.files.internal("audio/Buzzer.wav"));
@@ -196,7 +201,7 @@ public class Game implements Screen, InputProcessor {
 		TextureRegion kidRegion = new TextureRegion(kidTx, 0, 0, kidTx.getWidth(), kidTx.getHeight());
 		float stretchRatioKid = (float) kidTx.getHeight() / kidTx.getWidth();
 		kid = new Sprite(kidRegion);
-		kid.setSize(110f , 100 * stretchRatioKid );
+		kid.setSize(110f , 110 * stretchRatioKid );
 		kid.setOrigin(kid.getWidth()/2, kid.getHeight()/2);
 		kid.setPosition(0 - (kid.getWidth()/2), -screenYRefactor/2 );	
 
@@ -214,7 +219,7 @@ public class Game implements Screen, InputProcessor {
 		starHolder = new Array<TextureRegion>();
 		star2Tx = new Texture(Gdx.files.internal("data/stars2.png"));
 		star2Tx.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		
+
 		// Hard coded regions (I was having trouble understanding so I did it the long route) /////
 		starRegion1 = new TextureRegion(star2Tx, 0, 0, star2Tx.getWidth(), 64);
 		starHolder.add(starRegion1);
@@ -234,7 +239,7 @@ public class Game implements Screen, InputProcessor {
 		starHolder.add(starRegion8);
 		starRegion0 = new TextureRegion(star2Tx, 0, 512, star2Tx.getWidth(), 64);
 		starHolder.add(starRegion0);
-		
+
 		starSprite = new Sprite(starRegion0);
 		starSprite.setSize(100f , 100f );
 		starSprite.setOrigin(starSprite.getWidth()/2, starSprite.getHeight()/2);
@@ -249,12 +254,12 @@ public class Game implements Screen, InputProcessor {
 		restartBtn.setSize(300f , 150f );
 		restartBtn.setOrigin(restartBtn.getWidth()/2, restartBtn.getHeight()/2);
 		restartBtn.setPosition(0 - restartBtn.getWidth()/2, -600);	
-		
+
 	}
 
 	@Override
 	public void render(float delta) {
-		Gdx.app.log(TAG, "STEP Render");
+
 		switch (gameState) {
 		case GAME_READY:
 			//Gdx.app.log(TAG, "Game Rdy");
@@ -276,29 +281,29 @@ public class Game implements Screen, InputProcessor {
 			break;
 		}
 	}
-	
-	
-	
+
+
+
 	@Override
 	public void resize(int width, int height) {
 	}
-	
+
 	@Override
 	public void hide() {
-	
-		
+
+
 	}
 
 	@Override
 	public void pause() {
-		
-		
+
+
 	}
 
 	@Override
 	public void resume() {
-		
-		
+
+
 	}
 
 	@Override
@@ -323,8 +328,16 @@ public class Game implements Screen, InputProcessor {
 				marks.lifeTx.dispose();
 			};
 		}
-		
+
 	}
+
+//	public void shieldTimer(){
+//		 invincibilityTime += deltaTime;
+//		  if(invincibilityTime >= 5){
+//			  invincibilityTime = 0; 
+//			  invincibility = false;
+//		  }
+//	}
 	
 	public void addLifeMark(){
 		LifeMarks mark = new LifeMarks();
@@ -345,59 +358,44 @@ public class Game implements Screen, InputProcessor {
 			rand2 = rand - ((90 - rand ) * 2);  // makes a number less than 90
 		}
 		float r = (float) (rand2);
-	//	Gdx.app.log(TAG, "Random Size: " + r);
 
 		ball.setSizeXY(r, r);
-		//Gdx.app.log(TAG, "ball X:" + ball.getSizeX());  
-		//Gdx.app.log(TAG, "ball Y:" + ball.getSizeY()); 
-
 
 		//// SPEED
 		randNumSpeed = Math.random();
 		double sp = ((randNumSize * 5) + 3);
 		int spInt = (int)sp;
-		//Gdx.app.log(TAG, "Speed random " + spInt);
-
 		ball.setXSpeed((float) -spInt);
 		ball.setYSpeed((float) -spInt);
-
-
 
 		//// STARTING LOCATION
 		randNumXLoc = Math.random();
 		double xLoc = (randNumXLoc * screenXRefactor) + 1;
-		//Gdx.app.log(TAG, "Location random " + xLoc);
 		int xInt = (int)xLoc;
 		if(xInt <= (screenXRefactor/2)){
 			xFloat = (float) (xLoc * -1);
-			//Gdx.app.log(TAG, "Location random y * -1 = " + yFloat );
 			ball.setXPosition(xFloat);
 			ball.setXSpeed(ball.getXSpeed() * -1);
 			ball.setYSpeed(ball.getYSpeed() * -1);
 		}else{
 			xFloat = (float) (xLoc - (screenXRefactor/2));
-			//Gdx.app.log(TAG, "Location random y - 30 / 100 = " + yFloat );
 			ball.setXPosition((xFloat - ball.getBallSprite().getWidth()));
 		}
-
 		Balls.add(ball);
 	}
-	
+
 
 	public void updateSTARS(float dt){
-
 		ticker+=dt;
 		if(ticker>timeLimit){
 			ticker-=timeLimit;
 			currentFrame=(currentFrame+1);
-			//Gdx.app.log(TAG, "updateSTARS = " + currentFrame );
 			starSprite.setRegion(starHolder.get(currentFrame));
 			kid.rotate(45);
 			if(currentFrame == starHolder.size - 1){
 				kidHit= false;
 				currentFrame = 0;
 				kid.setRotation(0);
-				invincibility = false;
 			} 
 		}
 	}
@@ -408,7 +406,7 @@ public class Game implements Screen, InputProcessor {
 			makeNewBall();
 		}
 	}
-	
+
 	public void updateBallTimer(float deltaTime){
 		elapsedTime = deltaTime;
 		if(elapsedTime / 5 > Balls.size){  // Make a new ball every 5 seconds
@@ -420,7 +418,7 @@ public class Game implements Screen, InputProcessor {
 	public void gameRestart(){
 		dispose();
 		game.setScreen(new Game(game));
-		
+
 	}
 
 	/////////  GAME STATES  //////////////
@@ -437,6 +435,7 @@ public class Game implements Screen, InputProcessor {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
+		
 		batch.begin();
 		bg.draw(batch);
 		kid.draw(batch);
@@ -454,11 +453,20 @@ public class Game implements Screen, InputProcessor {
 				life.draw(batch);
 			};
 		}
-
+//TODO
+		if(invincibility == true){
+			invincibilityTime = invincibilityTime + deltaShieldTime;
+			Gdx.app.log(MainKeepUp.TAG, "time now " + invincibilityTime);
+			if(invincibilityTime >= 2){
+				invincibility = false;
+				invincibilityTime = 0;
+				deltaShieldTime = 0;
+			}
+		}
+		
 		pause.draw(batch);
-
-		//font.draw(batch, "HELLO", 0, 0);  /// GRRRR  DOES NOT WORK
 		batch.end();
+		
 		if(kidHit == true){
 			updateSTARS(deltaTime);
 		}
@@ -468,17 +476,15 @@ public class Game implements Screen, InputProcessor {
 				ballLoopCheckAndSet(ball);
 			};
 		}
-
-
-
 	}
 
+	
 	private void gameOver() {
 		kidMovable = false;
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		camera.update();
-		// TODO
+
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		bg.draw(batch);
@@ -498,21 +504,17 @@ public class Game implements Screen, InputProcessor {
 
 		go.draw(batch);
 		restartBtn.draw(batch);
-		//font.draw(batch, "HELLO", 0, 0);  /// GRRRR  DOES NOT WORK
 		batch.end();
-
 
 		if(Balls.size > 0){
 			for(Ball ball: Balls) {
 				ballLoopCheckOnPause(ball);
 			};
 		}
-
-
 	}
 
+	
 	private void gamePaused() {
-
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		camera.update();
@@ -539,13 +541,11 @@ public class Game implements Screen, InputProcessor {
 		//font.draw(batch, "HELLO", 0, 0);  /// GRRRR  DOES NOT WORK
 		batch.end();
 
-
 		if(Balls.size > 0){
 			for(Ball ball: Balls) {
 				ballLoopCheckOnPause(ball);
 			};
 		}
-
 	}
 
 
@@ -563,8 +563,8 @@ public class Game implements Screen, InputProcessor {
 
 		float xPosition = ball.getXPosition();
 		float yPosition = ball.getYPosition();
-		int rotationSpeed = ball.getRotationSpeed();
-		boolean rotationDirection = ball.getRotation();
+		//int rotationSpeed = ball.getRotationSpeed();
+		//boolean rotationDirection = ball.getRotation();
 		float yPosSpriteHeight = yPosition + ballSprite.getWidth();
 
 
@@ -572,10 +572,10 @@ public class Game implements Screen, InputProcessor {
 			//Gdx.app.log(TAG, "Out of bounds Down");  
 			ball.setXSpeed(ball.getXSpeed() * -1);
 			ball.setXPosition(ball.getXPosition() + ball.getXSpeed());
-			if(rotationDirection != false){
-				ball.setRotationSpeed(rotationSpeed * -1);
-			}
-			ball.setRotation(true);
+			//			if(rotationDirection != false){
+			//				ball.setRotationSpeed(rotationSpeed * -1);
+			//			}
+			//			ball.setRotation(true);
 			bounce.play();
 		}
 
@@ -583,49 +583,55 @@ public class Game implements Screen, InputProcessor {
 			//Gdx.app.log(TAG, "Out of bounds Right");
 			ball.setYSpeed(ball.getYSpeed() * -1);
 			ball.setYPosition(ball.getYPosition() + ball.getYSpeed());
-			if(rotationDirection != true){
-				ball.setRotationSpeed(rotationSpeed * -1);
-			}
-			ball.setRotation(false);
+			//			if(rotationDirection != true){
+			//				ball.setRotationSpeed(rotationSpeed * -1);
+			//			}
+			//			ball.setRotation(false);
 			bounce.play();	
 		}
 		if(xPosition <= (screenXRefactor/2) * -1){
 			//Gdx.app.log(TAG, "Out of bounds Up");
 			ball.setXSpeed(ball.getXSpeed() * -1);
 			ball.setXPosition(ball.getXPosition() + ball.getXSpeed());
-			if(rotationDirection != false){
-				ball.setRotationSpeed(rotationSpeed * -1);
-			}
-			ball.setRotation(true);
+			//			if(rotationDirection != false){
+			//				ball.setRotationSpeed(rotationSpeed * -1);
+			//			}
+			//			ball.setRotation(true);
 			bounce.play();
 		} 
 		if(yPosition <= (screenYRefactor / 2) * -1){
 			//Gdx.app.log(TAG, "Out of bounds Left");
 			ball.setYSpeed(ball.getYSpeed() * -1);
 			ball.setYPosition(ball.getYPosition() + ball.getYSpeed());
-			if(rotationDirection != true){
-				ball.setRotationSpeed(rotationSpeed * -1);
-			}
-			ball.setRotation(false);
+			//			if(rotationDirection != true){
+			//				ball.setRotationSpeed(rotationSpeed * -1);
+			//			}
+			//			ball.setRotation(false);
 			bounce.play();	
 		}
 
 		ball.setXPosition(ball.getXPosition() + ball.getXSpeed());
 		ball.setYPosition(ball.getYPosition() + ball.getYSpeed());
-		float bRotate = ballSprite.getRotation() + rotationSpeed;
+		//float bRotate = ballSprite.getRotation() + rotationSpeed;
 
 		float moveX = Interpolation.linear.apply(ball.getXPosition(), ball.getXPosition() + ball.getXSpeed(), 1);
 		float moveY = Interpolation.linear.apply(ball.getYPosition(), ball.getYPosition() + ball.getYSpeed(), 1);
 		ballSprite.setX(moveX);
 		ballSprite.setY(moveY);
-		ballSprite.setRotation(bRotate);
+		ball.setCircleXY(moveX + ballSprite.getWidth()/2 , moveY + ballSprite.getHeight()/2 );
+		//ballSprite.setRotation(bRotate);
 
-		boolean kidVSBallOverlap = ballSprite.getBoundingRectangle().overlaps(kid.getBoundingRectangle());
-		if(kidVSBallOverlap == true){
+		//boolean kidVSBallOverlap = ballSprite.getBoundingRectangle().overlaps(kid.getBoundingRectangle());
+		boolean kidVsCircleOverlap = ball.getOverlapBool(kid.getBoundingRectangle() );
+
+
+
+		if(kidVsCircleOverlap == true){
 			if(ball.collision == false){  //  check for current collision
 				if(invincibility == false){
 					// TODO
 					invincibility = true;
+					deltaShieldTime = Gdx.graphics.getDeltaTime();
 					addLifeMark();
 					kidHit = true;
 					buzzer.play(.05f);
@@ -637,7 +643,7 @@ public class Game implements Screen, InputProcessor {
 		}
 
 	}
-	
+
 
 
 	public void ballLoopCheckOnPause(Ball ball){
@@ -677,9 +683,7 @@ public class Game implements Screen, InputProcessor {
 		}else{
 			kidMove = false;
 		}
-
 		return true;
-
 	}
 
 	@Override
@@ -689,7 +693,6 @@ public class Game implements Screen, InputProcessor {
 		touchPos.set(Gdx.input.getX(), Gdx.input.getY());
 		Ray cameraRay = camera.getPickRay(touchPos.x, touchPos.y);
 		Gdx.app.log(TAG, "Touch Ray Coords: X:" + cameraRay.origin.x + " Y:" + cameraRay.origin.y);
-
 		boolean touchPause = pause.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
 
 		if(touchPause == true){
@@ -710,11 +713,11 @@ public class Game implements Screen, InputProcessor {
 				gameRestart();
 			}
 		}
-
 		kidMove = false;
 		return true;
 	}
 
+	
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
 		if(kidMove == true){
@@ -730,11 +733,13 @@ public class Game implements Screen, InputProcessor {
 		return false;
 	}
 
+	
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
 		return false;
 	}
 
+	
 	@Override
 	public boolean scrolled(int amount) {
 		return false;
@@ -744,6 +749,10 @@ public class Game implements Screen, InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) {
+		if(keycode == Keys.BACK){
+			dispose();
+			game.setScreen(new MainMenu(game));
+		}
 		return false;
 	}
 
@@ -759,5 +768,5 @@ public class Game implements Screen, InputProcessor {
 
 
 
-	
+
 }

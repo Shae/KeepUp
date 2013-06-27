@@ -1,4 +1,4 @@
-package come.klusman.keepup.screens;
+package com.klusman.keepup.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;

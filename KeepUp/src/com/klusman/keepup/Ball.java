@@ -6,6 +6,10 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Rectangle;
+
 
 
 public class Ball {
@@ -22,31 +26,49 @@ public class Ball {
 	int rotationSpeed;
 	public boolean rotationDirection;
 	public boolean collision;
+	public final Circle circle;
+	double randNumXLoc;
 	
 	
 	public Ball (){
 		
 		
-		textureAddress = "data/grnBall.png";
+		textureAddress = "data/redBall.png";
 		sizeX = 90f; //.09f;
 		sizeY = 90f; //.09f;
 		xSpeed = 5f; //0.005f;
 		ySpeed = 5f; //0.005f;;
+		//rotationSpeed = 5;
 		PositionY = 600f;
-		rotationSpeed = 5;
+		PositionX = 0; 
 		rotationDirection = true;
 		collision = false;
+		
+		
+		
 		
 		ballTx = new Texture(Gdx.files.internal(textureAddress));
 		ballTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 			
 		TextureRegion ballRegion = new TextureRegion(ballTx, 0, 0, ballTx.getWidth(), ballTx.getHeight());
 		ballSprite = new Sprite(ballRegion);
-		ballSprite.rotate(90);
+		//ballSprite.rotate(90);
 		ballSprite.setSize(sizeX, sizeY);
 		ballSprite.setOrigin(ballSprite.getWidth()/2, ballSprite.getHeight()/2);
 		ballSprite.setPosition(PositionX, PositionY - ballSprite.getHeight()/2);
+		
+		
+		
+		
+		
+		
+		circle = new Circle();
+		circle.setRadius(sizeX / 2 - 10);  // making the circle a little smaller to then the sprite for better collision
+		circle.setPosition(ballSprite.getX() - ballSprite.getWidth() / 2, ballSprite.getY() - ballSprite.getHeight()/2 );
+		
+		
 	}
+	
 	
 ////	
 	public float getSizeX(){
@@ -81,14 +103,24 @@ public class Ball {
 		ySpeed = floatYSpeed;
 	}
 		
-////
-	public int getRotationSpeed(){
-		return rotationSpeed;
+	public Circle getCircle(){
+		return circle;
 	}
 	
-	public void setRotationSpeed(int rotSpeed){
-		rotationSpeed = rotSpeed;
+	public boolean getOverlapBool(Rectangle r){
+		//Gdx.app.log(MainKeepUp.TAG,	 "getOverLap");
+		boolean sect = Intersector.overlaps(circle, r); 
+		return sect;
 	}
+	
+////
+//	public int getRotationSpeed(){
+//		return rotationSpeed;
+//	}
+//	
+//	public void setRotationSpeed(int rotSpeed){
+//		rotationSpeed = rotSpeed;
+//	}
 
 ////	
 	public boolean getRotation(){
@@ -134,7 +166,13 @@ public class Ball {
 	public void draw(SpriteBatch batch) {
 		ballSprite.draw(batch);
 	}
+////
+	public float getCircleX(){
+		return circle.x;
+	}
 	
-	
+	public void setCircleXY( float xPos, float yPos){
+		circle.setPosition(xPos, yPos);
+	}
 
 }

@@ -1,6 +1,7 @@
-package come.klusman.keepup.screens;
+package com.klusman.keepup.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
@@ -42,6 +43,7 @@ public class CreditsScreen implements Screen, InputProcessor{
 		camera = new OrthographicCamera(screenXRefactor, screenYRefactor);
 		
 		Gdx.input.setInputProcessor(this);
+		Gdx.input.setCatchBackKey(true);
 		batch = new SpriteBatch();
 	}
 	
@@ -120,7 +122,9 @@ public class CreditsScreen implements Screen, InputProcessor{
 	
 	@Override
 	public boolean keyDown(int keycode) {
-		// TODO Auto-generated method stub
+		   if(keycode == Keys.BACK){
+			   game.setScreen(new MainMenu(game));
+	        }
 		return false;
 	}
 

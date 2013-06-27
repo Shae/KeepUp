@@ -1,4 +1,4 @@
-package come.klusman.keepup.screens;
+package com.klusman.keepup.screens;
 
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Tween;

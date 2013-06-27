@@ -2,7 +2,7 @@ package com.klusman.keepup;
 
 
 import com.badlogic.gdx.Game;
-import come.klusman.keepup.screens.SplashScreen;
+import com.klusman.keepup.screens.SplashScreen;
 
 
 
