@@ -1,5 +1,9 @@
 package com.klusman.keepup.screens;
 
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenEquations;
+import aurelienribon.tweenengine.TweenManager;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
@@ -13,6 +17,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.collision.Ray;
 import com.klusman.keepup.MainKeepUp;
+import com.klusman.keepup.tweens.SpriteTween;
 
 
 public class MainMenu implements Screen, InputProcessor{
@@ -25,6 +30,7 @@ public class MainMenu implements Screen, InputProcessor{
 	float x;
 	float y;
 	float screenRatio;
+	TweenManager manager;
 	
 	SpriteBatch batch;
 	Texture titleTx;
@@ -32,19 +38,25 @@ public class MainMenu implements Screen, InputProcessor{
 	
 	Sprite playBtn;
 	Texture playBtnTxUp;
-	Texture playBtnTxDwn;
 	
 	Sprite creditsBtn;
-	Texture CredBtnTx;
 	Texture CredBtnUp;
 	
 	Sprite instructionsBtn;
 	Texture instBtnTxUp;
-	Texture instBtnTxDwn;
 	
 	
 	public MainMenu (MainKeepUp game){
 		this.game = game;
+		x = Gdx.graphics.getWidth();
+		y = Gdx.graphics.getHeight();
+		screenXRefactor = 1000;
+		screenRatio = y/x;
+		screenYRefactor = (int) (screenRatio * screenXRefactor);
+		camera = new OrthographicCamera(screenXRefactor, screenYRefactor);
+		Gdx.input.setInputProcessor(this);
+		Tween.registerAccessor(Sprite.class, new SpriteTween());
+		manager = new TweenManager();
 		
 	}
 
@@ -57,17 +69,8 @@ public class MainMenu implements Screen, InputProcessor{
 
 	@Override
 	public void show() {
-		x = Gdx.graphics.getWidth();
-		y = Gdx.graphics.getHeight();
-		screenXRefactor = 1000;
-		screenRatio = y/x;
-		screenYRefactor = (int) (screenRatio * screenXRefactor);
-		camera = new OrthographicCamera(screenXRefactor, screenYRefactor);
 		
-		Gdx.input.setInputProcessor(this);
-		
-		batch = new SpriteBatch();
-		
+		batch = new SpriteBatch();		
 
 		titleTx = new Texture(Gdx.files.internal("data/splashTitle.png"));
 		titleTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);	
@@ -86,6 +89,8 @@ public class MainMenu implements Screen, InputProcessor{
 		playBtn.setSize(800,  200);  
 		playBtn.setOrigin(playBtn.getWidth()/2, playBtn.getHeight()/2);
 		playBtn.setPosition(0 - playBtn.getWidth()/2, 0f - playBtn.getHeight()/2);
+		playBtn.setColor(1, 1, 1, 0);
+		
 		
 		instBtnTxUp = new Texture(Gdx.files.internal("data/InstrBtnUp.png"));
 		instBtnTxUp.setFilter(TextureFilter.Linear, TextureFilter.Linear);
@@ -94,19 +99,36 @@ public class MainMenu implements Screen, InputProcessor{
 		instructionsBtn.setSize(800,  200);  
 		instructionsBtn.setOrigin(instructionsBtn.getWidth()/2, instructionsBtn.getHeight()/2);
 		instructionsBtn.setPosition(0 - instructionsBtn.getWidth() / 2, - 250 - (instructionsBtn.getHeight() /2));
+		instructionsBtn.setColor(1, 1, 1, 0);
 		
 		CredBtnUp = new Texture(Gdx.files.internal("data/CreditsBtnUp.png"));
 		CredBtnUp.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		TextureRegion credBtnReg = new TextureRegion(CredBtnUp, 0, 0, CredBtnUp.getWidth(), CredBtnUp.getHeight());
 		creditsBtn = new Sprite(credBtnReg);
-		creditsBtn.setSize(800,  200);  
+		creditsBtn.setSize(800,  200); 
 		creditsBtn.setOrigin(creditsBtn.getWidth()/2, creditsBtn.getHeight()/2);
 		creditsBtn.setPosition(0 - creditsBtn.getWidth() /2, -500 - (creditsBtn.getHeight()/ 2));
+		creditsBtn.setColor(1, 1, 1, 0);
 		
+		Tween.to(playBtn, SpriteTween.ALPHA, 1.5f)
+		.target(1)
+		.ease(TweenEquations.easeInQuad)
+		.start(manager);  // start the tween using the passed in manager
 		
+		Tween.to(instructionsBtn, SpriteTween.ALPHA, 1.5f)
+		.target(1)
+		.ease(TweenEquations.easeInQuad)
+		.start(manager);  // start the tween using the passed in manager
+		
+		Tween.to(creditsBtn, SpriteTween.ALPHA, 1.5f)
+		.target(1)
+		.ease(TweenEquations.easeInQuad)	
+		.start(manager);  // start the tween using the passed in manager
 		
 		
 	}
+	
+
 	
 	@Override
 	public void render(float delta) {
@@ -115,6 +137,7 @@ public class MainMenu implements Screen, InputProcessor{
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
 		camera.update();  // update the camera
+		manager.update(delta);  // update manager using the delta time
 		batch.setProjectionMatrix(camera.combined);
 		
 		batch.begin();
@@ -151,7 +174,7 @@ public class MainMenu implements Screen, InputProcessor{
 	@Override
 	public void dispose() {
 		titleTx.dispose();
-		playBtnTxDwn.dispose();
+		playBtnTxUp.dispose();
 		instBtnTxUp.dispose();
 		CredBtnUp.dispose();
 		
@@ -209,6 +232,7 @@ public class MainMenu implements Screen, InputProcessor{
 		if(instructionBool == true){
 		
 			Gdx.app.log(MainKeepUp.TAG, "instructions Btn Clicked!");
+			game.setScreen(new InstructionsScreen(game));
 		}
 		
 		

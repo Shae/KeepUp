@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -12,7 +11,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.math.Interpolation;
@@ -53,8 +51,6 @@ public class Game implements Screen, InputProcessor {
 	float timeLimit = 20.0f;
 	float invincibilityTime;
 	
-	float invincTicker;
-	float invincLimit = 10.0f;
 
 
 	int Level;
@@ -109,8 +105,6 @@ public class Game implements Screen, InputProcessor {
 	public static Sound metalDing;
 	public static Sound buzzer;
 	public static Sound bounce;
-	public static Music bgMusic;
-	public TextureAtlas starTextures;
 
 	int frameLength;
 	int currentFrame;
@@ -122,7 +116,6 @@ public class Game implements Screen, InputProcessor {
 
 
 	public Game( MainKeepUp game){
-		Gdx.app.log(TAG, "STEP Main Construct1");
 		this.game = game;
 		x = Gdx.graphics.getWidth();
 		y = Gdx.graphics.getHeight();
@@ -144,11 +137,6 @@ public class Game implements Screen, InputProcessor {
 		pauseGame = false;
 		gameOver = false;
 		invincibilityTime = 0;
-
-		bgMusic = Gdx.audio.newMusic(Gdx.files.internal("audio/Ttimes.mp3"));	
-		bgMusic.setLooping(false);  
-		bgMusic.setVolume(0.03f);
-		bgMusic.play();
 
 		Balls = new Array<Ball>();
 		Marks = new Array<LifeMarks>();
@@ -291,18 +279,15 @@ public class Game implements Screen, InputProcessor {
 	@Override
 	public void hide() {
 
-
 	}
 
 	@Override
 	public void pause() {
 
-
 	}
 
 	@Override
 	public void resume() {
-
 
 	}
 
@@ -331,13 +316,6 @@ public class Game implements Screen, InputProcessor {
 
 	}
 
-//	public void shieldTimer(){
-//		 invincibilityTime += deltaTime;
-//		  if(invincibilityTime >= 5){
-//			  invincibilityTime = 0; 
-//			  invincibility = false;
-//		  }
-//	}
 	
 	public void addLifeMark(){
 		LifeMarks mark = new LifeMarks();
@@ -407,6 +385,7 @@ public class Game implements Screen, InputProcessor {
 		}
 	}
 
+	
 	public void updateBallTimer(float deltaTime){
 		elapsedTime = deltaTime;
 		if(elapsedTime / 5 > Balls.size){  // Make a new ball every 5 seconds
@@ -424,12 +403,11 @@ public class Game implements Screen, InputProcessor {
 	/////////  GAME STATES  //////////////
 
 	public void gameReady(){
-
 	}
 
+	
 	private void gameRunning() {
 		checkStrikeOut();
-
 		deltaTime += Gdx.graphics.getDeltaTime();   
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
@@ -438,8 +416,12 @@ public class Game implements Screen, InputProcessor {
 		
 		batch.begin();
 		bg.draw(batch);
-		kid.draw(batch);
-		//starArray.get(currentFrame).draw(batch);
+		if(invincibility == false){
+			kid.draw(batch);
+		}else{
+			kid.draw(batch, .3f);  // drop Alpha while invincible
+		}
+
 		starSprite.draw(batch);
 
 		if(Balls.size > 0){
