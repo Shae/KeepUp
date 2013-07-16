@@ -1,7 +1,5 @@
 package com.klusman.keepup.screens;
 
-import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
@@ -52,8 +50,11 @@ public class Game implements Screen, InputProcessor {
 
 	float deltaTime;
 	float elapsedTime;
+	float FreezeTimer = 4f;
 	float resourceTimer = 7f;
 	float deltaShieldTime;
+	float deltaFreezeTime;
+	
 	float ticker;
 	float timeLimit = 20.0f;
 	float invincibilityTime;
@@ -74,6 +75,8 @@ public class Game implements Screen, InputProcessor {
 	boolean gameOver;
 	boolean kidHit;
 	boolean invincibility;
+	boolean shielded;
+	boolean freeze;
 	
 
 	private Texture bgTx;
@@ -147,9 +150,11 @@ public class Game implements Screen, InputProcessor {
 
 		gameState = GAME_RUNNING;
 		invincibility = false;
+		shielded = false;
 		pauseGame = false;
 		gameOver = false;
 		invincibilityTime = 0;
+		freeze = false;
 
 		Balls = new Array<Ball>();
 		MedKits = new Array<healthKit>();
@@ -325,6 +330,24 @@ public class Game implements Screen, InputProcessor {
 				ball.ballTx.dispose();
 			};
 		}
+		
+		if(MedKits.size > 0){
+			for(healthKit kit: MedKits) {
+				kit.kitTx.dispose();
+			};
+		}
+		
+		if(Shields.size > 0){
+			for(ShieldBoost shield: Shields) {
+				shield.shieldTx.dispose();
+			};
+		}
+		
+		if(Timers.size > 0){
+			for(FreezeMotionTimer timer: Timers) {
+				timer.timerTx.dispose();
+			};
+		}
 
 		if(Marks.size > 0){
 			for(LifeMarks marks: Marks) {
@@ -404,7 +427,7 @@ public class Game implements Screen, InputProcessor {
 	
 	
 	
-	//TODO
+
 	public void makeNewKit( ){
 		Gdx.app.log(MainKeepUp.TAG, "Make New Health Kit");
 		healthKit kit = new healthKit(getRandomXLocation());
@@ -422,9 +445,7 @@ public class Game implements Screen, InputProcessor {
 	
 	public void makeNewShield(){
 		Gdx.app.log(MainKeepUp.TAG, "Make New Shield");
-		ShieldBoost shield = new ShieldBoost();
-		float xFloat = 0;
-
+		ShieldBoost shield = new ShieldBoost(getRandomXLocation());
 
 		//// SPEED
 		randNumSpeed = Math.random();
@@ -433,26 +454,12 @@ public class Game implements Screen, InputProcessor {
 		shield.setXSpeed((float) -spInt);
 		shield.setYSpeed((float) -spInt);
 
-		//// STARTING LOCATION
-		randNumXLoc = Math.random();
-		double xLoc = (randNumXLoc * screenXRefactor) + 1;
-		int xInt = (int)xLoc;
-		if(xInt <= (screenXRefactor/2)){
-			xFloat = (float) (xLoc * -1);
-			shield.setXPosition(xFloat);
-			shield.setXSpeed(shield.getXSpeed() * -1);
-			shield.setYSpeed(shield.getYSpeed() * -1);
-		}else{
-			xFloat = (float) (xLoc - (screenXRefactor/2));
-			shield.setXPosition((xFloat - shield.getShieldSprite().getWidth()));
-		}
 		Shields.add(shield);
 	}
 	
 	public void makeNewTimeClock(){
 		Gdx.app.log(MainKeepUp.TAG, "Make New Time Clock");
-		FreezeMotionTimer timeclock = new FreezeMotionTimer();
-		float xFloat = 0;
+		FreezeMotionTimer timeclock = new FreezeMotionTimer(getRandomXLocation());
 
 		//// SPEED
 		randNumSpeed = Math.random();
@@ -461,19 +468,6 @@ public class Game implements Screen, InputProcessor {
 		timeclock.setXSpeed((float) -spInt);
 		timeclock.setYSpeed((float) -spInt);
 
-		//// STARTING LOCATION
-		randNumXLoc = Math.random();
-		double xLoc = (randNumXLoc * screenXRefactor) + 1;
-		int xInt = (int)xLoc;
-		if(xInt <= (screenXRefactor/2)){
-			xFloat = (float) (xLoc * -1);
-			timeclock.setXPosition(xFloat);
-			timeclock.setXSpeed(timeclock.getXSpeed() * -1);
-			timeclock.setYSpeed(timeclock.getYSpeed() * -1);
-		}else{
-			xFloat = (float) (xLoc - (screenXRefactor/2));
-			timeclock.setXPosition((xFloat - timeclock.getTimerSprite().getWidth()));
-		}
 		Timers.add(timeclock);
 	}
 	
@@ -508,7 +502,6 @@ public class Game implements Screen, InputProcessor {
 		}
 	}
 
-	//TODO
 	public void updateResourceTimer(float deltaTime){
 		elapsedTime = deltaTime;
 		if(elapsedTime > resourceTimer){
@@ -549,12 +542,13 @@ public class Game implements Screen, InputProcessor {
 		
 		batch.begin();
 		bg.draw(batch);
-		if(invincibility == false){
+		
+		if((invincibility == false) && (shielded == false)){
 			kid.draw(batch);
 		}else{
 			kid.draw(batch, .3f);  // drop Alpha while invincible
 		}
-
+		
 		starSprite.draw(batch);
 
 		if(Balls.size > 0){
@@ -586,12 +580,29 @@ public class Game implements Screen, InputProcessor {
 				life.draw(batch);
 			};
 		}
-//TODO
+
 		if(invincibility == true){
 			invincibilityTime = invincibilityTime + deltaShieldTime;
 			
 			if(invincibilityTime >= 2){
 				invincibility = false;
+				invincibilityTime = 0;
+				deltaShieldTime = 0;
+			}
+		}
+		//TODO
+		if(freeze == true){
+			
+			if(elapsedTime >= deltaFreezeTime){
+				freeze = false;
+			}
+		}
+		
+		if(shielded == true){
+			invincibilityTime = invincibilityTime + deltaShieldTime;
+		
+			if(invincibilityTime >= 4){
+				shielded = false;
 				invincibilityTime = 0;
 				deltaShieldTime = 0;
 			}
@@ -615,6 +626,20 @@ public class Game implements Screen, InputProcessor {
 				kitLoopCheckAndSet(kit);
 			};
 		}
+		
+		if(Shields.size > 0){
+			for(ShieldBoost shield: Shields) {
+				shieldLoopCheckAndSet(shield);
+			};
+		}
+		
+		if(Timers.size > 0){
+			for(FreezeMotionTimer timer: Timers) {
+				timerLoopCheckAndSet(timer);
+			};
+		}
+		
+		
 	}
 
 	
@@ -773,83 +798,85 @@ public class Game implements Screen, InputProcessor {
 
 	public void ballLoopCheckAndSet(Ball ball){
 		Sprite ballSprite = ball.getBallSprite();
-
-
-		float xPosition = ball.getXPosition();
-		float yPosition = ball.getYPosition();
-		//int rotationSpeed = ball.getRotationSpeed();
-		//boolean rotationDirection = ball.getRotation();
-		float yPosSpriteHeight = yPosition + ballSprite.getWidth();
-
-
-		if(xPosition + ballSprite.getHeight() >= (screenXRefactor/2)){
-			//Gdx.app.log(TAG, "Out of bounds Down");  
-			ball.setXSpeed(ball.getXSpeed() * -1);
+		
+		if(freeze == false){
+	
+			float xPosition = ball.getXPosition();
+			float yPosition = ball.getYPosition();
+			//int rotationSpeed = ball.getRotationSpeed();
+			//boolean rotationDirection = ball.getRotation();
+			float yPosSpriteHeight = yPosition + ballSprite.getWidth();
+	
+	
+			if(xPosition + ballSprite.getHeight() >= (screenXRefactor/2)){
+				//Gdx.app.log(TAG, "Out of bounds Down");  
+				ball.setXSpeed(ball.getXSpeed() * -1);
+				ball.setXPosition(ball.getXPosition() + ball.getXSpeed());
+				//			if(rotationDirection != false){
+				//				ball.setRotationSpeed(rotationSpeed * -1);
+				//			}
+				//			ball.setRotation(true);
+				bounce.play();
+			}
+	
+			if(yPosSpriteHeight >= screenYRefactor / 2){
+				//Gdx.app.log(TAG, "Out of bounds Right");
+				ball.setYSpeed(ball.getYSpeed() * -1);
+				ball.setYPosition(ball.getYPosition() + ball.getYSpeed());
+				//			if(rotationDirection != true){
+				//				ball.setRotationSpeed(rotationSpeed * -1);
+				//			}
+				//			ball.setRotation(false);
+				bounce.play();	
+			}
+			if(xPosition <= (screenXRefactor/2) * -1){
+				//Gdx.app.log(TAG, "Out of bounds Up");
+				ball.setXSpeed(ball.getXSpeed() * -1);
+				ball.setXPosition(ball.getXPosition() + ball.getXSpeed());
+				//			if(rotationDirection != false){
+				//				ball.setRotationSpeed(rotationSpeed * -1);
+				//			}
+				//			ball.setRotation(true);
+				bounce.play();
+			} 
+			if(yPosition <= (screenYRefactor / 2) * -1){
+				//Gdx.app.log(TAG, "Out of bounds Left");
+				ball.setYSpeed(ball.getYSpeed() * -1);
+				ball.setYPosition(ball.getYPosition() + ball.getYSpeed());
+				//			if(rotationDirection != true){
+				//				ball.setRotationSpeed(rotationSpeed * -1);
+				//			}
+				//			ball.setRotation(false);
+				bounce.play();	
+			}
+	
 			ball.setXPosition(ball.getXPosition() + ball.getXSpeed());
-			//			if(rotationDirection != false){
-			//				ball.setRotationSpeed(rotationSpeed * -1);
-			//			}
-			//			ball.setRotation(true);
-			bounce.play();
-		}
-
-		if(yPosSpriteHeight >= screenYRefactor / 2){
-			//Gdx.app.log(TAG, "Out of bounds Right");
-			ball.setYSpeed(ball.getYSpeed() * -1);
 			ball.setYPosition(ball.getYPosition() + ball.getYSpeed());
-			//			if(rotationDirection != true){
-			//				ball.setRotationSpeed(rotationSpeed * -1);
-			//			}
-			//			ball.setRotation(false);
-			bounce.play();	
+			//float bRotate = ballSprite.getRotation() + rotationSpeed;
+	
+			float moveX = Interpolation.linear.apply(ball.getXPosition(), ball.getXPosition() + ball.getXSpeed(), 1);
+			float moveY = Interpolation.linear.apply(ball.getYPosition(), ball.getYPosition() + ball.getYSpeed(), 1);
+			
+			ballSprite.setX(moveX);
+			ballSprite.setY(moveY);
+			ball.setCircleXY(moveX + ballSprite.getWidth()/2 , moveY + ballSprite.getHeight()/2 );
+			//ballSprite.setRotation(bRotate);
+			
 		}
-		if(xPosition <= (screenXRefactor/2) * -1){
-			//Gdx.app.log(TAG, "Out of bounds Up");
-			ball.setXSpeed(ball.getXSpeed() * -1);
-			ball.setXPosition(ball.getXPosition() + ball.getXSpeed());
-			//			if(rotationDirection != false){
-			//				ball.setRotationSpeed(rotationSpeed * -1);
-			//			}
-			//			ball.setRotation(true);
-			bounce.play();
-		} 
-		if(yPosition <= (screenYRefactor / 2) * -1){
-			//Gdx.app.log(TAG, "Out of bounds Left");
-			ball.setYSpeed(ball.getYSpeed() * -1);
-			ball.setYPosition(ball.getYPosition() + ball.getYSpeed());
-			//			if(rotationDirection != true){
-			//				ball.setRotationSpeed(rotationSpeed * -1);
-			//			}
-			//			ball.setRotation(false);
-			bounce.play();	
-		}
-
-		ball.setXPosition(ball.getXPosition() + ball.getXSpeed());
-		ball.setYPosition(ball.getYPosition() + ball.getYSpeed());
-		//float bRotate = ballSprite.getRotation() + rotationSpeed;
-
-		float moveX = Interpolation.linear.apply(ball.getXPosition(), ball.getXPosition() + ball.getXSpeed(), 1);
-		float moveY = Interpolation.linear.apply(ball.getYPosition(), ball.getYPosition() + ball.getYSpeed(), 1);
-		ballSprite.setX(moveX);
-		ballSprite.setY(moveY);
-		ball.setCircleXY(moveX + ballSprite.getWidth()/2 , moveY + ballSprite.getHeight()/2 );
-		//ballSprite.setRotation(bRotate);
-
-		//boolean kidVSBallOverlap = ballSprite.getBoundingRectangle().overlaps(kid.getBoundingRectangle());
 		boolean kidVsCircleOverlap = ball.getOverlapBool(kid.getBoundingRectangle() );
-
-
 
 		if(kidVsCircleOverlap == true){
 			if(ball.collision == false){  //  check for current collision
-				if(invincibility == false){
-					// TODO
-					invincibility = true;
-					deltaShieldTime = Gdx.graphics.getDeltaTime();
-					addLifeMark();
-					kidHit = true;
-					buzzer.play(.05f);
-					ball.collision = true;  // sets current collision
+				if(shielded == false){
+					if(invincibility == false){
+						
+						invincibility = true;
+						deltaShieldTime = Gdx.graphics.getDeltaTime();
+						addLifeMark();
+						kidHit = true;
+						buzzer.play(.05f);
+						ball.collision = true;  // sets current collision
+					}
 				}
 			}
 		}else{
@@ -858,7 +885,7 @@ public class Game implements Screen, InputProcessor {
 
 	}
 	
-	//TODO
+
 	public void kitLoopCheckAndSet(healthKit kit){
 		Sprite kitSprite = kit.getKitSprite();
 
@@ -910,6 +937,7 @@ public class Game implements Screen, InputProcessor {
 		float xPosition = shield.getXPosition();
 		float yPosition = shield.getYPosition();
 		float yPosSpriteHeight = yPosition + ShieldSprite.getWidth();
+		
 		if(xPosition <= ((screenXRefactor/2) - ShieldSprite.getWidth()/2) * -1){
 			xPosition = (screenXRefactor/2) * -1;
 		} 
@@ -942,14 +970,60 @@ public class Game implements Screen, InputProcessor {
 		boolean kidVSShieldOverlap = ShieldSprite.getBoundingRectangle().overlaps(kid.getBoundingRectangle());
 
 		if(kidVSShieldOverlap == true){		
-				powerUp.play(.05f);
-				removeLifeMark();			
-				MedKits.removeValue(shield, true);   
+				powerUp.play(.05f);	
+				shielded = true;
+				deltaShieldTime = Gdx.graphics.getDeltaTime();
+				Shields.removeValue(shield, true);   
 		}
 
 	}
 
+	//TODO
+		public void timerLoopCheckAndSet(FreezeMotionTimer timer){
+			Sprite timerSprite = timer.getTimerSprite();
 
+			float xPosition = timer.getXPosition();
+			float yPosition = timer.getYPosition();
+			float yPosSpriteHeight = yPosition + timerSprite.getWidth();
+			if(xPosition <= ((screenXRefactor/2) - timerSprite.getWidth()/2) * -1){
+				xPosition = (screenXRefactor/2) * -1;
+			} 
+
+			if(xPosition <= ((screenXRefactor/2) - timerSprite.getWidth()/2)){
+				xPosition = ((screenXRefactor/2) - timerSprite.getWidth()/2);
+			} 
+
+			if(yPosSpriteHeight >= screenYRefactor / 2){
+				//Gdx.app.log(TAG, "Out of bounds Right");
+				timer.setYSpeed(timer.getYSpeed() * -1);
+				timer.setYPosition(timer.getYPosition() + timer.getYSpeed());
+				hardBounce.play(0.5f);	
+			}
+			
+			
+			if(yPosition <= (screenYRefactor / 2) * -1){
+				//Gdx.app.log(TAG, "Out of bounds Left");
+				timer.setYSpeed(timer.getYSpeed() * -1);
+				timer.setYPosition(timer.getYPosition() + timer.getYSpeed());
+				hardBounce.play(0.5f);	
+			}
+
+			timer.setXPosition(xPosition);
+			timer.setYPosition(timer.getYPosition() + timer.getYSpeed());
+
+			float moveY = Interpolation.linear.apply(timer.getYPosition(), timer.getYPosition() + timer.getYSpeed(), 1);
+			timerSprite.setY(moveY);
+
+			boolean kidVSTimerOverlap = timerSprite.getBoundingRectangle().overlaps(kid.getBoundingRectangle());
+
+			if(kidVSTimerOverlap == true){	
+					freeze = true;
+					deltaFreezeTime = elapsedTime + FreezeTimer;
+					powerUp.play(.05f);			
+					Timers.removeValue(timer, true);   
+			}
+
+		}
 
 	public void ballLoopCheckOnPause(Ball ball){
 		Sprite ballSprite = ball.getBallSprite();

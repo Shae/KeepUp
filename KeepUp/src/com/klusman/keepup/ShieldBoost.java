@@ -24,17 +24,17 @@ public class ShieldBoost {
 	double randNumXLoc;
 	
 	
-	public ShieldBoost(){
+	public ShieldBoost(float randX){
 		
 		
 		textureAddress = "data/shield.png";
-		sizeX = 90f; //.09f;
-		sizeY = 90f; //.09f;
-		xSpeed = 5f; //0.005f;
+		sizeX = 75f; //.09f;
+		sizeY = 75f; //.09f;
+		xSpeed = 0; //0.005f;
 		ySpeed = 5f; //0.005f;;
 		//rotationSpeed = 5;
 		PositionY = 600f;
-		PositionX = 0; 
+		PositionX = randX; 
 		rotationDirection = true;
 		collision = false;
 		

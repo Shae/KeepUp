@@ -28,8 +28,8 @@ public class healthKit {
 		
 		
 		textureAddress = "data/medKit.png";
-		sizeX = 90f; //.09f;
-		sizeY = 90f; //.09f;
+		sizeX = 75f; //.09f;
+		sizeY = 75f; //.09f;
 		xSpeed = 0; //0.005f;
 		ySpeed = 5f; //0.005f;;
 		//rotationSpeed = 5;
