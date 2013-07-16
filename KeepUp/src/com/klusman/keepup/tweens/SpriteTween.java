@@ -1,8 +1,7 @@
 package com.klusman.keepup.tweens;
 
-import com.badlogic.gdx.Gdx;
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.klusman.keepup.MainKeepUp;
 
 import aurelienribon.tweenengine.TweenAccessor;
 
