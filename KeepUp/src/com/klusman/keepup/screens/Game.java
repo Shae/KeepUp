@@ -19,6 +19,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
 import com.klusman.keepup.Ball;
+import com.klusman.keepup.Bomb;
 import com.klusman.keepup.FreezeMotionTimer;
 import com.klusman.keepup.LifeMarks;
 import com.klusman.keepup.MainKeepUp;
@@ -38,12 +39,15 @@ public class Game implements Screen, InputProcessor {
 	public static int gameState;
 
 	private OrthographicCamera camera;
-	public static int screenXRefactor;
-	public static int screenYRefactor;
-	float x;
-	float y;
+	static float x = Gdx.graphics.getWidth();
+	static float y = Gdx.graphics.getHeight();
+	static float screenRatio = y/x;
+	public static final int screenXRefactor = 1000;
+	public static final int screenYRefactor = (int) (screenRatio * screenXRefactor);;
 	
-	float screenRatio;
+	
+	
+	
 
 
 	private SpriteBatch batch;
@@ -52,17 +56,19 @@ public class Game implements Screen, InputProcessor {
 	float elapsedTime;
 	float FreezeTimer = 4f;
 	float resourceTimer = 7f;
+	float scoreTime = 2f;
+	float scoreTimeInterval = 1f;
 	float deltaShieldTime;
 	float deltaFreezeTime;
+	float shieldedTime;
 	
 	float ticker;
 	float timeLimit = 20.0f;
 	float invincibilityTime;
 	
-
-
 	int Level;
 	int starLoop;
+	int SCORE;
 
 	double randNumXLoc;
 	double randNumSize;
@@ -125,6 +131,7 @@ public class Game implements Screen, InputProcessor {
 	public Array<Ball> Balls;
 	public Array<healthKit> MedKits;
 	public Array<ShieldBoost> Shields;
+	public Array<Bomb> Bombs;
 	public Array<FreezeMotionTimer> Timers;
 	public static Array<LifeMarks> Marks;
 	public Array<Sprite> starArray;
@@ -133,11 +140,7 @@ public class Game implements Screen, InputProcessor {
 
 	public Game( MainKeepUp game){
 		this.game = game;
-		x = Gdx.graphics.getWidth();
-		y = Gdx.graphics.getHeight();
-		screenXRefactor = 1000;
-		screenRatio = y/x;
-		screenYRefactor = (int) (screenRatio * screenXRefactor);
+
 		camera = new OrthographicCamera(screenXRefactor, screenYRefactor);
 
 		deltaTime = Gdx.graphics.getDeltaTime();
@@ -154,7 +157,9 @@ public class Game implements Screen, InputProcessor {
 		pauseGame = false;
 		gameOver = false;
 		invincibilityTime = 0;
+		shieldedTime = 0;
 		freeze = false;
+		SCORE = 0;
 
 		Balls = new Array<Ball>();
 		MedKits = new Array<healthKit>();
@@ -369,58 +374,57 @@ public class Game implements Screen, InputProcessor {
 		Marks.removeIndex(size - 1);
 		}
 	}
+	
+	public float getRandomSize(){
+		float r;
+		randNumSize = Math.random();  // random 0.0 to 1.0
+		if (randNumSize < 0.01){
+			randNumSize = 0.01;
+		}
+		double rand = (randNumSize * 100);  // 1 to 1
+		 
+		if (rand <= 40){   // check if too small (no smaller then 40)
+			r = (float)rand + 40; // Makes a number greater than 41
+			return r;
+		} else if (rand >= 90){  // makes sure its not to big (no larger than 90) 
+			r = (float)rand - 10; // makes a number less than 90
+			return r;
+		}else{
+			r = (float)rand;
+			return r;
+		}
+		
+	}
+	
+	public float getRandomSpeed(){
+		randNumSpeed = Math.random();  // 0.0 to 1.0
+		if(randNumSpeed < 0.1){
+			randNumSpeed = 0.1;
+		}
+		float sp = (float) ((randNumSize * 5) + 3);
+		return sp;
+	}
 
 	public void makeNewBall(){
-		Ball ball = new Ball();
-		float xFloat = 0;
-
-		//// SIZE
-		randNumSize = Math.random();
-		double rand = ((randNumSize * 100) + 1);
-		double rand2 = rand;
-		if (rand <= 40){
-			rand2 = rand + 41; // Makes a number greater than 41
-		} if (rand >= 90){
-			rand2 = rand - ((90 - rand ) * 2);  // makes a number less than 90
-		}
-		float r = (float) (rand2);
-
-		ball.setSizeXY(r, r);
-
-		//// SPEED
-		randNumSpeed = Math.random();
-		double sp = ((randNumSize * 5) + 3);
-		int spInt = (int)sp;
-		ball.setXSpeed((float) -spInt);
-		ball.setYSpeed((float) -spInt);
-
-		//// STARTING LOCATION
-		randNumXLoc = Math.random();
-		double xLoc = (randNumXLoc * screenXRefactor) + 1;
-		int xInt = (int)xLoc;
-		if(xInt <= (screenXRefactor/2)){
-			xFloat = (float) (xLoc * -1);
-			ball.setXPosition(xFloat);
-			ball.setXSpeed(ball.getXSpeed() * -1);
-			ball.setYSpeed(ball.getYSpeed() * -1);
-		}else{
-			xFloat = (float) (xLoc - (screenXRefactor/2));
-			ball.setXPosition((xFloat - ball.getBallSprite().getWidth()));
-		}
+		Ball ball = new Ball(getRandomXLocation(), getRandomSize(), getRandomSpeed());
 		Balls.add(ball);
 	}
 
 	
 	public float getRandomXLocation(){
-		float xFloat = 0;
-		randNumXLoc = Math.random();
-		double xLoc = (randNumXLoc * screenXRefactor) + 1;
-		int xInt = (int)xLoc;
-		if(xInt <= (screenXRefactor/2)){
-			xFloat = (float) (xLoc * -1);
+		float xFloat;
+		randNumXLoc = Math.random(); // 0.0 thru 1.0
+		if(randNumXLoc == 0){  
+			randNumXLoc = 0.01f;  // ensure not 0
+		}
+		
+		int xLoc = (int)(randNumXLoc * screenXRefactor);  // from 1 to 1000 
+		
+		if(xLoc <= (screenXRefactor/2)){  // checks for the half mark 
+			xFloat = (float) (xLoc * -1);   // make neg and float for ball position
 			return xFloat;
 		}else{
-			xFloat = (float) (xLoc - (screenXRefactor/2));
+			xFloat = (float) (xLoc - (screenXRefactor/2));  // if over half (500) subtract half for pos numbers
 			return xFloat;
 		}
 	}
@@ -430,44 +434,20 @@ public class Game implements Screen, InputProcessor {
 
 	public void makeNewKit( ){
 		Gdx.app.log(MainKeepUp.TAG, "Make New Health Kit");
-		healthKit kit = new healthKit(getRandomXLocation());
-
-		//// SPEED
-		randNumSpeed = Math.random();
-		double sp = ((randNumSize * 5) + 3);
-		int spInt = (int)sp;
-		kit.setXSpeed((float) -spInt);
-		kit.setYSpeed((float) -spInt);
-
+		healthKit kit = new healthKit(getRandomXLocation(), getRandomSpeed());
 		MedKits.add(kit);
 	}
 	
 	
 	public void makeNewShield(){
 		Gdx.app.log(MainKeepUp.TAG, "Make New Shield");
-		ShieldBoost shield = new ShieldBoost(getRandomXLocation());
-
-		//// SPEED
-		randNumSpeed = Math.random();
-		double sp = ((randNumSize * 5) + 3);
-		int spInt = (int)sp;
-		shield.setXSpeed((float) -spInt);
-		shield.setYSpeed((float) -spInt);
-
+		ShieldBoost shield = new ShieldBoost(getRandomXLocation(), getRandomSpeed());
 		Shields.add(shield);
 	}
 	
 	public void makeNewTimeClock(){
 		Gdx.app.log(MainKeepUp.TAG, "Make New Time Clock");
-		FreezeMotionTimer timeclock = new FreezeMotionTimer(getRandomXLocation());
-
-		//// SPEED
-		randNumSpeed = Math.random();
-		double sp = ((randNumSize * 5) + 3);
-		int spInt = (int)sp;
-		timeclock.setXSpeed((float) -spInt);
-		timeclock.setYSpeed((float) -spInt);
-
+		FreezeMotionTimer timeclock = new FreezeMotionTimer(getRandomXLocation(), getRandomSpeed());
 		Timers.add(timeclock);
 	}
 	
@@ -533,6 +513,7 @@ public class Game implements Screen, InputProcessor {
 
 	
 	private void gameRunning() {
+		scoreUpdate();
 		checkStrikeOut();
 		deltaTime += Gdx.graphics.getDeltaTime();   
 		Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -592,18 +573,15 @@ public class Game implements Screen, InputProcessor {
 		}
 		//TODO
 		if(freeze == true){
-			
 			if(elapsedTime >= deltaFreezeTime){
 				freeze = false;
 			}
 		}
 		
-		if(shielded == true){
-			invincibilityTime = invincibilityTime + deltaShieldTime;
-		
-			if(invincibilityTime >= 4){
+		if(shielded == true){	
+			if(deltaTime >= shieldedTime){
 				shielded = false;
-				invincibilityTime = 0;
+				shieldedTime = 0;
 				deltaShieldTime = 0;
 			}
 		}
@@ -641,7 +619,16 @@ public class Game implements Screen, InputProcessor {
 		
 		
 	}
-
+//TODO
+	public void scoreUpdate(){
+		int items = 0;
+		if(elapsedTime >= scoreTime){
+			scoreTime = elapsedTime + scoreTimeInterval;
+			 items = Balls.size + MedKits.size + Shields.size + Timers.size;
+			 SCORE = SCORE + items;
+			 Gdx.app.log(MainKeepUp.TAG, "SCORE = " + SCORE);
+		}
+	}
 	
 	private void gameOver() {
 		kidMovable = false;
@@ -968,8 +955,9 @@ public class Game implements Screen, InputProcessor {
 		ShieldSprite.setY(moveY);
 
 		boolean kidVSShieldOverlap = ShieldSprite.getBoundingRectangle().overlaps(kid.getBoundingRectangle());
-
-		if(kidVSShieldOverlap == true){		
+//TODO
+		if(kidVSShieldOverlap == true){	
+				shieldedTime = deltaTime + 4f;
 				powerUp.play(.05f);	
 				shielded = true;
 				deltaShieldTime = Gdx.graphics.getDeltaTime();
@@ -1017,6 +1005,7 @@ public class Game implements Screen, InputProcessor {
 			boolean kidVSTimerOverlap = timerSprite.getBoundingRectangle().overlaps(kid.getBoundingRectangle());
 
 			if(kidVSTimerOverlap == true){	
+				
 					freeze = true;
 					deltaFreezeTime = elapsedTime + FreezeTimer;
 					powerUp.play(.05f);			
@@ -1121,8 +1110,28 @@ public class Game implements Screen, InputProcessor {
 			Vector2 touchPos = new Vector2();
 			touchPos.set(Gdx.input.getX(), Gdx.input.getY());
 			Ray cameraRay = camera.getPickRay(touchPos.x, touchPos.y);
-			kid.setX(cameraRay.origin.x - kid.getHeight()/2);
-			kid.setY(cameraRay.origin.y - kid.getWidth()/2);
+			float xPos = cameraRay.origin.x;
+			float yPos = cameraRay.origin.y;
+			
+			if(cameraRay.origin.x >= ( (screenXRefactor / 2) ) - kid.getWidth() ){
+				xPos = ((screenXRefactor / 2) - 10) - kid.getWidth();
+			}
+			
+			if(cameraRay.origin.x <= ((screenXRefactor / 2)) * -1 ){
+				xPos = ((screenXRefactor / 2) - 10) * -1 ;
+			}
+			
+			if(cameraRay.origin.y >= ( (screenYRefactor / 2) ) - kid.getHeight() ){
+				yPos = ((screenYRefactor / 2) - 10) - kid.getHeight() ;
+			}
+			
+			if(cameraRay.origin.y <= ( (screenYRefactor / 2) ) * -1 ){
+				yPos = ((screenYRefactor / 2) - 10) * -1 ;
+			}
+			
+			kid.setX(xPos);
+			kid.setY(yPos);
+			
 			starSprite.setX(kid.getX());
 			starSprite.setY(kid.getY() + kid.getHeight());
 			return true;

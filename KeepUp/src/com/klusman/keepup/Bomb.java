@@ -8,11 +8,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.klusman.keepup.screens.Game;
 
-public class FreezeMotionTimer {
+public class Bomb {
 
-	public Texture timerTx;
+	public Texture bombTx;
 	public String textureAddress;
-	private Sprite timerSprite;
+	private Sprite bombSprite;
 	float sizeX;
 	float sizeY;
 	float xSpeed;
@@ -25,40 +25,38 @@ public class FreezeMotionTimer {
 	double randNumXLoc;
 	
 	
-	public FreezeMotionTimer(float randX, float speed){
+	public Bomb(float randX , float speed){
 		
 		
-		textureAddress = "data/timeClock.png";
+		textureAddress = "data/bomb.png";
 		sizeX = 65f; 
 		sizeY = 65f; 
 		xSpeed = 0; 
 		ySpeed = speed; 
-		//rotationSpeed = 5;
+		rotationSpeed = 5;
 		PositionY = 600f;
 		PositionX = randX; 
 		rotationDirection = true;
 		collision = false;
 		
 		
-		timerTx = new Texture(Gdx.files.internal(textureAddress));
-		timerTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		TextureRegion timerRegion = new TextureRegion(timerTx, 0, 0, timerTx.getWidth(), timerTx.getHeight());
-		timerSprite = new Sprite(timerRegion);
-		//ballSprite.rotate(90);
-		timerSprite.setSize(sizeX, sizeY);
-		timerSprite.setOrigin(timerSprite.getWidth()/2, timerSprite.getHeight()/2);
+		bombTx = new Texture(Gdx.files.internal(textureAddress));
+		bombTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		TextureRegion bombRegion = new TextureRegion(bombTx, 0, 0, bombTx.getWidth(), 64);
+		bombSprite = new Sprite(bombRegion);
+		//bombSprite.rotate(90);
+		bombSprite.setSize(sizeX, sizeY);
+		bombSprite.setOrigin(bombSprite.getWidth()/2, bombSprite.getHeight()/2);
 		
 		PositionX = randX; // random position -500 to 500 
 		PositionY = Game.screenYRefactor / 2 - 100;
 		if(randX >= 0 ){   // set random X position plus a 10 point buffer
-			PositionX = randX - (timerSprite.getWidth() + 10);
-			timerSprite.setPosition(PositionX , PositionY );
+			PositionX = randX - (bombSprite.getWidth() + 10);
+			bombSprite.setPosition(PositionX , PositionY );
 		}else{
-			PositionX = randX + (timerSprite.getWidth() + 10);
-			timerSprite.setPosition(PositionX , PositionY );
+			PositionX = randX + (bombSprite.getWidth() + 10);
+			bombSprite.setPosition(PositionX , PositionY );
 		}
-		
-		
 		
 	}
 	
@@ -74,8 +72,8 @@ public float getSizeY(){
 public void setSizeXY(float floatSizeX, float floatSizeY){
 	sizeX = floatSizeX;
 	sizeY = floatSizeY;
-	timerSprite.setSize(sizeX, sizeY);
-	timerSprite.setOrigin(timerSprite.getWidth()/2, timerSprite.getHeight()/2);
+	bombSprite.setSize(sizeX, sizeY);
+	bombSprite.setOrigin(bombSprite.getWidth()/2, bombSprite.getHeight()/2);
 }
 
 ////
@@ -97,13 +95,13 @@ public void setYSpeed(float floatYSpeed){
 	
 
 ////
-//public int getRotationSpeed(){
-//	return rotationSpeed;
-//}
-//
-//public void setRotationSpeed(int rotSpeed){
-//	rotationSpeed = rotSpeed;
-//}
+public int getRotationSpeed(){
+	return rotationSpeed;
+}
+
+public void setRotationSpeed(int rotSpeed){
+	rotationSpeed = rotSpeed;
+}
 
 ////
 public boolean getRotation(){
@@ -142,12 +140,12 @@ public void setYPosition(float yPos){
 }
 
 ////
-public Sprite getTimerSprite(){
-	return timerSprite;
+public Sprite getShieldSprite(){
+	return bombSprite;
 }
 
 public void draw(SpriteBatch batch) {
-	timerSprite.draw(batch);
+	bombSprite.draw(batch);
 }
 
 	

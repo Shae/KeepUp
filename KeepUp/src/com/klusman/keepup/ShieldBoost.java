@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.klusman.keepup.screens.Game;
 
 public class ShieldBoost {
 
@@ -24,14 +25,14 @@ public class ShieldBoost {
 	double randNumXLoc;
 	
 	
-	public ShieldBoost(float randX){
+	public ShieldBoost(float randX , float speed){
 		
 		
 		textureAddress = "data/shield.png";
-		sizeX = 75f; //.09f;
-		sizeY = 75f; //.09f;
-		xSpeed = 0; //0.005f;
-		ySpeed = 5f; //0.005f;;
+		sizeX = 65f; 
+		sizeY = 65f; 
+		xSpeed = 0; 
+		ySpeed = speed; 
 		//rotationSpeed = 5;
 		PositionY = 600f;
 		PositionX = randX; 
@@ -39,17 +40,23 @@ public class ShieldBoost {
 		collision = false;
 		
 		
-		
-		
 		shieldTx = new Texture(Gdx.files.internal(textureAddress));
 		shieldTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-			
-		TextureRegion kitRegion = new TextureRegion(shieldTx, 0, 0, shieldTx.getWidth(), shieldTx.getHeight());
-		shieldSprite = new Sprite(kitRegion);
+		TextureRegion shieldRegion = new TextureRegion(shieldTx, 0, 0, shieldTx.getWidth(), shieldTx.getHeight());
+		shieldSprite = new Sprite(shieldRegion);
+		//ballSprite.rotate(90);
 		shieldSprite.setSize(sizeX, sizeY);
 		shieldSprite.setOrigin(shieldSprite.getWidth()/2, shieldSprite.getHeight()/2);
-		shieldSprite.setPosition(PositionX, PositionY - shieldSprite.getHeight()/2);
 		
+		PositionX = randX; // random position -500 to 500 
+		PositionY = Game.screenYRefactor / 2 - 100;
+		if(randX >= 0 ){   // set random X position plus a 10 point buffer
+			PositionX = randX - (shieldSprite.getWidth() + 10);
+			shieldSprite.setPosition(PositionX , PositionY );
+		}else{
+			PositionX = randX + (shieldSprite.getWidth() + 10);
+			shieldSprite.setPosition(PositionX , PositionY );
+		}
 		
 	}
 	

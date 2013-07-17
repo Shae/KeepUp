@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
+import com.klusman.keepup.screens.Game;
 
 
 
@@ -30,32 +31,44 @@ public class Ball {
 	double randNumXLoc;
 	
 	
-	public Ball (){
+	public Ball (float randX, float size, float speed){
 		
 		
 		textureAddress = "data/redBall.png";
-		sizeX = 90f; //.09f;
-		sizeY = 90f; //.09f;
-		xSpeed = 5f; //0.005f;
-		ySpeed = 5f; //0.005f;;
+		sizeX = size;
+		sizeY = size; 
+		xSpeed = speed; 
+		ySpeed = speed; 
 		//rotationSpeed = 5;
-		PositionY = 600f;
-		PositionX = 0; 
+		
+		ballTx = new Texture(Gdx.files.internal(textureAddress));
+		ballTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		TextureRegion ballRegion = new TextureRegion(ballTx, 0, 0, ballTx.getWidth(), ballTx.getHeight());
+		ballSprite = new Sprite(ballRegion);
+		//ballSprite.rotate(90);
+		ballSprite.setSize(sizeX, sizeY);
+		ballSprite.setOrigin(ballSprite.getWidth()/2, ballSprite.getHeight()/2);
+		
+		
+		
+		PositionX = randX; // random position -500 to 500 
+		PositionY = Game.screenYRefactor / 2 - 100;
 		rotationDirection = true;
 		collision = false;
 		
 		
 		
 		
-		ballTx = new Texture(Gdx.files.internal(textureAddress));
-		ballTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-			
-		TextureRegion ballRegion = new TextureRegion(ballTx, 0, 0, ballTx.getWidth(), ballTx.getHeight());
-		ballSprite = new Sprite(ballRegion);
-		//ballSprite.rotate(90);
-		ballSprite.setSize(sizeX, sizeY);
-		ballSprite.setOrigin(ballSprite.getWidth()/2, ballSprite.getHeight()/2);
-		ballSprite.setPosition(PositionX, PositionY - ballSprite.getHeight()/2);
+		
+		if(randX >= 0 ){   // set random X position plus a 10 point buffer
+			PositionX = randX - (ballSprite.getWidth() + 10);
+			ballSprite.setPosition(PositionX , PositionY );
+		}else{
+			PositionX = randX + (ballSprite.getWidth() + 10);
+			ballSprite.setPosition(PositionX , PositionY );
+		}
+		
+		
 		
 		
 		

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.klusman.keepup.screens.Game;
 
 public class healthKit {
 
@@ -24,14 +25,14 @@ public class healthKit {
 	double randNumXLoc;
 	
 	
-	public healthKit(float randX){
+	public healthKit(float randX, float speed){
 		
 		
 		textureAddress = "data/medKit.png";
-		sizeX = 75f; //.09f;
-		sizeY = 75f; //.09f;
-		xSpeed = 0; //0.005f;
-		ySpeed = 5f; //0.005f;;
+		sizeX = 65f; 
+		sizeY = 65f; 
+		xSpeed = 0; 
+		ySpeed = speed; 
 		//rotationSpeed = 5;
 		PositionY = 600f;
 		PositionX = randX; 
@@ -40,15 +41,23 @@ public class healthKit {
 		
 		
 		
-		
 		kitTx = new Texture(Gdx.files.internal(textureAddress));
 		kitTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-			
 		TextureRegion kitRegion = new TextureRegion(kitTx, 0, 0, kitTx.getWidth(), kitTx.getHeight());
 		kitSprite = new Sprite(kitRegion);
+		//ballSprite.rotate(90);
 		kitSprite.setSize(sizeX, sizeY);
 		kitSprite.setOrigin(kitSprite.getWidth()/2, kitSprite.getHeight()/2);
-		kitSprite.setPosition(PositionX, PositionY - kitSprite.getHeight()/2);
+		
+		PositionX = randX; // random position -500 to 500 
+		PositionY = Game.screenYRefactor / 2 - 100;
+		if(randX >= 0 ){   // set random X position plus a 10 point buffer
+			PositionX = randX - (kitSprite.getWidth() + 10);
+			kitSprite.setPosition(PositionX , PositionY );
+		}else{
+			PositionX = randX + (kitSprite.getWidth() + 10);
+			kitSprite.setPosition(PositionX , PositionY );
+		}
 		
 		
 	}
