@@ -913,69 +913,78 @@ public class Game implements Screen, InputProcessor {
 				float xPosition = ball.getXPosition();
 				float yPosition = ball.getYPosition();
 				float yPosSpriteHeight = yPosition + ballSprite.getWidth();
+				float moveX;
+				float moveY;
 
 
 				if(xPosition + ballSprite.getHeight() >= (screenXRefactor/2)){
 					//Gdx.app.log(TAG, "Out of bounds Down");  
 					ball.setXSpeed(ball.getXSpeed() * -1);
 					ball.setXPosition(ball.getXPosition() + ball.getXSpeed());
-					bounce.play();
+					bounce.play(.7f);
 				}
 
 				if(yPosSpriteHeight >= screenYRefactor / 2){
 					//Gdx.app.log(TAG, "Out of bounds Right");
 					ball.setYSpeed(ball.getYSpeed() * -1);
 					ball.setYPosition(ball.getYPosition() + ball.getYSpeed());
-					bounce.play();	
+					bounce.play(.5f);	
 				}
 				if(xPosition <= (screenXRefactor/2) * -1){
 					//Gdx.app.log(TAG, "Out of bounds Up");
 					ball.setXSpeed(ball.getXSpeed() * -1);
 					ball.setXPosition(ball.getXPosition() + ball.getXSpeed());
-					bounce.play();
+					bounce.play(.9f);
 				} 
 				if(yPosition <= (screenYRefactor / 2) * -1){
 					//Gdx.app.log(TAG, "Out of bounds Left");
 					ball.setYSpeed(ball.getYSpeed() * -1);
 					ball.setYPosition(ball.getYPosition() + ball.getYSpeed());
 
-					bounce.play();	
+					bounce.play(.8f);	
 				}
 
 				ball.setXPosition(ball.getXPosition() + ball.getXSpeed());
 				ball.setYPosition(ball.getYPosition() + ball.getYSpeed());
 				//float bRotate = ballSprite.getRotation() + rotationSpeed;
 
-				float moveX = Interpolation.linear.apply(ball.getXPosition(), ball.getXPosition() + ball.getXSpeed(), 1);
-				float moveY = Interpolation.linear.apply(ball.getYPosition(), ball.getYPosition() + ball.getYSpeed(), 1);
+				moveX = Interpolation.linear.apply(ball.getXPosition(), ball.getXPosition() + ball.getXSpeed(), 1);
+				moveY = Interpolation.linear.apply(ball.getYPosition(), ball.getYPosition() + ball.getYSpeed(), 1);
 
 				ballSprite.setX(moveX);
 				ballSprite.setY(moveY);
 				ball.setCircleXY(moveX + ballSprite.getWidth()/2 , moveY + ballSprite.getHeight()/2 );
 				//ballSprite.setRotation(bRotate);
 
-			}
-			boolean kidVsCircleOverlap = ball.getOverlapBool(kid.getBoundingRectangle() );
-
-			if(kidVsCircleOverlap == true){
-				if(ball.collision == false){  //  check for current collision
-					if(shielded == false){
-						if(invincibility == false){
-
-							invincibility = true;
-							deltaShieldTime = Gdx.graphics.getDeltaTime();
-							addLifeMark();
-							kidHit = true;
-							buzzer.play(.05f);
-							ball.collision = true;  // sets current collision
+				boolean kidVsCircleOverlap = ball.getOverlapBool(kid.getBoundingRectangle() );
+				
+				if(kidVsCircleOverlap == true){
+					if(ball.collision == false){  //  check for current collision
+						if(shielded == false){
+							if(invincibility == false){
+								
+								invincibility = true;
+								deltaShieldTime = Gdx.graphics.getDeltaTime();
+								addLifeMark();
+								kidHit = true;
+								buzzer.play(.05f);
+								ball.collision = true;  // sets current collision
+								ball.setYSpeed(ball.getYSpeed() * -1);
+								ball.setXSpeed(ball.getYSpeed() * -1);
+								
+								ball.setXPosition(ball.getXPosition() + ball.getXSpeed());
+								ball.setYPosition(ball.getYPosition() + ball.getYSpeed());
+								ballSprite.setX(moveX);
+								ballSprite.setY(moveY);
+								
+								ball.setCircleXY(moveX + ballSprite.getWidth()/2 , moveY + ballSprite.getHeight()/2 );
+							}
 						}
 					}
+				}else{
+					ball.collision = false;  // resets to false after overlap ends
 				}
-			}else{
-				ball.collision = false;  // resets to false after overlap ends
 			}
-			
-
 		}
 	}
 
