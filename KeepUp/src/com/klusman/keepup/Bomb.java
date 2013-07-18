@@ -23,6 +23,15 @@ public class Bomb {
 	public boolean rotationDirection;
 	public boolean collision;
 	double randNumXLoc;
+	float theBombTime = 1f;
+	public float theDeltaBombTime;
+	public boolean boomTimeToBlow = false;
+	boolean removeMe = false;
+	float startedlastphaseAt = 0;
+	boolean explosionTexture = false;
+
+	//public Array<TextureRegion> textureHolder;
+	TextureRegion bombRegion2;
 	
 	
 	public Bomb(float randX , float speed){
@@ -32,22 +41,29 @@ public class Bomb {
 		sizeX = 65f; 
 		sizeY = 65f; 
 		xSpeed = 0; 
-		ySpeed = speed; 
-		rotationSpeed = 5;
+		ySpeed = -speed; 
+		//rotationSpeed = 5;
 		PositionY = 600f;
 		PositionX = randX; 
 		rotationDirection = true;
 		collision = false;
 		
 		
+		
 		bombTx = new Texture(Gdx.files.internal(textureAddress));
 		bombTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		TextureRegion bombRegion = new TextureRegion(bombTx, 0, 0, bombTx.getWidth(), 64);
-		bombSprite = new Sprite(bombRegion);
-		//bombSprite.rotate(90);
+		
+		TextureRegion bombRegion1 = new TextureRegion(bombTx, 0, 0, bombTx.getWidth(), 64);
+		bombRegion2 = new TextureRegion(bombTx, 0, 64, bombTx.getWidth(), 64);
+		
+		//textureHolder.add(bombRegion1);
+		//TextureRegion bombRegion2 = new TextureRegion(bombTx, 0, 64, bombTx.getWidth(), 64);
+		//textureHolder.add(bombRegion2);
+		
+
+		bombSprite = new Sprite(bombRegion1);
 		bombSprite.setSize(sizeX, sizeY);
 		bombSprite.setOrigin(bombSprite.getWidth()/2, bombSprite.getHeight()/2);
-		
 		PositionX = randX; // random position -500 to 500 
 		PositionY = Game.screenYRefactor / 2 - 100;
 		if(randX >= 0 ){   // set random X position plus a 10 point buffer
@@ -56,6 +72,7 @@ public class Bomb {
 		}else{
 			PositionX = randX + (bombSprite.getWidth() + 10);
 			bombSprite.setPosition(PositionX , PositionY );
+
 		}
 		
 	}
@@ -68,6 +85,30 @@ public float getSizeX(){
 public float getSizeY(){
 	return sizeY;
 }
+public boolean getBooleanTextureWasSwapped(){
+	return explosionTexture;
+}
+
+public void setTextureSwapBool(Boolean swapped){
+	explosionTexture = swapped;
+}
+
+public void setRemoveTrigger(){
+	removeMe = true;
+}
+
+public boolean getRemoveTrigger(){
+	return removeMe;
+}
+
+public void setTheDeltaBombTime(float deltaBombTime){
+	theDeltaBombTime = deltaBombTime + theBombTime;
+}
+
+public float getTheDeltaBombTime(){
+	return theDeltaBombTime;
+}
+
 
 public void setSizeXY(float floatSizeX, float floatSizeY){
 	sizeX = floatSizeX;
@@ -94,7 +135,6 @@ public void setYSpeed(float floatYSpeed){
 }
 	
 
-////
 public int getRotationSpeed(){
 	return rotationSpeed;
 }
@@ -103,13 +143,10 @@ public void setRotationSpeed(int rotSpeed){
 	rotationSpeed = rotSpeed;
 }
 
-////
-public boolean getRotation(){
-	return rotationDirection;
-}
 
-public void setRotation(boolean boolRotationDirection){
-	rotationDirection = boolRotationDirection;
+public void setBombRotationAngle(float rotation){
+	float r = bombSprite.getRotation();
+	bombSprite.setRotation(r + rotation);
 }
 
 ////
@@ -140,15 +177,42 @@ public void setYPosition(float yPos){
 }
 
 ////
-public Sprite getShieldSprite(){
+public Sprite getBombSprite(){
 	return bombSprite;
+}
+
+public void setBombSpriteTexture(TextureRegion txRegion){
+	bombSprite.setRegion(txRegion);
 }
 
 public void draw(SpriteBatch batch) {
 	bombSprite.draw(batch);
 }
 
+public boolean checkBombCountdown(float deltaTime){
+
+	if(theDeltaBombTime >= deltaTime){  // under time limit do nada
+		boomTimeToBlow = false;
+		return false;
+	}else{
+		if(boomTimeToBlow == false){  // check to set once and not repeat
+			startedlastphaseAt = deltaTime + 1.0f;
+			boomTimeToBlow = true;
+		}
+		return true;
+	}
+}
+
+public boolean checkDestructionPhase(){
+	return boomTimeToBlow;
+}
+
+public void bombLastPhaseExplosion(float deltaTime){
 	
+	if(deltaTime >= startedlastphaseAt){
+		removeMe = true;
+	}
+}
 	
 	
 	

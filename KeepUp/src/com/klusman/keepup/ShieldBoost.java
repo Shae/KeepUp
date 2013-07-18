@@ -32,7 +32,7 @@ public class ShieldBoost {
 		sizeX = 65f; 
 		sizeY = 65f; 
 		xSpeed = 0; 
-		ySpeed = speed; 
+		ySpeed = -speed; 
 		//rotationSpeed = 5;
 		PositionY = 600f;
 		PositionX = randX; 
