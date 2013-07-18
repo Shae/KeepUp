@@ -129,7 +129,6 @@ public class Game implements Screen, InputProcessor {
 	public Texture pauseTx;
 	public static Sprite pause;
 
-	public static Sound metalDing;
 	public static Sound buzzer;
 	public static Sound bounce;
 	public static Sound powerUp;
@@ -196,7 +195,6 @@ public class Game implements Screen, InputProcessor {
 		batch = new SpriteBatch();
 		/// AUDIO  ///
 		powerUp = Gdx.audio.newSound(Gdx.files.internal("audio/PowerUp.wav"));
-		metalDing = Gdx.audio.newSound(Gdx.files.internal("audio/Metalping.wav"));
 		buzzer = Gdx.audio.newSound(Gdx.files.internal("audio/Buzzer.wav"));
 		bounce = Gdx.audio.newSound(Gdx.files.internal("audio/ballbounce04.wav"));
 		hardBounce = Gdx.audio.newSound(Gdx.files.internal("audio/HardBounce.wav"));
