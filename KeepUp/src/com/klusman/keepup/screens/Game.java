@@ -928,13 +928,13 @@ public class Game implements Screen, InputProcessor {
 					//Gdx.app.log(TAG, "Out of bounds Right");
 					ball.setYSpeed(ball.getYSpeed() * -1);
 					ball.setYPosition(ball.getYPosition() + ball.getYSpeed());
-					bounce.play(.5f);	
+					bounce.play(.3f);	
 				}
 				if(xPosition <= (screenXRefactor/2) * -1){
 					//Gdx.app.log(TAG, "Out of bounds Up");
 					ball.setXSpeed(ball.getXSpeed() * -1);
 					ball.setXPosition(ball.getXPosition() + ball.getXSpeed());
-					bounce.play(.9f);
+					bounce.play(.5f);
 				} 
 				if(yPosition <= (screenYRefactor / 2) * -1){
 					//Gdx.app.log(TAG, "Out of bounds Left");
