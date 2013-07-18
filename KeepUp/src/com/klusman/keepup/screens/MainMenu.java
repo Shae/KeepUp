@@ -75,7 +75,7 @@ public class MainMenu implements Screen, InputProcessor{
 		Tween.registerAccessor(Sprite.class, new SpriteTween());
 		manager = new TweenManager();
 		textureAddress = "data/menusButtons.png";
-		bounce = Gdx.audio.newSound(Gdx.files.internal("audio/Ball_Bounce.wav"));
+		bounce = Gdx.audio.newSound(Gdx.files.internal("audio/ballbounce04.wav"));
 		
 	}
 
@@ -248,7 +248,7 @@ public class MainMenu implements Screen, InputProcessor{
 			instructionsBtn.setRegion(instBtnTxDwn2);
 		}
 		
-		return true;
+		return false;
 	}
 
 	@Override

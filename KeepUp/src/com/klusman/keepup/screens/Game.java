@@ -198,7 +198,7 @@ public class Game implements Screen, InputProcessor {
 		powerUp = Gdx.audio.newSound(Gdx.files.internal("audio/PowerUp.wav"));
 		metalDing = Gdx.audio.newSound(Gdx.files.internal("audio/Metalping.wav"));
 		buzzer = Gdx.audio.newSound(Gdx.files.internal("audio/Buzzer.wav"));
-		bounce = Gdx.audio.newSound(Gdx.files.internal("audio/Ball_Bounce.wav"));
+		bounce = Gdx.audio.newSound(Gdx.files.internal("audio/ballbounce04.wav"));
 		hardBounce = Gdx.audio.newSound(Gdx.files.internal("audio/HardBounce.wav"));
 		timeBomb = Gdx.audio.newSound(Gdx.files.internal("audio/timeBombSound.wav"));
 
@@ -1195,12 +1195,13 @@ public class Game implements Screen, InputProcessor {
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		Vector2 touchPos = new Vector2();
-		//touchPos.set(Gdx.input.getX(), Gdx.input.getY());
+		touchPos.set(Gdx.input.getX(), Gdx.input.getY());
 		Ray cameraRay = camera.getPickRay(touchPos.x, touchPos.y);
 
 		boolean kidDown = kid.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
+		
 		if(kidMovable == true){
-			if(kidDown == true){
+			if(kidDown == true){	
 				kidMove = true;
 			}
 		}else{
@@ -1245,7 +1246,7 @@ public class Game implements Screen, InputProcessor {
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
 		if(kidMove == true){
 			Vector2 touchPos = new Vector2();
-			//touchPos.set(Gdx.input.getX(), Gdx.input.getY());
+			touchPos.set(Gdx.input.getX(), Gdx.input.getY());
 			Ray cameraRay = camera.getPickRay(touchPos.x, touchPos.y);
 			float xPos = cameraRay.origin.x;
 			float yPos = cameraRay.origin.y;
@@ -1288,7 +1289,6 @@ public class Game implements Screen, InputProcessor {
 		return false;
 	}
 
-	//////////  DESKTOP ONLY FUNCTIONS  //////////////
 
 	@Override
 	public boolean keyDown(int keycode) {
