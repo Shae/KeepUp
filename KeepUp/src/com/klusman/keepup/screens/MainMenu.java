@@ -7,6 +7,7 @@ import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -31,19 +32,35 @@ public class MainMenu implements Screen, InputProcessor{
 	float y;
 	float screenRatio;
 	TweenManager manager;
+	public static Sound bounce;
+	public String textureAddress;
 	
 	SpriteBatch batch;
+	Texture menuBtns;
+	
 	Texture titleTx;
 	Sprite titleSprite;
 	
 	Sprite playBtn;
-	Texture playBtnTxUp;
-	
 	Sprite creditsBtn;
-	Texture CredBtnUp;
-	
 	Sprite instructionsBtn;
-	Texture instBtnTxUp;
+
+	
+	////  Group Btns
+	
+	Sprite creditsBtn2;
+	TextureRegion CredBtnUp2;
+	TextureRegion CredBtnDwn2;
+	
+	Sprite instructionsBtn2;
+	TextureRegion instBtnTxUp2;
+	TextureRegion instBtnTxDwn2;
+	
+	Sprite playBtn2;
+	TextureRegion playBtnTxUp2;
+	TextureRegion playBtnTxDwn2;
+	
+	
 	
 	
 	public MainMenu (MainKeepUp game){
@@ -57,6 +74,8 @@ public class MainMenu implements Screen, InputProcessor{
 		Gdx.input.setInputProcessor(this);
 		Tween.registerAccessor(Sprite.class, new SpriteTween());
 		manager = new TweenManager();
+		textureAddress = "data/menusButtons.png";
+		bounce = Gdx.audio.newSound(Gdx.files.internal("audio/Ball_Bounce.wav"));
 		
 	}
 
@@ -71,7 +90,7 @@ public class MainMenu implements Screen, InputProcessor{
 	public void show() {
 		
 		batch = new SpriteBatch();		
-
+		
 		titleTx = new Texture(Gdx.files.internal("data/splashTitle.png"));
 		titleTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);	
 		TextureRegion titleRegion = new TextureRegion(titleTx, 0, 0, titleTx.getWidth(), titleTx.getHeight());
@@ -81,34 +100,39 @@ public class MainMenu implements Screen, InputProcessor{
 		titleSprite.setPosition(0 - titleSprite.getWidth()/2, 200);
 		titleSprite.setRotation(18);
 		
+		menuBtns = new Texture(Gdx.files.internal(textureAddress));
+		menuBtns.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		
-		playBtnTxUp = new Texture(Gdx.files.internal("data/playBtnUp.png"));
-		playBtnTxUp.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		TextureRegion playBtnReg = new TextureRegion(playBtnTxUp, 0, 0, playBtnTxUp.getWidth(), playBtnTxUp.getHeight());
-		playBtn = new Sprite(playBtnReg);
+		CredBtnDwn2 = new TextureRegion(menuBtns, 0, 0, menuBtns.getWidth()/2, 64);
+		CredBtnUp2 = new TextureRegion(menuBtns, 0, 65, menuBtns.getWidth()/2, 64);
+		instBtnTxDwn2 = new TextureRegion(menuBtns, 0, 130, menuBtns.getWidth()/2, 64);
+		instBtnTxUp2 = new TextureRegion(menuBtns, 0, 195, menuBtns.getWidth()/2, 64);
+		playBtnTxDwn2 = new TextureRegion(menuBtns, 0, 260, menuBtns.getWidth()/2, 64);
+		playBtnTxUp2 = new TextureRegion(menuBtns, 0, 325, menuBtns.getWidth()/2, 64);
+	
+
+		playBtn = new Sprite(playBtnTxUp2);
 		playBtn.setSize(800,  200);  
 		playBtn.setOrigin(playBtn.getWidth()/2, playBtn.getHeight()/2);
 		playBtn.setPosition(0 - playBtn.getWidth()/2, 0f - playBtn.getHeight()/2);
 		playBtn.setColor(1, 1, 1, 0);
 		
-		
-		instBtnTxUp = new Texture(Gdx.files.internal("data/InstrBtnUp.png"));
-		instBtnTxUp.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		TextureRegion instBtnReg = new TextureRegion(instBtnTxUp, 0, 0, instBtnTxUp.getWidth(), instBtnTxUp.getHeight());
-		instructionsBtn = new Sprite(instBtnReg);
+
+
+		instructionsBtn = new Sprite(instBtnTxUp2);
 		instructionsBtn.setSize(800,  200);  
 		instructionsBtn.setOrigin(instructionsBtn.getWidth()/2, instructionsBtn.getHeight()/2);
 		instructionsBtn.setPosition(0 - instructionsBtn.getWidth() / 2, - 250 - (instructionsBtn.getHeight() /2));
 		instructionsBtn.setColor(1, 1, 1, 0);
-		
-		CredBtnUp = new Texture(Gdx.files.internal("data/CreditsBtnUp.png"));
-		CredBtnUp.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		TextureRegion credBtnReg = new TextureRegion(CredBtnUp, 0, 0, CredBtnUp.getWidth(), CredBtnUp.getHeight());
-		creditsBtn = new Sprite(credBtnReg);
+
+
+		creditsBtn = new Sprite(CredBtnUp2);
 		creditsBtn.setSize(800,  200); 
 		creditsBtn.setOrigin(creditsBtn.getWidth()/2, creditsBtn.getHeight()/2);
 		creditsBtn.setPosition(0 - creditsBtn.getWidth() /2, -500 - (creditsBtn.getHeight()/ 2));
 		creditsBtn.setColor(1, 1, 1, 0);
+
+		
 		
 		Tween.to(playBtn, SpriteTween.ALPHA, 1.5f)
 		.target(1)
@@ -174,9 +198,7 @@ public class MainMenu implements Screen, InputProcessor{
 	@Override
 	public void dispose() {
 		titleTx.dispose();
-		playBtnTxUp.dispose();
-		instBtnTxUp.dispose();
-		CredBtnUp.dispose();
+		menuBtns.dispose();
 		
 	}
 
@@ -200,8 +222,33 @@ public class MainMenu implements Screen, InputProcessor{
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		// TODO Auto-generated method stub
-		return false;
+		Vector2 touchPos = new Vector2();
+		touchPos.set(Gdx.input.getX(), Gdx.input.getY());
+		Ray cameraRay = camera.getPickRay(touchPos.x, touchPos.y);
+		Gdx.app.log(MainKeepUp.TAG, "Touch Ray Coords: X:" + cameraRay.origin.x + " Y:" + cameraRay.origin.y);
+
+		boolean playBool = playBtn.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
+		boolean CreditBool = creditsBtn.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
+		boolean instructionBool = instructionsBtn.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
+
+		if(playBool == true){
+			bounce.play();
+			playBtn.setRegion(playBtnTxDwn2);
+	
+		}
+		
+		if(CreditBool == true){
+			bounce.play();
+			creditsBtn.setRegion(CredBtnDwn2);
+		
+		}
+
+		if(instructionBool == true){
+			bounce.play();
+			instructionsBtn.setRegion(instBtnTxDwn2);
+		}
+		
+		return true;
 	}
 
 	@Override
@@ -217,7 +264,7 @@ public class MainMenu implements Screen, InputProcessor{
 
 		if(playBool == true){
 			
-			//game.setScreen(new Game(game));
+			
 			Gdx.app.log(MainKeepUp.TAG, "PLAY Btn Clicked!");
 			runGame(game);
 			
@@ -230,7 +277,7 @@ public class MainMenu implements Screen, InputProcessor{
 		}
 
 		if(instructionBool == true){
-		
+			
 			Gdx.app.log(MainKeepUp.TAG, "instructions Btn Clicked!");
 			game.setScreen(new InstructionsScreen(game));
 		}

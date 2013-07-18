@@ -75,7 +75,6 @@ public class Game implements Screen, InputProcessor {
 	float timeLimit = 20.0f;
 	float invincibilityTime;
 
-	int Level;
 	int starLoop;
 	int SCORE;
 
@@ -137,8 +136,14 @@ public class Game implements Screen, InputProcessor {
 	public static Sound hardBounce;
 	public static Sound timeBomb;
 
+	public static final int Difficulty_Easy = 1;
+	public static final int Difficulty_Medium = 2;
+	public static final int Difficulty_Hard = 3;
+	
 	int frameLength;
 	int currentFrame;
+	int gameDifficulty = Difficulty_Medium;
+	
 
 	public Array<Ball> Balls;
 	public Array<healthKit> MedKits;
@@ -181,9 +186,8 @@ public class Game implements Screen, InputProcessor {
 		Bombs = new Array<Bomb>();
 		Marks = new Array<LifeMarks>();
 
-		Level = 1;  // CURRENT GAME LEVEL
 
-		levelBallSet(Level);
+
 		kidMovable = true;
 		kidMove = false;
 		kidHit = false;
@@ -299,7 +303,6 @@ public class Game implements Screen, InputProcessor {
 				//tweenCompleted();  // what method to call when Event is triggered
 			}
 		};
-
 	}
 
 	@Override
@@ -395,7 +398,6 @@ public class Game implements Screen, InputProcessor {
 				marks.lifeTx.dispose();
 			};
 		}
-
 	}
 
 	public void bombExplodeTween(Sprite bombSprite){
@@ -438,7 +440,6 @@ public class Game implements Screen, InputProcessor {
 			r = (float)rand;
 			return r;
 		}
-
 	}
 
 	public float getRandomSpeed(){
@@ -519,12 +520,6 @@ public class Game implements Screen, InputProcessor {
 	}
 
 
-	public void levelBallSet(int level){
-		for(int i = 1; i <= level; i++){
-			makeNewBall();
-		}
-	}
-
 
 	public void updateBallTimer(float deltaTime){
 		elapsedTime = deltaTime;
@@ -544,14 +539,11 @@ public class Game implements Screen, InputProcessor {
 				makeNewShield();
 			}else if ((r > 50) && (r <= 80)){
 				makeNewTimeClock();
-
 			}else{
-				makeNewBomb();
-				
+				makeNewBomb();	
 			}
 			resourceTimer = elapsedTime + 7;
 		}
-
 	}
 
 	public void gameRestart(){
@@ -560,7 +552,6 @@ public class Game implements Screen, InputProcessor {
 
 	}
 
-	/////////  GAME STATES  //////////////
 
 	public void gameReady(){
 	}
@@ -679,7 +670,7 @@ public class Game implements Screen, InputProcessor {
 				timerLoopCheckAndSet(timer);
 			};
 		}
-//TODO
+
 		if(Bombs.size > 0){
 			for(Bomb bomb: Bombs) {
 				if(bomb.getRemoveTrigger() == true){ 
@@ -708,16 +699,10 @@ public class Game implements Screen, InputProcessor {
 							bomb.bombLastPhaseExplosion(deltaTime);   // if time to blow up	
 						}
 					}						
-					bombLoopCheckAndSet(bomb);
-					
-				}
-				
+					bombLoopCheckAndSet(bomb);					
+				}				
 			};
-
 		}
-
-		
-
 	}
 
 	public void scoreUpdate(){
@@ -898,9 +883,6 @@ public class Game implements Screen, InputProcessor {
 		}
 	}
 
-
-	////////  SPRITE CHECKS  //////////////////
-
 	public void checkStrikeOut(){
 		if(Marks.size >= 3){
 			gameState = GAME_OVER;
@@ -930,8 +912,6 @@ public class Game implements Screen, InputProcessor {
 			if(blownUp == false){
 				float xPosition = ball.getXPosition();
 				float yPosition = ball.getYPosition();
-				//int rotationSpeed = ball.getRotationSpeed();
-				//boolean rotationDirection = ball.getRotation();
 				float yPosSpriteHeight = yPosition + ballSprite.getWidth();
 
 
@@ -939,11 +919,6 @@ public class Game implements Screen, InputProcessor {
 					//Gdx.app.log(TAG, "Out of bounds Down");  
 					ball.setXSpeed(ball.getXSpeed() * -1);
 					ball.setXPosition(ball.getXPosition() + ball.getXSpeed());
-					//			if(rotationDirection != false){
-					//				ball.setRotationSpeed(rotationSpeed * -1);
-					//			}
-					//			ball.setRotation(true);
-
 					bounce.play();
 				}
 
@@ -951,30 +926,19 @@ public class Game implements Screen, InputProcessor {
 					//Gdx.app.log(TAG, "Out of bounds Right");
 					ball.setYSpeed(ball.getYSpeed() * -1);
 					ball.setYPosition(ball.getYPosition() + ball.getYSpeed());
-					//			if(rotationDirection != true){
-					//				ball.setRotationSpeed(rotationSpeed * -1);
-					//			}
-					//			ball.setRotation(false);
 					bounce.play();	
 				}
 				if(xPosition <= (screenXRefactor/2) * -1){
 					//Gdx.app.log(TAG, "Out of bounds Up");
 					ball.setXSpeed(ball.getXSpeed() * -1);
 					ball.setXPosition(ball.getXPosition() + ball.getXSpeed());
-					//			if(rotationDirection != false){
-					//				ball.setRotationSpeed(rotationSpeed * -1);
-					//			}
-					//			ball.setRotation(true);
 					bounce.play();
 				} 
 				if(yPosition <= (screenYRefactor / 2) * -1){
 					//Gdx.app.log(TAG, "Out of bounds Left");
 					ball.setYSpeed(ball.getYSpeed() * -1);
 					ball.setYPosition(ball.getYPosition() + ball.getYSpeed());
-					//			if(rotationDirection != true){
-					//				ball.setRotationSpeed(rotationSpeed * -1);
-					//			}
-					//			ball.setRotation(false);
+
 					bounce.play();	
 				}
 
@@ -1022,13 +986,6 @@ public class Game implements Screen, InputProcessor {
 		//float xPosition = kit.getXPosition();
 		float yPosition = kit.getYPosition();
 		float yPosSpriteHeight = yPosition + kitSprite.getWidth();
-//		if(xPosition <= ((screenXRefactor/2) - kitSprite.getWidth()/2) * -1){
-//			xPosition = (screenXRefactor/2) * -1;
-//		} 
-//
-//		if(xPosition <= ((screenXRefactor/2) - kitSprite.getWidth()/2)){
-//			xPosition = ((screenXRefactor/2) - kitSprite.getWidth()/2);
-//		} 
 
 		if(yPosSpriteHeight >= screenYRefactor / 2){
 			//Gdx.app.log(TAG, "Out of bounds Right");
@@ -1065,17 +1022,9 @@ public class Game implements Screen, InputProcessor {
 	public void shieldLoopCheckAndSet(ShieldBoost shield){
 		Sprite ShieldSprite = shield.getShieldSprite();
 
-		//float xPosition = shield.getXPosition();
 		float yPosition = shield.getYPosition();
 		float yPosSpriteHeight = yPosition + ShieldSprite.getWidth();
 
-//		if(xPosition <= ((screenXRefactor/2) - ShieldSprite.getWidth()/2) * -1){
-//			xPosition = (screenXRefactor/2) * -1;
-//		} 
-//
-//		if(xPosition <= ((screenXRefactor/2) - ShieldSprite.getWidth()/2)){
-//			xPosition = ((screenXRefactor/2) - ShieldSprite.getWidth()/2);
-//		} 
 
 		if(yPosSpriteHeight >= screenYRefactor / 2){
 			//Gdx.app.log(TAG, "Out of bounds Right");
@@ -1160,16 +1109,9 @@ public class Game implements Screen, InputProcessor {
 	public void timerLoopCheckAndSet(FreezeMotionTimer timer){
 		Sprite timerSprite = timer.getTimerSprite();
 
-		//float xPosition = timer.getXPosition();
+
 		float yPosition = timer.getYPosition();
 		float yPosSpriteHeight = yPosition + timerSprite.getWidth();
-//		if(xPosition <= ((screenXRefactor/2) - timerSprite.getWidth()/2) * -1){
-//			xPosition = (screenXRefactor/2) * -1;
-//		} 
-//
-//		if(xPosition <= ((screenXRefactor/2) - timerSprite.getWidth()/2)){
-//			xPosition = ((screenXRefactor/2) - timerSprite.getWidth()/2);
-//		} 
 
 		if(yPosSpriteHeight >= screenYRefactor / 2){
 			//Gdx.app.log(TAG, "Out of bounds Right");
@@ -1186,12 +1128,10 @@ public class Game implements Screen, InputProcessor {
 			hardBounce.play(0.5f);	
 		}
 
-		//timer.setXPosition(xPosition);
 		timer.setYPosition(timer.getYPosition() + timer.getYSpeed());
 
 		float moveY = Interpolation.linear.apply(timer.getYPosition(), timer.getYPosition() + timer.getYSpeed(), 1);
 		timerSprite.setY(moveY);
-		//timerSprite.setX(xPosition);
 		boolean kidVSTimerOverlap = timerSprite.getBoundingRectangle().overlaps(kid.getBoundingRectangle());
 
 		if(kidVSTimerOverlap == true){	
@@ -1255,7 +1195,7 @@ public class Game implements Screen, InputProcessor {
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		Vector2 touchPos = new Vector2();
-		touchPos.set(Gdx.input.getX(), Gdx.input.getY());
+		//touchPos.set(Gdx.input.getX(), Gdx.input.getY());
 		Ray cameraRay = camera.getPickRay(touchPos.x, touchPos.y);
 
 		boolean kidDown = kid.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
@@ -1275,7 +1215,7 @@ public class Game implements Screen, InputProcessor {
 		Vector2 touchPos = new Vector2();
 		touchPos.set(Gdx.input.getX(), Gdx.input.getY());
 		Ray cameraRay = camera.getPickRay(touchPos.x, touchPos.y);
-		Gdx.app.log(TAG, "Touch Ray Coords: X:" + cameraRay.origin.x + " Y:" + cameraRay.origin.y);
+		//Gdx.app.log(TAG, "Touch Ray Coords: X:" + cameraRay.origin.x + " Y:" + cameraRay.origin.y);
 		boolean touchPause = pause.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
 
 		if(touchPause == true){
@@ -1305,7 +1245,7 @@ public class Game implements Screen, InputProcessor {
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
 		if(kidMove == true){
 			Vector2 touchPos = new Vector2();
-			touchPos.set(Gdx.input.getX(), Gdx.input.getY());
+			//touchPos.set(Gdx.input.getX(), Gdx.input.getY());
 			Ray cameraRay = camera.getPickRay(touchPos.x, touchPos.y);
 			float xPos = cameraRay.origin.x;
 			float yPos = cameraRay.origin.y;
