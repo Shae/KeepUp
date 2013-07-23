@@ -1,9 +1,5 @@
 package com.klusman.keepup.screens;
 
-import aurelienribon.tweenengine.BaseTween;
-import aurelienribon.tweenengine.Tween;
-import aurelienribon.tweenengine.TweenCallback;
-import aurelienribon.tweenengine.TweenEquations;
 import aurelienribon.tweenengine.TweenManager;
 
 import com.badlogic.gdx.Gdx;
@@ -15,9 +11,12 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeBitmapFontData;
 import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.math.Interpolation;
 
@@ -31,7 +30,6 @@ import com.klusman.keepup.LifeMarks;
 import com.klusman.keepup.MainKeepUp;
 import com.klusman.keepup.ShieldBoost;
 import com.klusman.keepup.healthKit;
-import com.klusman.keepup.tweens.SpriteTween;
 
 public class Game implements Screen, InputProcessor {
 
@@ -43,6 +41,8 @@ public class Game implements Screen, InputProcessor {
 	public static final int GAME_PAUSED = 2; 
 	public static final int GAME_OVER = 4;
 
+	BitmapFont gameText;
+	
 	public static int gameState;
 
 	private OrthographicCamera camera;
@@ -52,10 +52,6 @@ public class Game implements Screen, InputProcessor {
 	public static final int screenXRefactor = 1000;
 	public static final int screenYRefactor = (int) (screenRatio * screenXRefactor);;
 	TweenManager manager;
-
-
-
-
 
 	private SpriteBatch batch;
 
@@ -76,7 +72,7 @@ public class Game implements Screen, InputProcessor {
 	float invincibilityTime;
 
 	int starLoop;
-	int SCORE;
+	int SCORE = 0;
 
 	double randNumXLoc;
 	double randNumSize;
@@ -110,7 +106,7 @@ public class Game implements Screen, InputProcessor {
 	TextureRegion starRegion0;
 	Array<TextureRegion> starHolder;
 
-
+	
 	private Sprite starSprite;
 
 	private Texture psTx;
@@ -143,6 +139,11 @@ public class Game implements Screen, InputProcessor {
 	int currentFrame;
 	int gameDifficulty = Difficulty_Medium;
 	
+	//TODO
+	FreeTypeFontGenerator generator;
+	FreeTypeBitmapFontData font;
+	
+	
 
 	public Array<Ball> Balls;
 	public Array<healthKit> MedKits;
@@ -152,13 +153,16 @@ public class Game implements Screen, InputProcessor {
 	public static Array<LifeMarks> Marks;
 	public Array<Sprite> starArray;
 	Animation starAnimation;
-	TweenCallback cb;
+	//TweenCallback cb;
 
 
 	public Game( MainKeepUp game){
 		this.game = game;
-
 		camera = new OrthographicCamera(screenXRefactor, screenYRefactor);
+		
+		
+		//gameText.setScale(WORLD_SCALE);
+
 
 		deltaTime = Gdx.graphics.getDeltaTime();
 		Gdx.input.setInputProcessor(this);
@@ -178,6 +182,8 @@ public class Game implements Screen, InputProcessor {
 		freeze = false;
 		SCORE = 0;
 
+		
+		
 		Balls = new Array<Ball>();
 		MedKits = new Array<healthKit>();
 		Shields = new Array<ShieldBoost>();
@@ -185,7 +191,11 @@ public class Game implements Screen, InputProcessor {
 		Bombs = new Array<Bomb>();
 		Marks = new Array<LifeMarks>();
 
-
+		//TODO
+		generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/SourceFont.otf"));
+		font = generator.generateData(40);
+		gameText = new BitmapFont(font, font.getTextureRegion(), false);
+		gameText.setColor(00, 00, 00, 1);
 
 		kidMovable = true;
 		kidMove = false;
@@ -291,16 +301,16 @@ public class Game implements Screen, InputProcessor {
 		restartBtn.setOrigin(restartBtn.getWidth()/2, restartBtn.getHeight()/2);
 		restartBtn.setPosition(0 - restartBtn.getWidth()/2, -600);	
 		
-		Tween.registerAccessor(Sprite.class, new SpriteTween());
-		manager = new TweenManager();
-		
-		cb = new TweenCallback() {
-			@Override
-			public void onEvent(int type, BaseTween<?> source) {
-				Gdx.app.log(MainKeepUp.TAG, "TWEEN COMPLETE");
-				//tweenCompleted();  // what method to call when Event is triggered
-			}
-		};
+//		Tween.registerAccessor(Sprite.class, new SpriteTween());
+//		manager = new TweenManager();
+//		
+//		cb = new TweenCallback() {
+//			@Override
+//			public void onEvent(int type, BaseTween<?> source) {
+//				Gdx.app.log(MainKeepUp.TAG, "TWEEN COMPLETE");
+//				//tweenCompleted();  // what method to call when Event is triggered
+//			}
+//		};
 	}
 
 	@Override
@@ -360,6 +370,7 @@ public class Game implements Screen, InputProcessor {
 		psTx.dispose();
 		restartBtnTx.dispose();
 		star2Tx.dispose();
+		generator.dispose();
 
 		if(Balls.size > 0){
 			for(Ball ball: Balls) {
@@ -398,14 +409,14 @@ public class Game implements Screen, InputProcessor {
 		}
 	}
 
-	public void bombExplodeTween(Sprite bombSprite){
-		Tween.to(bombSprite, SpriteTween.SCALE_XY, 2f)
-		.target(120, 120)
-		.ease(TweenEquations.easeInQuad)
-		.setCallback(cb) 
-		.setCallbackTriggers(TweenCallback.COMPLETE)
-		.start(manager);  // start the tween using the passed in manager
-	}
+//	public void bombExplodeTween(Sprite bombSprite){
+//		Tween.to(bombSprite, SpriteTween.SCALE_XY, 2f)
+//		.target(120, 120)
+//		.ease(TweenEquations.easeInQuad)
+//		.setCallback(cb) 
+//		.setCallbackTriggers(TweenCallback.COMPLETE)
+//		.start(manager);  // start the tween using the passed in manager
+//	}
 
 	public void addLifeMark(){
 		LifeMarks mark = new LifeMarks();
@@ -563,9 +574,14 @@ public class Game implements Screen, InputProcessor {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
-
+		
 		batch.begin();
 		bg.draw(batch);
+	
+		//TODO
+		gameText.setFixedWidthGlyphs("Score: " + SCORE);
+		gameText.draw(batch, "Score: " + SCORE, -500, (screenYRefactor / 2) - 40);
+		
 
 		if((invincibility == false) && (shielded == false)){
 			kid.draw(batch);
@@ -641,6 +657,7 @@ public class Game implements Screen, InputProcessor {
 		pause.draw(batch);
 		batch.end();
 
+		
 		if(kidHit == true){
 			updateSTARS(deltaTime);
 		}
