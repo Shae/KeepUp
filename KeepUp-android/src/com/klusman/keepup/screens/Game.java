@@ -23,17 +23,17 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
-import com.google.android.gms.games.leaderboard.Leaderboard;
 import com.klusman.keepup.Ball;
 import com.klusman.keepup.Bomb;
 import com.klusman.keepup.FreezeMotionTimer;
 import com.klusman.keepup.LifeMarks;
+import com.klusman.keepup.MainActivity;
 import com.klusman.keepup.MainKeepUp;
 import com.klusman.keepup.ShieldBoost;
 import com.klusman.keepup.healthKit;
 
 public class Game implements Screen, InputProcessor {
-
+	MainActivity _mainActivity;
 	MainKeepUp game;
 	private static String TAG = "KeepUp";
 	public static final int GAME_READY = 0; 
@@ -155,8 +155,8 @@ public class Game implements Screen, InputProcessor {
 	//TweenCallback cb;
 
 
-	public Game( MainKeepUp game){
-		
+	public Game( MainKeepUp game, MainActivity mainActivity){
+		_mainActivity = mainActivity;
 		this.game = game;
 		camera = new OrthographicCamera(screenXRefactor, screenYRefactor);
 		
@@ -556,7 +556,7 @@ public class Game implements Screen, InputProcessor {
 
 	public void gameRestart(){
 		dispose();
-		game.setScreen(new Game(game));
+		game.setScreen(new Game(game, _mainActivity));
 
 	}
 
@@ -730,6 +730,7 @@ public class Game implements Screen, InputProcessor {
 	}
 
 	private void gameOver() {
+
 		kidMovable = false;
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
@@ -896,9 +897,16 @@ public class Game implements Screen, InputProcessor {
 			};
 		}
 	}
-
+//TODO
 	public void checkStrikeOut(){
 		if(Marks.size >= 3){
+			boolean submited = false;
+			if(submited == false){
+				_mainActivity.submitScore(SCORE);
+				
+				submited = true;
+				_mainActivity.getScores();
+			}
 			gameState = GAME_OVER;
 		}
 	}
@@ -1317,7 +1325,7 @@ public class Game implements Screen, InputProcessor {
 	public boolean keyDown(int keycode) {
 		if(keycode == Keys.BACK){
 			dispose();
-			game.setScreen(new MainMenu(game));
+			game.setScreen(new MainMenu(game, _mainActivity));
 		}
 		return false;
 	}

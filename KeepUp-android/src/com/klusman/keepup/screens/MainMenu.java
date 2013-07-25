@@ -17,18 +17,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.collision.Ray;
-import com.google.android.gms.games.leaderboard.Leaderboard;
-import com.google.example.games.basegameutils.BaseGameActivity;
-import com.google.example.games.basegameutils.GameHelper.GameHelperListener;
-import com.klusman.keepup.GoogleInterface;
+import com.klusman.keepup.MainActivity;
 import com.klusman.keepup.MainKeepUp;
 import com.klusman.keepup.tweens.SpriteTween;
 
 
 public class MainMenu implements Screen, InputProcessor{
-	
+	MainActivity _mainActivity;
 	MainKeepUp game;
-	
 	private OrthographicCamera camera;
 	public static int screenXRefactor;
 	public static int screenYRefactor;
@@ -38,7 +34,8 @@ public class MainMenu implements Screen, InputProcessor{
 	TweenManager manager;
 	public static Sound bounce;
 	public String textureAddress;
-	
+	boolean SignedIn;
+	boolean Online;
 	SpriteBatch batch;
 	Texture menuBtns;
 	
@@ -69,8 +66,11 @@ public class MainMenu implements Screen, InputProcessor{
 	
 	
 	
-	public MainMenu (MainKeepUp game){
+	public MainMenu (MainKeepUp game, MainActivity mainActivity){
+		_mainActivity = mainActivity;
 		this.game = game;
+		checkOnLIneStatus();
+		checkLogin();
 		x = Gdx.graphics.getWidth();
 		y = Gdx.graphics.getHeight();
 		screenXRefactor = 1000;
@@ -85,7 +85,17 @@ public class MainMenu implements Screen, InputProcessor{
 		
 	}
 
+	public void checkLogin(){
+		if(Online == true){
+			SignedIn = _mainActivity.getSignedIn();
+		}else{
+			SignedIn = false;
+		}
+	}
 	
+	public void checkOnLIneStatus(){
+		Online = _mainActivity.isOnline();
+	}
 
 	@Override
 	public void resize(int width, int height) {
@@ -184,18 +194,18 @@ public class MainMenu implements Screen, InputProcessor{
 			playBtn.draw(batch);
 			instructionsBtn.draw(batch);
 			creditsBtn.draw(batch);
-			googlePlay.draw(batch);
+			if(SignedIn == false){
+				googlePlay.draw(batch);
+			}
 		batch.end();
 		
 	}
 	public void runGame(MainKeepUp game){
-		//game.setScreen(new GameScreen(game));
-		game.setScreen(new Game(game));
+		game.setScreen(new Game(game, _mainActivity ));
 	}
 
 	@Override
 	public void hide() {
-	 //dispose();
 		
 	}
 
@@ -215,7 +225,7 @@ public class MainMenu implements Screen, InputProcessor{
 	public void dispose() {
 		titleTx.dispose();
 		menuBtns.dispose();
-		
+		googTx.dispose();
 	}
 
 	@Override
@@ -268,11 +278,17 @@ public class MainMenu implements Screen, InputProcessor{
 		if(googBool == true){
 			bounce.play();
 			Gdx.app.log(MainKeepUp.TAG, "GOOGLE TOUCHED");
-			//beginUserInitiatedSignIn();
+			try {
+				_mainActivity.Login();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	
 		}
 		return false;
 	}
+	
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
@@ -284,7 +300,7 @@ public class MainMenu implements Screen, InputProcessor{
 		boolean playBool = playBtn.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
 		boolean CreditBool = creditsBtn.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
 		boolean instructionBool = instructionsBtn.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
-
+		
 		if(playBool == true){
 			
 			
@@ -296,13 +312,13 @@ public class MainMenu implements Screen, InputProcessor{
 		if(CreditBool == true){
 			
 			Gdx.app.log(MainKeepUp.TAG, "Credits Btn Clicked!");
-			game.setScreen(new CreditsScreen(game));
+			game.setScreen(new CreditsScreen(game, _mainActivity));
 		}
 
 		if(instructionBool == true){
 			
 			Gdx.app.log(MainKeepUp.TAG, "instructions Btn Clicked!");
-			game.setScreen(new InstructionsScreen(game));
+			game.setScreen(new InstructionsScreen(game, _mainActivity));
 		}
 		
 		
@@ -327,6 +343,8 @@ public class MainMenu implements Screen, InputProcessor{
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+
 
 
 

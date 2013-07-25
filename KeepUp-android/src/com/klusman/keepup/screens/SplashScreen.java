@@ -16,11 +16,12 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.klusman.keepup.MainActivity;
 import com.klusman.keepup.MainKeepUp;
 import com.klusman.keepup.tweens.SpriteTween;
 
 public class SplashScreen implements Screen{
-
+	MainActivity _mainActivity;
 	MainKeepUp game;
 	Texture titleTx;
 	Sprite titleSprite;
@@ -38,7 +39,8 @@ public class SplashScreen implements Screen{
 	private SpriteBatch batch;
 	public static Music bgMusic;
 	
-	public SplashScreen( MainKeepUp game){
+	public SplashScreen( MainKeepUp game, MainActivity mainActivity){
+		_mainActivity = mainActivity;
 		this.game = game;
 		x = Gdx.graphics.getWidth();
 		y = Gdx.graphics.getHeight();
@@ -107,7 +109,7 @@ public class SplashScreen implements Screen{
 	protected void tweenCompleted() {
 
 		Gdx.app.log(MainKeepUp.TAG, "Splash Tween COMPLETE");
-		game.setScreen(new MainMenu(game));  // Send to MainMenu after tween complete
+		game.setScreen(new MainMenu(game, _mainActivity));  // Send to MainMenu after tween complete
 
 	}
 

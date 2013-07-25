@@ -11,11 +11,12 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.klusman.keepup.MainActivity;
 import com.klusman.keepup.MainKeepUp;
 
 public class InstructionsScreen implements Screen, InputProcessor{
 
-	
+	MainActivity _mainActivity;
 	MainKeepUp game;
 	private OrthographicCamera camera;
 	public static int screenXRefactor;
@@ -28,9 +29,9 @@ public class InstructionsScreen implements Screen, InputProcessor{
 	Sprite instructionsSprite;
 	Texture instructionsTx;
 	
-	public InstructionsScreen(MainKeepUp game){
+	public InstructionsScreen(MainKeepUp game, MainActivity mainActivity){
 		this.game = game;
-		
+		_mainActivity = mainActivity;
 		x = Gdx.graphics.getWidth();
 		y = Gdx.graphics.getHeight();
 		screenXRefactor = 1000;
@@ -96,7 +97,7 @@ public class InstructionsScreen implements Screen, InputProcessor{
 	@Override
 	public boolean keyDown(int keycode) {
 		if(keycode == Keys.BACK){
-			   game.setScreen(new MainMenu(game));
+			   game.setScreen(new MainMenu(game, _mainActivity));
 	        }
 		return false;
 	}

@@ -10,13 +10,19 @@ import com.klusman.keepup.screens.SplashScreen;
 
 public class MainKeepUp extends Game{
 
+	MainActivity _mainActivity;
 	public static final String TAG = "KeepUp";
 	public static final String VERSION = "0.4 Beta (MGD)";
 	
+	public MainKeepUp(MainActivity mainActivity){
+		_mainActivity = mainActivity;
+	}
+	
+
 	@Override
 	public void create() {
 		
-		setScreen( new SplashScreen(this));
+		setScreen( new SplashScreen(this, _mainActivity));
 	}
 
 	@Override
