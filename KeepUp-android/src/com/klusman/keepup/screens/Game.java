@@ -32,6 +32,8 @@ import com.klusman.keepup.MainKeepUp;
 import com.klusman.keepup.ShieldBoost;
 import com.klusman.keepup.healthKit;
 
+
+
 public class Game implements Screen, InputProcessor {
 	MainActivity _mainActivity;
 	MainKeepUp game;
@@ -159,10 +161,6 @@ public class Game implements Screen, InputProcessor {
 		_mainActivity = mainActivity;
 		this.game = game;
 		camera = new OrthographicCamera(screenXRefactor, screenYRefactor);
-		
-		
-		//gameText.setScale(WORLD_SCALE);
-
 
 		deltaTime = Gdx.graphics.getDeltaTime();
 		Gdx.input.setInputProcessor(this);
@@ -191,17 +189,18 @@ public class Game implements Screen, InputProcessor {
 		Bombs = new Array<Bomb>();
 		Marks = new Array<LifeMarks>();
 
-		//TODO
-		generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/SourceFont.otf"));
-		font = generator.generateData(40);
-		gameText = new BitmapFont(font, font.getTextureRegion(), false);
-		gameText.setColor(00, 00, 00, 1);
-
 		kidMovable = true;
 		kidMove = false;
 		kidHit = false;
-
+		
 		batch = new SpriteBatch();
+		
+		//// FONT SPECIFIC
+		generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/SourceFont.otf"));
+		font = generator.generateData(40);  // size based on the 1000px camera ratio
+		gameText = new BitmapFont(font, font.getTextureRegion(), false);
+		gameText.setColor(00, 00, 00, 1);  // black
+
 		/// AUDIO  ///
 		powerUp = Gdx.audio.newSound(Gdx.files.internal("audio/PowerUp.wav"));
 		buzzer = Gdx.audio.newSound(Gdx.files.internal("audio/Buzzer.wav"));
@@ -317,21 +316,17 @@ public class Game implements Screen, InputProcessor {
 
 		switch (gameState) {
 		case GAME_READY:
-			//Gdx.app.log(TAG, "Game Rdy");
 			gameReady();
 			break;
 		case GAME_RUNNING:
 			updateBallTimer(deltaTime);
 			updateResourceTimer(deltaTime);
-			//Gdx.app.log(TAG, "Game Running");
 			gameRunning();
 			break;
 		case GAME_PAUSED:
-			//Gdx.app.log(TAG, "Game Paused");
 			gamePaused();
 			break;
 		case GAME_OVER:
-			//Gdx.app.log(TAG, "Game Over");
 			gameOver = true;
 			gameOver();
 			break;
@@ -540,7 +535,7 @@ public class Game implements Screen, InputProcessor {
 		elapsedTime = deltaTime;
 		if(elapsedTime > resourceTimer){
 			int r = (int) (Math.random() * 100);
-			Gdx.app.log(MainKeepUp.TAG, "RANDOM Resource NUMBER is: " + r);
+			//Gdx.app.log(MainKeepUp.TAG, "RANDOM Resource NUMBER is: " + r);
 			if (r <= 25){
 				makeNewKit();
 			}else if ((r > 25) && (r <= 50)){
@@ -577,7 +572,7 @@ public class Game implements Screen, InputProcessor {
 		batch.begin();
 		bg.draw(batch);
 	
-		//TODO
+//TODO
 		gameText.setFixedWidthGlyphs("Score: " + SCORE);
 		gameText.draw(batch, "Score: " + SCORE, -500, (screenYRefactor / 2) - 40);
 		
@@ -689,7 +684,7 @@ public class Game implements Screen, InputProcessor {
 			for(Bomb bomb: Bombs) {
 				if(bomb.getRemoveTrigger() == true){ 
 					
-					Gdx.app.log(MainKeepUp.TAG, "REMOVE BOMB FROM ARRAY");
+					//Gdx.app.log(MainKeepUp.TAG, "REMOVE BOMB FROM ARRAY");
 					Bombs.removeValue(bomb, true);  // Remove bomb from Array
 					
 				}else{
@@ -704,12 +699,12 @@ public class Game implements Screen, InputProcessor {
 						
 						
 						if (bomb.checkBombCountdown(deltaTime) == false){ 
-							Gdx.app.log(MainKeepUp.TAG, "BOMB STILL COUNTING DOWN");	
+							//Gdx.app.log(MainKeepUp.TAG, "BOMB STILL COUNTING DOWN");	
 						
 						}else{  // If count down is Over
 							
 							bomb.setBombSpriteTexture(bombRegion);
-							Gdx.app.log(MainKeepUp.TAG, "BOMB STILL Explosion Phase");	
+							//Gdx.app.log(MainKeepUp.TAG, "BOMB STILL Explosion Phase");	
 							bomb.bombLastPhaseExplosion(deltaTime);   // if time to blow up	
 						}
 					}						
@@ -725,7 +720,7 @@ public class Game implements Screen, InputProcessor {
 			scoreTime = elapsedTime + scoreTimeInterval;
 			items = Balls.size + MedKits.size + Shields.size + Timers.size;
 			SCORE = SCORE + items;
-			Gdx.app.log(MainKeepUp.TAG, "SCORE = " + SCORE);
+			//Gdx.app.log(MainKeepUp.TAG, "SCORE = " + SCORE);
 		}
 	}
 
@@ -825,7 +820,9 @@ public class Game implements Screen, InputProcessor {
 
 		bg.draw(batch);
 		kid.draw(batch);
-
+		gameText.setFixedWidthGlyphs("Score: " + SCORE);
+		gameText.draw(batch, "Score: " + SCORE, -500, (screenYRefactor / 2) - 40);
+		
 		if(Balls.size > 0){
 			for(Ball ball: Balls) {
 				ball.draw(batch);
@@ -902,10 +899,20 @@ public class Game implements Screen, InputProcessor {
 		if(Marks.size >= 3){
 			boolean submited = false;
 			if(submited == false){
-				_mainActivity.submitScore(SCORE);
-				
-				submited = true;
-				_mainActivity.getScores();
+				if((_mainActivity.isOnline() == true) && (_mainActivity.getSignedIn() == true)){
+					_mainActivity.submitScore(SCORE);  // SEND SCORE to Google Play
+					submited = true;
+					try {
+						_mainActivity.notifyUser(SCORE);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+
+				}else{
+					// SUBMIT TO LOCAL LEADERBOARD
+				}
 			}
 			gameState = GAME_OVER;
 		}
@@ -1266,6 +1273,8 @@ public class Game implements Screen, InputProcessor {
 
 			if(touchRestart == true){
 				gameRestart();
+			//	Intent intent = new Intent(Game.this, FinalScoreActivity.class);
+		      //  startActivity(intent);
 			}
 		}
 		kidMove = false;
@@ -1339,10 +1348,5 @@ public class Game implements Screen, InputProcessor {
 	public boolean keyTyped(char character) {
 		return false;
 	}
-
-
-
-
-
-
+	
 }

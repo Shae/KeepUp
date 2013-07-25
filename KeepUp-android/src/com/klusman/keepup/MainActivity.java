@@ -1,7 +1,11 @@
 package com.klusman.keepup;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -15,10 +19,16 @@ import com.google.android.gms.games.leaderboard.LeaderboardScoreBuffer;
 import com.google.android.gms.games.leaderboard.OnLeaderboardScoresLoadedListener;
 import com.google.example.games.basegameutils.GameHelper;
 import com.google.example.games.basegameutils.GameHelper.GameHelperListener;
+import com.klusman.keepup.database.ScoreSource;
+import com.klusman.keepup.screens.MainMenu;
 
 public class MainActivity extends AndroidApplication implements GameHelperListener, GoogleInterface {
 	Context context;
 	public static GameHelper aHelper;
+	SQLiteOpenHelper dbHelper;
+	SQLiteDatabase database;
+	ScoreSource datasource;
+
 	
 
 	private OnLeaderboardScoresLoadedListener theLeaderboardListener;
@@ -63,6 +73,9 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 		cfg.useGL20 = false;
 		aHelper.setup(this);
 		initialize(new MainKeepUp(MainActivity.this), cfg);
+		
+		datasource = new ScoreSource(this);
+		datasource.open();
 	}
 
 	@Override
@@ -139,5 +152,69 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 				1,
 				1,
 				25) ;
+	}
+	
+	public void notifyUser(int Score){
+		final int s = Score;
+		
+		try {
+			runOnUiThread(new Runnable(){
+
+				//@Override
+				public void run(){
+					
+					AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+					String stringMsg;
+					if(isOnline() == true){
+						if(getSignedIn() == true){
+							stringMsg = "FINAL SCORE: " + s + "\nSaved to Google Play Leaderboard. " ;
+						}else{
+							stringMsg = "FINAL SCORE: " + s + "\nSaved to your Local Leaderboard. " ;
+						}
+					}else{
+						stringMsg = "FINAL SCORE: " + s + "\nSaved to your Local Leaderboard. ";
+					}
+					// set title
+					alertDialogBuilder.setTitle("GAME OVER");
+					
+					
+					// set dialog message
+					alertDialogBuilder
+					.setMessage(stringMsg)
+					.setCancelable(false)
+					
+					.setPositiveButton("View Leaderboard",new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog,int id) {
+							if(isOnline() == true){
+								if(getSignedIn() == true){
+									getScores();
+									
+								}
+							}
+							Log.i(MainKeepUp.TAG, "Leaderboard");
+						}
+						
+					})
+					
+					
+					.setNegativeButton("Done",new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog,int id) {
+							Log.i(MainKeepUp.TAG, "Done");
+							dialog.cancel();
+						}
+					});
+					
+					
+					// create alert dialog
+					AlertDialog alertDialog = alertDialogBuilder.create();
+					
+					// show it
+					alertDialog.show();
+				}
+			});
+		}catch (final Exception ex){
+
+		}
+
 	}
 }
