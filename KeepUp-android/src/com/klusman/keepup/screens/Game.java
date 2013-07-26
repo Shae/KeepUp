@@ -911,7 +911,7 @@ public class Game implements Screen, InputProcessor {
 				}else{
 					// SUBMIT TO LOCAL LEADERBOARD
 
-					_scoreSource.createScore("John Doe", SCORE);
+					_scoreSource.createScore(_mainActivity.getUserName(), SCORE);
 					try {
 						_mainActivity.notifyUser(SCORE);
 					} catch (Exception e) {

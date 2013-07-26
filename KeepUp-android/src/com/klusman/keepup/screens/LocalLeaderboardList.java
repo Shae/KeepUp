@@ -3,7 +3,6 @@ package com.klusman.keepup.screens;
 import java.util.List;
 
 import android.app.Activity;
-import android.app.ListActivity;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,6 +27,7 @@ public class LocalLeaderboardList extends Activity {
 	int selectedRadio;
 	ListView lv;
 	List<ScoreObject> _scoreList;
+	int spPos = 0;
 	
 	
 	
@@ -47,12 +47,15 @@ public class LocalLeaderboardList extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
       	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
       	setContentView(com.klusman.keepup.R.layout.local_leaderboard); 
+      	
+      
       	try {
 			_scoreList =  ScoreSource.findAllNoFilter();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+      	buildRadioGrp();
 		listBuilder();
 		
 	}
@@ -63,4 +66,45 @@ public class LocalLeaderboardList extends Activity {
 		lv.setAdapter(new ListViewAdapter(LocalLeaderboardList.this, _scoreList ));
 	}
 	
+	private void buildRadioGrp(){
+		radioGrp = (RadioGroup)findViewById(R.id.radioGrp);
+		radioGrp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+			public void onCheckedChanged(RadioGroup arg0, int id) {
+				switch (id) {
+				case R.id.radioScoreLow:
+					_scoreList =  ScoreSource.findAllLowToHigh();
+					listBuilder();
+					//MoveRadioUpdate(spPos);
+					break;
+				case R.id.radioScore:
+					_scoreList =  ScoreSource.findAllHighToLow();
+					listBuilder();
+					//MoveRadioUpdate(spPos);
+					break;
+				
+				default:
+				
+					break;
+				}
+			}
+		});
+	}
+	
+//	private void MoveRadioUpdate(int pos){
+//		switch(pos){
+//
+//		case 0: 
+//			//Log.i(TAG, "Radio Updated to: " + sort);
+//			_scoreList =  ScoreSource.findAllLowToHigh();
+//			listBuilder();
+//			break;
+//
+//		case 1:
+//			//Log.i(TAG, "Radio Updated to: " + sort);
+//			_scoreList =  ScoreSource.findAllHighToLow();
+//			listBuilder();
+//			break;
+//		}
+//
+//	}
 }

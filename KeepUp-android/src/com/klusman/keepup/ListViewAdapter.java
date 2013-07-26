@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.badlogic.gdx.utils.Array;
 import com.klusman.keepup.database.ScoreObject;
 
 public class ListViewAdapter extends ArrayAdapter<ScoreObject> {
@@ -26,6 +25,7 @@ public class ListViewAdapter extends ArrayAdapter<ScoreObject> {
 		for( int i = 0; i <= _scoreList.size(); i++){
 			
 		}
+		
 	}
 	
 	public View getView(int position, View convertView, ViewGroup parent) {
@@ -46,5 +46,7 @@ public class ListViewAdapter extends ArrayAdapter<ScoreObject> {
         
         return vi;
     }
+	
+	
 	
 }

@@ -1,9 +1,6 @@
 package com.klusman.keepup.screens;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.util.Log;
-import android.widget.EditText;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenEquations;
 import aurelienribon.tweenengine.TweenManager;
@@ -92,7 +89,9 @@ public class MainMenu implements Screen, InputProcessor{
 	}
 
 	public void checkLogin(){
-		 _mainActivity.getUsername();  
+		if(_mainActivity.getUserName().compareTo("John Doe") == 0){
+			_mainActivity.getUsername();  
+		}
 		    
 		if(Online == true){
 			SignedIn = _mainActivity.getSignedIn();

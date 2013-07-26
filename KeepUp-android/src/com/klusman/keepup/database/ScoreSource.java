@@ -84,8 +84,9 @@ public class ScoreSource {
 	
 	public static List<ScoreObject> findAllNoFilter(){
 			Log.i(MainKeepUp.TAG, "**START find all no Filter");
+			String orderBy =  DBOpenHelper.COLUMN_SCORE + " DESC";
 		List<ScoreObject> Scores = new ArrayList<ScoreObject>();
-		Cursor c = database.query(DBOpenHelper.TABLE_SCORES, allColumns, null, null, null, null, null);
+		Cursor c = database.query(DBOpenHelper.TABLE_SCORES, allColumns, null, null, null, null, orderBy);
 			Log.i(MainKeepUp.TAG, "Scores List Returned " + c.getCount() + " rows");
 		
 		if(c.getCount() > 0){
@@ -98,7 +99,45 @@ public class ScoreSource {
 			}
 		}
 		return Scores;
-	} // END LIST WEAPON
+	} 
+	
+	public static List<ScoreObject> findAllHighToLow(){
+		Log.i(MainKeepUp.TAG, "**START find all no Filter");
+		String orderBy =  DBOpenHelper.COLUMN_SCORE + " DESC";
+	List<ScoreObject> Scores = new ArrayList<ScoreObject>();
+	Cursor c = database.query(DBOpenHelper.TABLE_SCORES, allColumns, null, null, null, null, orderBy);
+		Log.i(MainKeepUp.TAG, "Scores List Returned " + c.getCount() + " rows");
+	
+	if(c.getCount() > 0){
+		while(c.moveToNext()){
+			ScoreObject score = new ScoreObject();
+			score.setId(c.getLong(c.getColumnIndex(DBOpenHelper.COLUMN_ID)));
+			score.setName(c.getString(c.getColumnIndex(DBOpenHelper.COLUMN_NAME)));
+			score.setScore(c.getInt(c.getColumnIndex(DBOpenHelper.COLUMN_SCORE)));
+			Scores.add(score);
+		}
+	}
+	return Scores;
+} 
+	
+	public static List<ScoreObject> findAllLowToHigh(){
+		Log.i(MainKeepUp.TAG, "**START find all no Filter");
+		String orderBy =  DBOpenHelper.COLUMN_SCORE + " ASC";
+	List<ScoreObject> Scores = new ArrayList<ScoreObject>();
+	Cursor c = database.query(DBOpenHelper.TABLE_SCORES, allColumns, null, null, null, null, orderBy);
+		Log.i(MainKeepUp.TAG, "Scores List Returned " + c.getCount() + " rows");
+	
+	if(c.getCount() > 0){
+		while(c.moveToNext()){
+			ScoreObject score = new ScoreObject();
+			score.setId(c.getLong(c.getColumnIndex(DBOpenHelper.COLUMN_ID)));
+			score.setName(c.getString(c.getColumnIndex(DBOpenHelper.COLUMN_NAME)));
+			score.setScore(c.getInt(c.getColumnIndex(DBOpenHelper.COLUMN_SCORE)));
+			Scores.add(score);
+		}
+	}
+	return Scores;
+} 
 	
 	
 	
