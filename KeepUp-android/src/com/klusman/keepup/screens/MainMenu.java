@@ -1,5 +1,6 @@
 package com.klusman.keepup.screens;
 
+import android.util.Log;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenEquations;
 import aurelienribon.tweenengine.TweenManager;
@@ -278,13 +279,34 @@ public class MainMenu implements Screen, InputProcessor{
 		if(googBool == true){
 			bounce.play();
 			Gdx.app.log(MainKeepUp.TAG, "GOOGLE TOUCHED");
+			if(_mainActivity.isOnline() == true){
+				if(_mainActivity.getSignedIn() == true){
+					try {
+						_mainActivity.LogOut();
+						Log.i(MainKeepUp.TAG, "LOGGED OUT");
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}else{
+					try {
+						_mainActivity.Login();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				}
+			}
+	
+		}else{
 			try {
-				_mainActivity.Login();
+				_mainActivity.LogOut();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-	
+		
 		}
 		return false;
 	}

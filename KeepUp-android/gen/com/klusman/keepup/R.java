@@ -176,16 +176,21 @@ containing a value of this type.
         public static final int btnSaveLocal=0x7f050007;
         public static final int button3=0x7f050009;
         public static final int hybrid=0x7f050004;
+        public static final int list=0x7f05000c;
         public static final int none=0x7f050000;
         public static final int normal=0x7f050001;
         public static final int satellite=0x7f050002;
         public static final int scoreText=0x7f050006;
         public static final int terrain=0x7f050003;
+        public static final int textName=0x7f05000a;
+        public static final int textScore=0x7f05000b;
         public static final int textView1=0x7f050005;
     }
     public static final class layout {
         public static final int final_screen=0x7f030000;
-        public static final int main=0x7f030001;
+        public static final int leaderboard_cell=0x7f030001;
+        public static final int local_leaderboard=0x7f030002;
+        public static final int main=0x7f030003;
     }
     public static final class string {
         public static final int achievement_arrogant=0x7f06001a;

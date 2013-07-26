@@ -8,6 +8,7 @@ import com.klusman.keepup.MainKeepUp;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -15,7 +16,7 @@ import android.util.Log;
 public class ScoreSource {
 
 	SQLiteOpenHelper dbHelper;
-	SQLiteDatabase database;
+	static SQLiteDatabase database;
 	
 	public static final String[] allColumns = {
 		DBOpenHelper.COLUMN_ID,
@@ -24,42 +25,68 @@ public class ScoreSource {
 	};
 	
 	public ScoreSource(Context context){
+		
         dbHelper = new DBOpenHelper(context);
+
 	}
 	
 	
-	public void open(){
+	public void open() throws SQLException {
 		database = dbHelper.getWritableDatabase();
 		Log.i(MainKeepUp.TAG , "Database OPENED");
 	}
 	
-	public void close(){
+	public void close() {
 		Log.i(MainKeepUp.TAG , "Database CLOSED");
 		dbHelper.close();
 	}
 	
-	public ScoreObject create(ScoreObject score){
-		Log.i(MainKeepUp.TAG, "Create Score Function in ScoreSource");
+	public ScoreObject createScore(String name, int score){
+		open();
 		ContentValues values = new ContentValues();
-		values.put(DBOpenHelper.COLUMN_ID, score.getId());
-		//Log.i(TAG, "Create ID : " + String.valueOf(score.getId()));
-		values.put(DBOpenHelper.COLUMN_NAME, score.getName());
-		//Log.i(TAG, "Create NAME : " + score.getName());
-		values.put(DBOpenHelper.COLUMN_SCORE, score.getScore());
-		//Log.i(TAG, "Create TYPE : " + String.valueOf(score.getScore()));
-		
-		
+		values.put(DBOpenHelper.COLUMN_NAME, name);
+		values.put(DBOpenHelper.COLUMN_SCORE, score);
 		long insertid = database.insert(DBOpenHelper.TABLE_SCORES, null, values); // GET AUTO ID
+		Cursor cursor = database.query(DBOpenHelper.TABLE_SCORES,
+		        allColumns, DBOpenHelper.COLUMN_ID + " = " + insertid, null,
+		        null, null, null);
+		cursor.moveToFirst();
+	    ScoreObject newScore = cursorToScore(cursor);
+	    cursor.close();
+		 
+		Log.i(MainKeepUp.TAG, "Score Built");
+		return newScore;
 		
-		score.setId(insertid); // SET the ID of the new weapon with the Auto generated one
-		return score;
 	};
 	
-	public List<ScoreObject> findAllNoFilter(){
-		Log.i(MainKeepUp.TAG, "**START find all no Filter");
+	private ScoreObject cursorToScore(Cursor cursor) {
+	    ScoreObject myScore = new ScoreObject();
+	    myScore.setId(cursor.getLong(0));
+	    myScore.setName(cursor.getString(1));
+	    myScore.setScore(cursor.getInt(2));
+	    return myScore;
+	  }
+	
+	public void saveScoreToLocal(String name, int score) {
+		ContentValues cv = new ContentValues();
+			cv.put(DBOpenHelper.COLUMN_NAME, name);
+			cv.put(DBOpenHelper.COLUMN_SCORE, score);
+
+		try {
+			database.insert(DBOpenHelper.TABLE_SCORES, null, cv);
+			Log.i(MainKeepUp.TAG, "Saved to local leaderboard");
+		} catch (Exception e) {
+			Log.i(MainKeepUp.TAG, "FAILED to Save to local leaderboard");
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public static List<ScoreObject> findAllNoFilter(){
+			Log.i(MainKeepUp.TAG, "**START find all no Filter");
 		List<ScoreObject> Scores = new ArrayList<ScoreObject>();
 		Cursor c = database.query(DBOpenHelper.TABLE_SCORES, allColumns, null, null, null, null, null);
-		Log.i(MainKeepUp.TAG, "Scores List Returned " + c.getCount() + " rows");
+			Log.i(MainKeepUp.TAG, "Scores List Returned " + c.getCount() + " rows");
 		
 		if(c.getCount() > 0){
 			while(c.moveToNext()){

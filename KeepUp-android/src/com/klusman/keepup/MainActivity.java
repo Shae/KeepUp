@@ -20,13 +20,15 @@ import com.google.android.gms.games.leaderboard.OnLeaderboardScoresLoadedListene
 import com.google.example.games.basegameutils.GameHelper;
 import com.google.example.games.basegameutils.GameHelper.GameHelperListener;
 import com.klusman.keepup.database.ScoreSource;
-import com.klusman.keepup.screens.MainMenu;
+import com.klusman.keepup.screens.LocalLeaderboardList;
+
+
 
 public class MainActivity extends AndroidApplication implements GameHelperListener, GoogleInterface {
 	Context context;
 	public static GameHelper aHelper;
-	SQLiteOpenHelper dbHelper;
-	SQLiteDatabase database;
+	public SQLiteOpenHelper dbHelper;
+	public SQLiteDatabase database;
 	ScoreSource datasource;
 
 	
@@ -138,7 +140,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	}
 
 	public void submitScore(int _score) {
-		System.out.println("in submit score");
+		//System.out.println("in submit score");
 		aHelper.getGamesClient().submitScore(getString(R.string.leaderboard_ID), _score);
 	}
 
@@ -156,16 +158,17 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	
 	public void notifyUser(int Score){
 		final int s = Score;
-		
+
 		try {
 			runOnUiThread(new Runnable(){
 
 				//@Override
 				public void run(){
-					
+					//final boolean t = getSignedIn();
 					AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
 					String stringMsg;
-					if(isOnline() == true){
+
+					if(getSignedIn() == true){
 						if(getSignedIn() == true){
 							stringMsg = "FINAL SCORE: " + s + "\nSaved to Google Play Leaderboard. " ;
 						}else{
@@ -174,40 +177,45 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 					}else{
 						stringMsg = "FINAL SCORE: " + s + "\nSaved to your Local Leaderboard. ";
 					}
+
 					// set title
 					alertDialogBuilder.setTitle("GAME OVER");
-					
-					
+
+
 					// set dialog message
 					alertDialogBuilder
 					.setMessage(stringMsg)
 					.setCancelable(false)
-					
+
 					.setPositiveButton("View Leaderboard",new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog,int id) {
-							if(isOnline() == true){
+							if(getSignedIn() == true){
 								if(getSignedIn() == true){
 									getScores();
-									
 								}
+							}else{
+								Log.i(MainKeepUp.TAG, "Local Leaderboard hit");
+								Intent intent = new Intent(MainActivity.this, LocalLeaderboardList.class);
+								startActivity(intent);
+								Log.i(MainKeepUp.TAG, "Local Leaderboard hit 2");
 							}
 							Log.i(MainKeepUp.TAG, "Leaderboard");
 						}
-						
+
 					})
-					
-					
+
+
 					.setNegativeButton("Done",new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog,int id) {
 							Log.i(MainKeepUp.TAG, "Done");
 							dialog.cancel();
 						}
 					});
-					
-					
+
+
 					// create alert dialog
 					AlertDialog alertDialog = alertDialogBuilder.create();
-					
+
 					// show it
 					alertDialog.show();
 				}

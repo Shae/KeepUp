@@ -37,6 +37,10 @@ public class DBOpenHelper extends SQLiteOpenHelper{
 		Log.i(MainKeepUp.TAG, DATABASE_NAME + "Table has been created");
 	}
 
+//	public void getDBSize(SQLiteDatabase db){
+//		String s = "SELECT COUNT(*) FROM " + db
+//		int rowCount = db.execSQL(s);
+//	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

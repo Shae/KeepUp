@@ -31,12 +31,15 @@ import com.klusman.keepup.MainActivity;
 import com.klusman.keepup.MainKeepUp;
 import com.klusman.keepup.ShieldBoost;
 import com.klusman.keepup.healthKit;
+import com.klusman.keepup.database.ScoreSource;
 
 
 
 public class Game implements Screen, InputProcessor {
 	MainActivity _mainActivity;
 	MainKeepUp game;
+	ScoreSource _scoreSource;
+	
 	private static String TAG = "KeepUp";
 	public static final int GAME_READY = 0; 
 	public static final int GAME_RUNNING = 1; 
@@ -158,7 +161,9 @@ public class Game implements Screen, InputProcessor {
 
 
 	public Game( MainKeepUp game, MainActivity mainActivity){
+
 		_mainActivity = mainActivity;
+		_scoreSource = new ScoreSource(_mainActivity);
 		this.game = game;
 		camera = new OrthographicCamera(screenXRefactor, screenYRefactor);
 
@@ -197,7 +202,7 @@ public class Game implements Screen, InputProcessor {
 		
 		//// FONT SPECIFIC
 		generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/SourceFont.otf"));
-		font = generator.generateData(40);  // size based on the 1000px camera ratio
+		font = generator.generateData(50);  // size based on the 1000px camera ratio
 		gameText = new BitmapFont(font, font.getTextureRegion(), false);
 		gameText.setColor(00, 00, 00, 1);  // black
 
@@ -312,7 +317,7 @@ public class Game implements Screen, InputProcessor {
 	}
 
 	@Override
-	public void render(float delta) {
+	public void render(float delta) {  // DETERMINE THE STATE TO RENDER
 
 		switch (gameState) {
 		case GAME_READY:
@@ -403,14 +408,6 @@ public class Game implements Screen, InputProcessor {
 		}
 	}
 
-//	public void bombExplodeTween(Sprite bombSprite){
-//		Tween.to(bombSprite, SpriteTween.SCALE_XY, 2f)
-//		.target(120, 120)
-//		.ease(TweenEquations.easeInQuad)
-//		.setCallback(cb) 
-//		.setCallbackTriggers(TweenCallback.COMPLETE)
-//		.start(manager);  // start the tween using the passed in manager
-//	}
 
 	public void addLifeMark(){
 		LifeMarks mark = new LifeMarks();
@@ -572,7 +569,6 @@ public class Game implements Screen, InputProcessor {
 		batch.begin();
 		bg.draw(batch);
 	
-//TODO
 		gameText.setFixedWidthGlyphs("Score: " + SCORE);
 		gameText.draw(batch, "Score: " + SCORE, -500, (screenYRefactor / 2) - 40);
 		
@@ -908,10 +904,21 @@ public class Game implements Screen, InputProcessor {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-
+					// & SUBMIT TO LOCAL LEADERBOARD
+					_scoreSource.createScore("John Doe", SCORE);
+				
+					
 
 				}else{
 					// SUBMIT TO LOCAL LEADERBOARD
+
+					_scoreSource.createScore("John Doe", SCORE);
+					try {
+						_mainActivity.notifyUser(SCORE);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 			gameState = GAME_OVER;
