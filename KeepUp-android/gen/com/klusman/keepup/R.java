@@ -176,9 +176,12 @@ containing a value of this type.
         public static final int btnSaveLocal=0x7f050007;
         public static final int button3=0x7f050009;
         public static final int hybrid=0x7f050004;
-        public static final int list=0x7f05000c;
+        public static final int list=0x7f05000f;
         public static final int none=0x7f050000;
         public static final int normal=0x7f050001;
+        public static final int radioGrp=0x7f05000c;
+        public static final int radioScore=0x7f05000e;
+        public static final int radioScoreLow=0x7f05000d;
         public static final int satellite=0x7f050002;
         public static final int scoreText=0x7f050006;
         public static final int terrain=0x7f050003;
