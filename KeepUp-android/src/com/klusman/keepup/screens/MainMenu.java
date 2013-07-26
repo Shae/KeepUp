@@ -135,10 +135,10 @@ public class MainMenu implements Screen, InputProcessor{
 		googOutTx = new Texture(Gdx.files.internal("data/googOut.png"));
 		googOutTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);	
 		TextureRegion googOutRegion = new TextureRegion(googOutTx, 0, 0, googOutTx.getWidth(), googOutTx.getHeight());
-		googleOut = new Sprite(googRegion);
+		googleOut = new Sprite(googOutRegion);
 		googleOut.setSize(googleOut.getWidth() * 2f,  googleOut.getHeight() * 2f);  
 		googleOut.setOrigin(googleOut.getWidth()/2, googleOut.getHeight()/2);
-		googleOut.setPosition(-480, (screenYRefactor/2 * -1) + 10);
+		googleOut.setPosition(50, (screenYRefactor/2 * -1) + 10);
 
 		
 		menuBtns = new Texture(Gdx.files.internal(textureAddress));
@@ -277,6 +277,7 @@ public class MainMenu implements Screen, InputProcessor{
 		boolean instructionBool = instructionsBtn.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
 		boolean googBool = googlePlay.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
 		boolean googOutBool = googleOut.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
+		
 		if(playBool == true){
 			bounce.play();
 			playBtn.setRegion(playBtnTxDwn2);
@@ -299,6 +300,7 @@ public class MainMenu implements Screen, InputProcessor{
 			Gdx.app.log(MainKeepUp.TAG, "GOOGLE Log Out TOUCHED");
 			try {
 				_mainActivity.LogOut();
+				SignedIn = false;
 				Log.i(MainKeepUp.TAG, "LOGGED OUT");
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -311,15 +313,7 @@ public class MainMenu implements Screen, InputProcessor{
 			bounce.play();
 			Gdx.app.log(MainKeepUp.TAG, "GOOGLE TOUCHED");
 			if(_mainActivity.isOnline() == true){
-				if(_mainActivity.getSignedIn() == true){
-					try {
-						_mainActivity.LogOut();
-						Log.i(MainKeepUp.TAG, "LOGGED OUT");
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}else{
+				if(_mainActivity.getSignedIn() == false){
 					try {
 						_mainActivity.Login();
 						SignedIn = true;
@@ -331,14 +325,6 @@ public class MainMenu implements Screen, InputProcessor{
 				}
 			}
 	
-		}else{
-			try {
-				_mainActivity.LogOut();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		
 		}
 		return false;
 	}
