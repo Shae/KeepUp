@@ -1,6 +1,9 @@
 package com.klusman.keepup.screens;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.util.Log;
+import android.widget.EditText;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenEquations;
 import aurelienribon.tweenengine.TweenManager;
@@ -37,6 +40,7 @@ public class MainMenu implements Screen, InputProcessor{
 	public String textureAddress;
 	boolean SignedIn;
 	boolean Online;
+	
 	SpriteBatch batch;
 	Texture menuBtns;
 	
@@ -65,7 +69,8 @@ public class MainMenu implements Screen, InputProcessor{
 	Sprite googlePlay;
 	Texture googTx;
 	
-	
+	Sprite googleOut;
+	Texture googOutTx;
 	
 	public MainMenu (MainKeepUp game, MainActivity mainActivity){
 		_mainActivity = mainActivity;
@@ -87,6 +92,8 @@ public class MainMenu implements Screen, InputProcessor{
 	}
 
 	public void checkLogin(){
+		 _mainActivity.getUsername();  
+		    
 		if(Online == true){
 			SignedIn = _mainActivity.getSignedIn();
 		}else{
@@ -124,6 +131,14 @@ public class MainMenu implements Screen, InputProcessor{
 		googlePlay.setSize(googlePlay.getWidth() * 2f,  googlePlay.getHeight() * 2f);  
 		googlePlay.setOrigin(googlePlay.getWidth()/2, googlePlay.getHeight()/2);
 		googlePlay.setPosition(-480, (screenYRefactor/2 * -1) + 10);
+		
+		googOutTx = new Texture(Gdx.files.internal("data/googOut.png"));
+		googOutTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);	
+		TextureRegion googOutRegion = new TextureRegion(googOutTx, 0, 0, googOutTx.getWidth(), googOutTx.getHeight());
+		googleOut = new Sprite(googRegion);
+		googleOut.setSize(googleOut.getWidth() * 2f,  googleOut.getHeight() * 2f);  
+		googleOut.setOrigin(googleOut.getWidth()/2, googleOut.getHeight()/2);
+		googleOut.setPosition(-480, (screenYRefactor/2 * -1) + 10);
 
 		
 		menuBtns = new Texture(Gdx.files.internal(textureAddress));
@@ -197,6 +212,8 @@ public class MainMenu implements Screen, InputProcessor{
 			creditsBtn.draw(batch);
 			if(SignedIn == false){
 				googlePlay.draw(batch);
+			}else{
+				googleOut.draw(batch);
 			}
 		batch.end();
 		
@@ -227,6 +244,7 @@ public class MainMenu implements Screen, InputProcessor{
 		titleTx.dispose();
 		menuBtns.dispose();
 		googTx.dispose();
+		googOutTx.dispose();
 	}
 
 	@Override
@@ -258,7 +276,7 @@ public class MainMenu implements Screen, InputProcessor{
 		boolean CreditBool = creditsBtn.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
 		boolean instructionBool = instructionsBtn.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
 		boolean googBool = googlePlay.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
-		
+		boolean googOutBool = googleOut.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
 		if(playBool == true){
 			bounce.play();
 			playBtn.setRegion(playBtnTxDwn2);
@@ -276,6 +294,19 @@ public class MainMenu implements Screen, InputProcessor{
 			instructionsBtn.setRegion(instBtnTxDwn2);
 		}
 		
+		if(googOutBool == true){
+			bounce.play();
+			Gdx.app.log(MainKeepUp.TAG, "GOOGLE Log Out TOUCHED");
+			try {
+				_mainActivity.LogOut();
+				Log.i(MainKeepUp.TAG, "LOGGED OUT");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		
 		if(googBool == true){
 			bounce.play();
 			Gdx.app.log(MainKeepUp.TAG, "GOOGLE TOUCHED");
@@ -291,6 +322,7 @@ public class MainMenu implements Screen, InputProcessor{
 				}else{
 					try {
 						_mainActivity.Login();
+						SignedIn = true;
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

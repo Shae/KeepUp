@@ -92,6 +92,7 @@ public class Game implements Screen, InputProcessor {
 	boolean invincibility;
 	boolean shielded;
 	boolean freeze;
+	
 
 	public Texture bombTx;
 	TextureRegion bombRegion;
@@ -184,8 +185,6 @@ public class Game implements Screen, InputProcessor {
 		shieldedTime = 0;
 		freeze = false;
 		SCORE = 0;
-
-		
 		
 		Balls = new Array<Ball>();
 		MedKits = new Array<healthKit>();
@@ -905,7 +904,7 @@ public class Game implements Screen, InputProcessor {
 						e.printStackTrace();
 					}
 					// & SUBMIT TO LOCAL LEADERBOARD
-					_scoreSource.createScore("John Doe", SCORE);
+					_scoreSource.createScore(_mainActivity.getUserName(), SCORE);
 				
 					
 

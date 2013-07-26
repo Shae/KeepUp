@@ -27,25 +27,6 @@ public class ListViewAdapter extends ArrayAdapter<ScoreObject> {
 			
 		}
 	}
-
-//	@Override
-//	public View getView(int position, View convertView, ViewGroup parent) {
-//		LayoutInflater inflater = (LayoutInflater) _context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//
-//		View rowView = inflater.inflate(R.layout.leaderboard_cell, parent, false);
-//		TextView tvName = (TextView) rowView.findViewById(R.id.textName);
-//		TextView tvScore = (TextView) rowView.findViewById(R.id.textScore);
-//
-//
-//		final String name = _scoreList.get(position).getName();
-//		final int score = _scoreList.get(position).getScore();
-//
-//		tvName.setText(name);
-//		tvScore.setText(score);
-//
-//
-//		return rowView;
-//	}
 	
 	public View getView(int position, View convertView, ViewGroup parent) {
         View vi=convertView;

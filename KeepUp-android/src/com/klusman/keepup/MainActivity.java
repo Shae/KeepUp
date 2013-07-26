@@ -10,6 +10,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.EditText;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
@@ -30,6 +31,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	public SQLiteOpenHelper dbHelper;
 	public SQLiteDatabase database;
 	ScoreSource datasource;
+	String userName = "John Doe";
 
 	
 
@@ -53,6 +55,10 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 
 			
 		};
+	}
+	
+	public String getUserName(){
+		return userName;
 	}
 	
 	public boolean isOnline() {
@@ -224,5 +230,41 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 
 		}
 
+	}
+	
+	public void getUsername(){
+		
+		
+		try {
+			runOnUiThread(new Runnable(){
+
+				//@Override
+				public void run(){
+					
+					final AlertDialog.Builder alert = new AlertDialog.Builder(context);
+					final EditText input = new EditText(context);
+					alert.setTitle("Enter User Name");
+					alert.setMessage("Please enter you name for the Leaderboard.");
+					alert.setView(input);
+					alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int whichButton) {
+							String value = input.getText().toString().trim();
+							Log.i(MainKeepUp.TAG, "INPUT: " + value);
+							userName = value;
+						}
+					});
+					
+					alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int whichButton) {
+							dialog.cancel();
+						}
+					});
+					alert.show();   
+					
+				}
+			});
+		}catch (final Exception ex){
+
+		}
 	}
 }
