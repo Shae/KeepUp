@@ -161,6 +161,15 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 				25) ;
 	}
 	
+	/**
+	 * Notifies the played via alert dialog pop-up of their score.
+	 * Also checks to see if the user online and if they are signed into Google Play.
+	 * Adjusts Message accordingly.  
+	 * Positive button links to the local or Google Play leaderboard.
+	 * Negative button closes dialog.
+	 * @param Score
+	 */
+	
 	public void notifyUser(int Score){
 		final int s = Score;
 
@@ -173,7 +182,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 					AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
 					String stringMsg;
 
-					if(getSignedIn() == true){
+					if(isOnline() == true){
 						if(getSignedIn() == true){
 							stringMsg = "FINAL SCORE: " + s + "\nSaved to Google Play Leaderboard. " ;
 						}else{
@@ -231,9 +240,12 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 
 	}
 	
+	/**
+	 * Builds an alert dialog box with an edit text input on a separate thread.
+	 * Returns nothing.  Must be caught within code.
+	 */
+	
 	public void getUsername(){
-		
-		
 		try {
 			runOnUiThread(new Runnable(){
 
