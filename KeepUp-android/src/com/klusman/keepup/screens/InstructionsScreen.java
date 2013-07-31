@@ -29,9 +29,9 @@ public class InstructionsScreen implements Screen, InputProcessor{
 	Sprite instructionsSprite;
 	Texture instructionsTx;
 	
-	public InstructionsScreen(MainKeepUp game, MainActivity mainActivity){
+	public InstructionsScreen(MainKeepUp game){
 		this.game = game;
-		_mainActivity = mainActivity;
+		_mainActivity = MainActivity.Instance;
 		x = Gdx.graphics.getWidth();
 		y = Gdx.graphics.getHeight();
 		screenXRefactor = 1000;
@@ -97,7 +97,7 @@ public class InstructionsScreen implements Screen, InputProcessor{
 	@Override
 	public boolean keyDown(int keycode) {
 		if(keycode == Keys.BACK){
-			   game.setScreen(new MainMenu(game, _mainActivity));
+			   game.setScreen(new MainMenu(game));
 	        }
 		return false;
 	}

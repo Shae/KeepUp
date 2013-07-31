@@ -34,8 +34,11 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	String userName = "John Doe";
 	public static MainActivity Instance = null;
 
-
-
+	public static int spawnRateKit = 25;
+	public static int spawnRateShield = 25;
+	public static int spawnRateBomb = 25;
+	public static int spawnRateFreeze = 25;
+	
 	private OnLeaderboardScoresLoadedListener theLeaderboardListener;
 
 	public MainActivity(){

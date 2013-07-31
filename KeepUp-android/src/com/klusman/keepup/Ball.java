@@ -41,11 +41,30 @@ public class Ball {
 		ySpeed = speed; 
 		//rotationSpeed = 5;
 		
+		double rNum = Math.random(); // 0.0 thru 1.0
+		if(rNum == 0){  
+			rNum = 0.01f;  // ensure not 0
+		}
+		
+		if (rNum <= .2){
+			textureAddress = "data/redBall.png";
+		}else if ((rNum > .2) && (rNum <= .4)){
+			textureAddress = "data/blueBall.png";
+		}else if ((rNum > .4) && (rNum <= .6)){
+			textureAddress = "data/yellowBall.png";
+		}else if ((rNum > .6) && (rNum <= .8)){
+			textureAddress = "data/purpBall.png";
+		}else if (rNum > .8){
+			textureAddress = "data/greenBall.png";
+		}
+		
+		
+		
+		
 		ballTx = new Texture(Gdx.files.internal(textureAddress));
 		ballTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		TextureRegion ballRegion = new TextureRegion(ballTx, 0, 0, ballTx.getWidth(), ballTx.getHeight());
 		ballSprite = new Sprite(ballRegion);
-		//ballSprite.rotate(90);
 		ballSprite.setSize(sizeX, sizeY);
 		ballSprite.setOrigin(ballSprite.getWidth()/2, ballSprite.getHeight()/2);
 		
@@ -57,9 +76,6 @@ public class Ball {
 		collision = false;
 		
 		
-		
-		
-		
 		if(randX >= 0 ){   // set random X position plus a 10 point buffer
 			PositionX = randX - (ballSprite.getWidth() + 10);
 			ballSprite.setPosition(PositionX , PositionY );
@@ -68,12 +84,7 @@ public class Ball {
 			ballSprite.setPosition(PositionX , PositionY );
 		}
 		
-		
-		
-		
-		
-		
-		
+			
 		
 		circle = new Circle();
 		circle.setRadius(sizeX / 2 - 10);  // making the circle a little smaller to then the sprite for better collision

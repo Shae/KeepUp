@@ -15,14 +15,14 @@ public class MainKeepUp extends Game{
 	public static final String VERSION = "0.4 Beta (MGD)";
 	
 	public MainKeepUp(MainActivity mainActivity){
-		_mainActivity = mainActivity;
+		_mainActivity = MainActivity.Instance;
 	}
 	
 
 	@Override
 	public void create() {
 		
-		setScreen( new SplashScreen(this, _mainActivity));
+		setScreen( new SplashScreen(this));
 	}
 
 	@Override

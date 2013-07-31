@@ -72,11 +72,13 @@ public class MainMenu implements Screen, InputProcessor{
 	
 	
 	
-	public MainMenu (MainKeepUp game, MainActivity mainActivity){
-		_mainActivity = mainActivity;
+	public MainMenu (MainKeepUp game){
+		_mainActivity = MainActivity.Instance;
 		this.game = game;
+		
 		checkOnLIneStatus();
 		checkLogin();
+		
 		x = Gdx.graphics.getWidth();
 		y = Gdx.graphics.getHeight();
 		screenXRefactor = 1000;
@@ -84,6 +86,7 @@ public class MainMenu implements Screen, InputProcessor{
 		screenYRefactor = (int) (screenRatio * screenXRefactor);
 		camera = new OrthographicCamera(screenXRefactor, screenYRefactor);
 		Gdx.input.setInputProcessor(this);
+		
 		Tween.registerAccessor(Sprite.class, new SpriteTween());
 		manager = new TweenManager();
 		textureAddress = "data/menusButtons.png";
@@ -221,7 +224,7 @@ public class MainMenu implements Screen, InputProcessor{
 		
 	}
 	public void runGame(MainKeepUp game){
-		game.setScreen(new Game(game, _mainActivity ));
+		game.setScreen(new Game(game));
 	}
 
 	@Override
@@ -354,24 +357,17 @@ public class MainMenu implements Screen, InputProcessor{
 		if(CreditBool == true){
 			
 			Gdx.app.log(MainKeepUp.TAG, "Credits Btn Clicked!");
-			game.setScreen(new CreditsScreen(game, _mainActivity));
+			game.setScreen(new CreditsScreen(game));
 			
 		}
 
-		if(instructionBool == true){
-			
+		if(instructionBool == true){		
 			Gdx.app.log(MainKeepUp.TAG, "instructions Btn Clicked!");
-			//game.setScreen(new InstructionsScreen(game, _mainActivity));
+			game.setScreen(new InstructionsScreen(game));
 			
-			//_mainActivity.startResourcePage();  // Testing resource Page
-			_mainActivity.getAchievements();  // Testing Achievements Page
-
-			
-			
+			//_mainActivity.startResourcePage();  // Testing resource Page // WORKS
+			// _mainActivity.getAchievements();  // Testing Achievements Page // WORKS
 		}
-		
-		
-		
 		return true;
 	}
 

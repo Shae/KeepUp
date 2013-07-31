@@ -23,34 +23,31 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
-import com.google.example.games.basegameutils.BaseGameActivity;
 import com.klusman.keepup.Ball;
 import com.klusman.keepup.Bomb;
 import com.klusman.keepup.FreezeMotionTimer;
 import com.klusman.keepup.LifeMarks;
 import com.klusman.keepup.MainActivity;
 import com.klusman.keepup.MainKeepUp;
-import com.klusman.keepup.R;
-import com.klusman.keepup.ScoreHandler;
 import com.klusman.keepup.ShieldBoost;
 import com.klusman.keepup.healthKit;
 import com.klusman.keepup.database.ScoreSource;
 
 
 
-public class Game /*extends BaseGameActivity*/ implements Screen, InputProcessor {
+public class Game implements Screen, InputProcessor {
 	MainActivity _mainActivity;
 	MainKeepUp game;
 	ScoreSource _scoreSource;
-	
+
 	private static String TAG = "KeepUp";
 	public static final int GAME_READY = 0; 
 	public static final int GAME_RUNNING = 1; 
 	public static final int GAME_PAUSED = 2; 
 	public static final int GAME_OVER = 4;
-	
+
 	BitmapFont gameText;
-	
+
 	public static int gameState;
 
 	private OrthographicCamera camera;
@@ -78,15 +75,16 @@ public class Game /*extends BaseGameActivity*/ implements Screen, InputProcessor
 	float ticker;
 	float timeLimit = 20.0f;
 	float invincibilityTime;
-
-	int starLoop;
+	float spawnRate = 7;
 	
-	// Achievement / Leaderboard stuff //
+	int starLoop;
+
+	/// Achievement / Leaderboard stuff ///
 	int SCORE = 0;
 	int kitsUsed = 0;
 	int pointsReceivedBeforeFirstResourceUsed = 0;
-	
-	
+	///////////////////////////////////////
+
 
 	double randNumXLoc;
 	double randNumSize;
@@ -102,11 +100,11 @@ public class Game /*extends BaseGameActivity*/ implements Screen, InputProcessor
 	boolean shielded;
 	boolean freeze;
 	boolean firstResourceUsed = true;
-	
+
 
 	public Texture bombTx;
 	TextureRegion bombRegion;
-	
+
 	private Texture bgTx;
 	private Sprite bg;
 
@@ -122,7 +120,7 @@ public class Game /*extends BaseGameActivity*/ implements Screen, InputProcessor
 	TextureRegion starRegion0;
 	Array<TextureRegion> starHolder;
 
-	
+
 	private Sprite starSprite;
 
 	private Texture psTx;
@@ -150,15 +148,13 @@ public class Game /*extends BaseGameActivity*/ implements Screen, InputProcessor
 	public static final int Difficulty_Easy = 1;
 	public static final int Difficulty_Medium = 2;
 	public static final int Difficulty_Hard = 3;
-	
+
 	int frameLength;
 	int currentFrame;
 	int gameDifficulty = Difficulty_Medium;
-	
+
 	FreeTypeFontGenerator generator;
 	FreeTypeBitmapFontData font;
-	
-	
 
 	public Array<Ball> Balls;
 	public Array<healthKit> MedKits;
@@ -171,9 +167,9 @@ public class Game /*extends BaseGameActivity*/ implements Screen, InputProcessor
 	//TweenCallback cb;
 
 
-	public Game( MainKeepUp game, MainActivity mainActivity){
+	public Game( MainKeepUp game){
 
-		_mainActivity = mainActivity;
+		_mainActivity = MainActivity.Instance;
 		_scoreSource = new ScoreSource(_mainActivity);
 		this.game = game;
 		camera = new OrthographicCamera(screenXRefactor, screenYRefactor);
@@ -195,7 +191,7 @@ public class Game /*extends BaseGameActivity*/ implements Screen, InputProcessor
 		shieldedTime = 0;
 		freeze = false;
 		SCORE = 0;
-		
+
 		Balls = new Array<Ball>();
 		MedKits = new Array<healthKit>();
 		Shields = new Array<ShieldBoost>();
@@ -206,9 +202,9 @@ public class Game /*extends BaseGameActivity*/ implements Screen, InputProcessor
 		kidMovable = true;
 		kidMove = false;
 		kidHit = false;
-		
+
 		batch = new SpriteBatch();
-		
+
 		//// FONT SPECIFIC
 		generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/SourceFont.otf"));
 		font = generator.generateData(50);  // size based on the 1000px camera ratio
@@ -312,17 +308,17 @@ public class Game /*extends BaseGameActivity*/ implements Screen, InputProcessor
 		restartBtn.setSize(300f , 150f );
 		restartBtn.setOrigin(restartBtn.getWidth()/2, restartBtn.getHeight()/2);
 		restartBtn.setPosition(0 - restartBtn.getWidth()/2, -600);	
-		
-//		Tween.registerAccessor(Sprite.class, new SpriteTween());
-//		manager = new TweenManager();
-//		
-//		cb = new TweenCallback() {
-//			@Override
-//			public void onEvent(int type, BaseTween<?> source) {
-//				Gdx.app.log(MainKeepUp.TAG, "TWEEN COMPLETE");
-//				//tweenCompleted();  // what method to call when Event is triggered
-//			}
-//		};
+
+		//		Tween.registerAccessor(Sprite.class, new SpriteTween());
+		//		manager = new TweenManager();
+		//		
+		//		cb = new TweenCallback() {
+		//			@Override
+		//			public void onEvent(int type, BaseTween<?> source) {
+		//				Gdx.app.log(MainKeepUp.TAG, "TWEEN COMPLETE");
+		//				//tweenCompleted();  // what method to call when Event is triggered
+		//			}
+		//		};
 	}
 
 	@Override
@@ -367,7 +363,7 @@ public class Game /*extends BaseGameActivity*/ implements Screen, InputProcessor
 	public void resume() {
 
 	}
-	
+
 	@Override
 	public void dispose() {
 		batch.dispose();
@@ -417,12 +413,20 @@ public class Game /*extends BaseGameActivity*/ implements Screen, InputProcessor
 		}
 	}
 
-
+	/**
+	 * When Player is struck by the ball
+	 * this will add a Strike against them
+	 */
 	public void addLifeMark(){
 		LifeMarks mark = new LifeMarks();
 		Marks.add(mark);
 	}
 
+
+	/**
+	 * When player heals, this will remove a strike mark
+	 * if they currently have one.
+	 */
 	public void removeLifeMark(){
 		int size = Marks.size;
 		if(size > 0){
@@ -431,6 +435,9 @@ public class Game /*extends BaseGameActivity*/ implements Screen, InputProcessor
 	}
 
 
+	/**
+	 * returns a random number between 40 and 90
+	 */
 	public float getRandomSize(){
 		float r;
 		randNumSize = Math.random();  // random 0.0 to 1.0
@@ -451,6 +458,11 @@ public class Game /*extends BaseGameActivity*/ implements Screen, InputProcessor
 		}
 	}
 
+	/**
+	 * Returns a random speed between 3 and 8
+	 * @return
+	 */
+
 	public float getRandomSpeed(){
 		randNumSpeed = Math.random();  // 0.0 to 1.0
 		if(randNumSpeed < 0.1){
@@ -461,7 +473,12 @@ public class Game /*extends BaseGameActivity*/ implements Screen, InputProcessor
 	}
 
 
-
+	/**
+	 * Returns a random number between 500 and -500
+	 * Used for the X position starting location
+	 * when the camera is set to 1000 units wide
+	 * @return
+	 */
 	public float getRandomXLocation(){
 		float xFloat;
 		randNumXLoc = Math.random(); // 0.0 thru 1.0
@@ -488,31 +505,37 @@ public class Game /*extends BaseGameActivity*/ implements Screen, InputProcessor
 	}
 
 	public void makeNewKit( ){
-		Gdx.app.log(MainKeepUp.TAG, "Make New Health Kit");
+		//Gdx.app.log(MainKeepUp.TAG, "Make New Health Kit");
 		healthKit kit = new healthKit(getRandomXLocation(), getRandomSpeed());
 		MedKits.add(kit);
 	}
 
 	public void makeNewShield(){
-		Gdx.app.log(MainKeepUp.TAG, "Make New Shield");
+		//Gdx.app.log(MainKeepUp.TAG, "Make New Shield");
 		ShieldBoost shield = new ShieldBoost(getRandomXLocation(), getRandomSpeed());
 		Shields.add(shield);
 	}
 
 	public void makeNewTimeClock(){
-		Gdx.app.log(MainKeepUp.TAG, "Make New Time Clock");
+		//Gdx.app.log(MainKeepUp.TAG, "Make New Time Clock");
 		FreezeMotionTimer timeclock = new FreezeMotionTimer(getRandomXLocation(), getRandomSpeed());
 		Timers.add(timeclock);
 	}
 
 	public void makeNewBomb(){
-		Gdx.app.log(MainKeepUp.TAG, "Make New Bomb");
+		//Gdx.app.log(MainKeepUp.TAG, "Make New Bomb");
 		Bomb bomb = new Bomb(getRandomXLocation(), getRandomSpeed());
 		Bombs.add(bomb);
 		Gdx.app.log(MainKeepUp.TAG, "bombCount :" + Bombs.size);
 	}
 
 
+	
+	/**
+	 * Using deltaTime this method cycles through an array of TextureRegions
+	 * and animates a sprite.
+	 * @param dt
+	 */
 	public void updateSTARS(float dt){
 		ticker+=dt;
 		if(ticker>timeLimit){
@@ -528,7 +551,11 @@ public class Game /*extends BaseGameActivity*/ implements Screen, InputProcessor
 		}
 	}
 
-
+	/**
+	 * using deltaTime, this method checks to see if the time is divisible by 5,
+	 * if so a new ball it created.
+	 * @param deltaTime
+	 */
 
 	public void updateBallTimer(float deltaTime){
 		elapsedTime = deltaTime;
@@ -537,27 +564,59 @@ public class Game /*extends BaseGameActivity*/ implements Screen, InputProcessor
 		}
 	}
 
+	
+	/**
+	 * Using the deltaTime, this method checks the current time
+	 * against the elapsed time.  If the elapsed time in greater than 
+	 * the deltaTime a new Random resource is spawned.
+	 * @param deltaTime
+	 */
 	public void updateResourceTimer(float deltaTime){
 		elapsedTime = deltaTime;
+
 		if(elapsedTime > resourceTimer){
-			int r = (int) (Math.random() * 100);
-			//Gdx.app.log(MainKeepUp.TAG, "RANDOM Resource NUMBER is: " + r);
-			if (r <= 25){
+			
+			// Pull User defined resource spawn values
+			int health = MainActivity.spawnRateKit;
+			
+			int shield = MainActivity.spawnRateKit + 
+					MainActivity.spawnRateShield;
+			
+			int freeze = MainActivity.spawnRateKit + 
+					MainActivity.spawnRateShield + 
+					MainActivity.spawnRateFreeze;
+			
+			int bomb = MainActivity.spawnRateKit + 
+					MainActivity.spawnRateShield + 
+					MainActivity.spawnRateFreeze + 
+					MainActivity.spawnRateBomb;
+			
+			// Get Random # 1 - 100
+			int r = (int) (Math.random() * 100);  
+			
+			
+			
+			// Determine which resource is spawned
+			if (r <= health){
 				makeNewKit();
-			}else if ((r > 25) && (r <= 50)){
+			}else if ((r > health) && (r <= shield)){
 				makeNewShield();
-			}else if ((r > 50) && (r <= 80)){
+			}else if ((r > shield) && (r <= freeze)){
 				makeNewTimeClock();
-			}else{
+			}else if ((r > freeze) && (r <= bomb)){
 				makeNewBomb();	
+			}else{
+				// no spawn
 			}
-			resourceTimer = elapsedTime + 7;
+			
+			// Reset elapsed time
+			resourceTimer = elapsedTime + spawnRate;  
 		}
 	}
 
 	public void gameRestart(){
 		dispose();
-		game.setScreen(new Game(game, _mainActivity));
+		game.setScreen(new Game(game));
 
 	}
 
@@ -574,13 +633,13 @@ public class Game /*extends BaseGameActivity*/ implements Screen, InputProcessor
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
-		
+
 		batch.begin();
 		bg.draw(batch);
-	
+
 		gameText.setFixedWidthGlyphs("Score: " + SCORE);
 		gameText.draw(batch, "Score: " + SCORE, -500, (screenYRefactor / 2) - 40);
-		
+
 
 		if((invincibility == false) && (shielded == false)){
 			kid.draw(batch);
@@ -636,7 +695,7 @@ public class Game /*extends BaseGameActivity*/ implements Screen, InputProcessor
 			}
 		}
 
-		
+
 		if(freeze == true){
 			if(elapsedTime >= deltaFreezeTime){
 				freeze = false;
@@ -650,13 +709,13 @@ public class Game /*extends BaseGameActivity*/ implements Screen, InputProcessor
 				deltaShieldTime = 0;
 			}
 		}
-		
-		
+
+
 
 		pause.draw(batch);
 		batch.end();
 
-		
+
 		if(kidHit == true){
 			updateSTARS(deltaTime);
 		}
@@ -688,26 +747,26 @@ public class Game /*extends BaseGameActivity*/ implements Screen, InputProcessor
 		if(Bombs.size > 0){
 			for(Bomb bomb: Bombs) {
 				if(bomb.getRemoveTrigger() == true){ 
-					
+
 					//Gdx.app.log(MainKeepUp.TAG, "REMOVE BOMB FROM ARRAY");
 					Bombs.removeValue(bomb, true);  // Remove bomb from Array
-					
+
 				}else{
-					
-					
+
+
 					if(bomb.collision == false){ 
 						// do nothing, just wait
-						
+
 					}else{  // if collision is TRUE
 						bomb.setSizeXY(bomb.getSizeX() + 2, bomb.getSizeY() + 2);
 						bomb.setBombRotationAngle(5);
-						
-						
+
+
 						if (bomb.checkBombCountdown(deltaTime) == false){ 
 							//Gdx.app.log(MainKeepUp.TAG, "BOMB STILL COUNTING DOWN");	
-						
+
 						}else{  // If count down is Over
-							
+
 							bomb.setBombSpriteTexture(bombRegion);
 							//Gdx.app.log(MainKeepUp.TAG, "BOMB STILL Explosion Phase");	
 							bomb.bombLastPhaseExplosion(deltaTime);   // if time to blow up	
@@ -827,7 +886,7 @@ public class Game /*extends BaseGameActivity*/ implements Screen, InputProcessor
 		kid.draw(batch);
 		gameText.setFixedWidthGlyphs("Score: " + SCORE);
 		gameText.draw(batch, "Score: " + SCORE, -500, (screenYRefactor / 2) - 40);
-		
+
 		if(Balls.size > 0){
 			for(Ball ball: Balls) {
 				ball.draw(batch);
@@ -899,21 +958,21 @@ public class Game /*extends BaseGameActivity*/ implements Screen, InputProcessor
 			};
 		}
 	}
-	
-	
-//TODO
+
+
+	//TODO
 	public void checkStrikeOut(){
 		if(Marks.size >= 3){
 			boolean submited = false;
-			
+
 			if(submited == false){
 				if((_mainActivity.isOnline() == true) && (_mainActivity.getSignedIn() == true)){
 					_mainActivity.checkAndPushAchievements(SCORE, kitsUsed, pointsReceivedBeforeFirstResourceUsed);
 					_mainActivity.submitScore(SCORE);  // SEND SCORE to Google Play
 					//_mainActivity.getAchievements();
-//					ScoreHandler sh = new ScoreHandler();
-//					sh.submitScores(SCORE, kitsUsed, pointsReceivedBeforeFirstResourceUsed);
-			
+					//					ScoreHandler sh = new ScoreHandler();
+					//					sh.submitScores(SCORE, kitsUsed, pointsReceivedBeforeFirstResourceUsed);
+
 					submited = true;
 					try {
 						_mainActivity.notifyUser(SCORE);
@@ -939,41 +998,41 @@ public class Game /*extends BaseGameActivity*/ implements Screen, InputProcessor
 			gameState = GAME_OVER;
 		}
 	}
-	
-	
-//public void checkAchievements(){
-//		
-//		if(SCORE <= 50){
-//			getGamesClient().unlockAchievement(getString(R.string.achievement_quick_death));
-//		}
-//		
-//		if(pointsReceivedBeforeFirstResourceUsed >= 300){
-//			getGamesClient().unlockAchievement(getString(R.string.achievement_thrify_business));
-//		}
-//		
-//		if(SCORE >= 500){
-//			getGamesClient().unlockAchievement(getString(R.string.achievement_500_points));
-//		}
-//		
-//		if(SCORE >= 750){
-//			getGamesClient().unlockAchievement(getString(R.string.achievement_750_points));
-//		}
-//		
-//		if(SCORE >= 1000){
-//			getGamesClient().unlockAchievement(getString(R.string.achievement_1000_points));
-//		}
-//		
-//		if(kitsUsed >= 1){
-//			getGamesClient().incrementAchievement(getString(R.string.achievement_doctor_doctor), kitsUsed);
-//		}
-//	}
-//	
-//public void submitScores(){
-//	
-//	
-//	checkAchievements();
-//	_mainActivity.submitScore(SCORE);
-//}
+
+
+	//public void checkAchievements(){
+	//		
+	//		if(SCORE <= 50){
+	//			getGamesClient().unlockAchievement(getString(R.string.achievement_quick_death));
+	//		}
+	//		
+	//		if(pointsReceivedBeforeFirstResourceUsed >= 300){
+	//			getGamesClient().unlockAchievement(getString(R.string.achievement_thrify_business));
+	//		}
+	//		
+	//		if(SCORE >= 500){
+	//			getGamesClient().unlockAchievement(getString(R.string.achievement_500_points));
+	//		}
+	//		
+	//		if(SCORE >= 750){
+	//			getGamesClient().unlockAchievement(getString(R.string.achievement_750_points));
+	//		}
+	//		
+	//		if(SCORE >= 1000){
+	//			getGamesClient().unlockAchievement(getString(R.string.achievement_1000_points));
+	//		}
+	//		
+	//		if(kitsUsed >= 1){
+	//			getGamesClient().incrementAchievement(getString(R.string.achievement_doctor_doctor), kitsUsed);
+	//		}
+	//	}
+	//	
+	//public void submitScores(){
+	//	
+	//	
+	//	checkAchievements();
+	//	_mainActivity.submitScore(SCORE);
+	//}
 
 	public void ballLoopCheckAndSet(Ball ball){
 		Sprite ballSprite = ball.getBallSprite();
@@ -1043,12 +1102,12 @@ public class Game /*extends BaseGameActivity*/ implements Screen, InputProcessor
 				//ballSprite.setRotation(bRotate);
 
 				boolean kidVsCircleOverlap = ball.getOverlapBool(kid.getBoundingRectangle() );
-				
+
 				if(kidVsCircleOverlap == true){
 					if(ball.collision == false){  //  check for current collision
 						if(shielded == false){
 							if(invincibility == false){
-								
+
 								invincibility = true;
 								deltaShieldTime = Gdx.graphics.getDeltaTime();
 								addLifeMark();
@@ -1057,12 +1116,12 @@ public class Game /*extends BaseGameActivity*/ implements Screen, InputProcessor
 								ball.collision = true;  // sets current collision
 								ball.setYSpeed(ball.getYSpeed() * -1);
 								ball.setXSpeed(ball.getYSpeed() * -1);
-								
+
 								ball.setXPosition(ball.getXPosition() + ball.getXSpeed());
 								ball.setYPosition(ball.getYPosition() + ball.getYSpeed());
 								ballSprite.setX(moveX);
 								ballSprite.setY(moveY);
-								
+
 								ball.setCircleXY(moveX + ballSprite.getWidth()/2 , moveY + ballSprite.getHeight()/2 );
 							}
 						}
@@ -1148,7 +1207,7 @@ public class Game /*extends BaseGameActivity*/ implements Screen, InputProcessor
 		ShieldSprite.setY(moveY);
 		//ShieldSprite.setX(shield.getXPosition());
 		boolean kidVSShieldOverlap = ShieldSprite.getBoundingRectangle().overlaps(kid.getBoundingRectangle());
-		
+
 		if(kidVSShieldOverlap == true){	
 			shieldedTime = deltaTime + 4f;
 			powerUp.play(.05f);	
@@ -1164,12 +1223,12 @@ public class Game /*extends BaseGameActivity*/ implements Screen, InputProcessor
 	}
 
 	public void bombLoopCheckAndSet(Bomb bomb){
-		
+
 		Sprite bombSprite = bomb.getBombSprite();
 		//float xPosition = bomb.getXPosition();
 		float yPosition = bomb.getYPosition();
 		float yPosSpriteHeight = yPosition + bombSprite.getWidth();
-		
+
 		if(yPosSpriteHeight >= screenYRefactor / 2){
 			//Gdx.app.log(TAG, "Out of bounds Right");
 			bomb.setYSpeed(bomb.getYSpeed() * -1);
@@ -1190,10 +1249,10 @@ public class Game /*extends BaseGameActivity*/ implements Screen, InputProcessor
 		}
 
 		bomb.setYPosition(bomb.getYPosition() + bomb.getYSpeed());
-		
+
 		float moveY = Interpolation.linear.apply(bomb.getYPosition(), bomb.getYPosition() + bomb.getYSpeed(), 1);	
 		bombSprite.setY(moveY);
-		
+
 		boolean kidVSBombOverlap = bombSprite.getBoundingRectangle().overlaps(kid.getBoundingRectangle());
 		if(kidVSBombOverlap == true){	
 			if(bomb.getCollision() == false){
@@ -1208,10 +1267,10 @@ public class Game /*extends BaseGameActivity*/ implements Screen, InputProcessor
 				}
 
 			}
-			
+
 		}
 	}
-	
+
 
 
 	public void timerLoopCheckAndSet(FreezeMotionTimer timer){
@@ -1248,13 +1307,13 @@ public class Game /*extends BaseGameActivity*/ implements Screen, InputProcessor
 			deltaFreezeTime = elapsedTime + FreezeTimer;
 			powerUp.play(.05f);			
 			Timers.removeValue(timer, true); 
-			
+
 			if(firstResourceUsed == true){
 				pointsReceivedBeforeFirstResourceUsed = SCORE;
 				firstResourceUsed = false;
 			}
 		}
-		
+
 
 	}
 
@@ -1312,7 +1371,7 @@ public class Game /*extends BaseGameActivity*/ implements Screen, InputProcessor
 		Ray cameraRay = camera.getPickRay(touchPos.x, touchPos.y);
 
 		boolean kidDown = kid.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
-		
+
 		if(kidMovable == true){
 			if(kidDown == true){	
 				kidMove = true;
@@ -1348,8 +1407,8 @@ public class Game /*extends BaseGameActivity*/ implements Screen, InputProcessor
 
 			if(touchRestart == true){
 				gameRestart();
-			//	Intent intent = new Intent(Game.this, FinalScoreActivity.class);
-		      //  startActivity(intent);
+				//	Intent intent = new Intent(Game.this, FinalScoreActivity.class);
+				//  startActivity(intent);
 			}
 		}
 		kidMove = false;
@@ -1409,7 +1468,7 @@ public class Game /*extends BaseGameActivity*/ implements Screen, InputProcessor
 	public boolean keyDown(int keycode) {
 		if(keycode == Keys.BACK){
 			dispose();
-			game.setScreen(new MainMenu(game, _mainActivity));
+			game.setScreen(new MainMenu(game));
 		}
 		return false;
 	}
@@ -1424,15 +1483,15 @@ public class Game /*extends BaseGameActivity*/ implements Screen, InputProcessor
 		return false;
 	}
 
-  
-//    public void onShowAchievementsRequested() {
-//        if (isSignedIn()) {
-//   
-//            startActivityForResult(getGamesClient().getAchievementsIntent(), 5001);
-//        } else {
-//            showAlert("Achievements currently not available");
-//        }
-//    }
-	
-	
+
+	//    public void onShowAchievementsRequested() {
+	//        if (isSignedIn()) {
+	//   
+	//            startActivityForResult(getGamesClient().getAchievementsIntent(), 5001);
+	//        } else {
+	//            showAlert("Achievements currently not available");
+	//        }
+	//    }
+
+
 }

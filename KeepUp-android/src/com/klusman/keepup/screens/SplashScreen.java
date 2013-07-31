@@ -39,8 +39,8 @@ public class SplashScreen implements Screen{
 	private SpriteBatch batch;
 	public static Music bgMusic;
 	
-	public SplashScreen( MainKeepUp game, MainActivity mainActivity){
-		_mainActivity = mainActivity;
+	public SplashScreen( MainKeepUp game){
+		_mainActivity = MainActivity.Instance;
 		this.game = game;
 		x = Gdx.graphics.getWidth();
 		y = Gdx.graphics.getHeight();
@@ -109,7 +109,7 @@ public class SplashScreen implements Screen{
 	protected void tweenCompleted() {
 
 		Gdx.app.log(MainKeepUp.TAG, "Splash Tween COMPLETE");
-		game.setScreen(new MainMenu(game, _mainActivity));  // Send to MainMenu after tween complete
+		game.setScreen(new MainMenu(game));  // Send to MainMenu after tween complete
 
 	}
 

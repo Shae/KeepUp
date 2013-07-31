@@ -29,8 +29,8 @@ public class CreditsScreen implements Screen, InputProcessor{
 	Texture creditsTx;
 	
 	
-	public CreditsScreen(MainKeepUp game, MainActivity mainActiviy){
-		_mainActivity = mainActiviy;
+	public CreditsScreen(MainKeepUp game){
+		_mainActivity = MainActivity.Instance;
 		this.game = game;
 		x = Gdx.graphics.getWidth();
 		y = Gdx.graphics.getHeight();
@@ -94,7 +94,7 @@ public class CreditsScreen implements Screen, InputProcessor{
 	}
 
 	public void runGame(MainKeepUp game){
-		game.setScreen(new MainMenu(game, _mainActivity));
+		game.setScreen(new MainMenu(game));
 		
 	}
 	
@@ -104,7 +104,7 @@ public class CreditsScreen implements Screen, InputProcessor{
 	@Override
 	public boolean keyDown(int keycode) {
 		   if(keycode == Keys.BACK){
-			   game.setScreen(new MainMenu(game, _mainActivity));
+			   game.setScreen(new MainMenu(game));
 	        }
 		return false;
 	}
