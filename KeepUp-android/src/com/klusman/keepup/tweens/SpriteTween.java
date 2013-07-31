@@ -13,6 +13,8 @@ public class SpriteTween implements TweenAccessor<Sprite>{
     public static final int POSITION_Y = 4;
     public static final int POSITION_XY = 5;
     public static final int SCALE_XY = 6;
+    public static final int ROTATION = 7;
+    public static final int SIZE_XY_MOVE_XY = 8;
 
 
 	@Override
@@ -32,9 +34,19 @@ public class SpriteTween implements TweenAccessor<Sprite>{
             returnValues[1] = target.getY();
             return 2;
         case SCALE_XY:
-            returnValues[0] = target.getScaleX();
-            returnValues[1] = target.getScaleY();
+            returnValues[0] = target.getWidth();
+            returnValues[1] = target.getHeight();
             return 2;
+        case ROTATION:
+			returnValues[0] = target.getRotation();
+			return 1; 
+        case SIZE_XY_MOVE_XY:
+            returnValues[0] = target.getWidth();
+            returnValues[1] = target.getHeight();
+            returnValues[2] = target.getX();
+            returnValues[3] = target.getY();
+            return 4;
+            
 		default: 
 			return 0;
 		}
@@ -58,8 +70,16 @@ public class SpriteTween implements TweenAccessor<Sprite>{
                 target.setY(newValues[1]);
                 break;
             case SCALE_XY: 
-            	target.setScale(newValues[0], newValues[1]); 
+            	target.setSize(newValues[0], newValues[1]); 
             	break;
+            case ROTATION:
+				target.setRotation(newValues[0]);
+				break;
+            case SIZE_XY_MOVE_XY:
+            	target.setSize(newValues[0], newValues[1]);
+            	target.setX(newValues[2]);
+                target.setY(newValues[3]);
+                break;
 		}
 		
 	}

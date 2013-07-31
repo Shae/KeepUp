@@ -89,14 +89,14 @@ public class SplashScreen implements Screen{
 			}
 		};
 
-		Tween.to(titleSprite, SpriteTween.ALPHA, 2.5f)
+		Tween.to(titleSprite, SpriteTween.ALPHA, 2f)
 		.target(1)
 		.ease(TweenEquations.easeInQuad)
 		.start(manager);  // start the tween using the passed in manager
 
 		Tween.to(titleSprite, SpriteTween.POSITION_XY, 4f).targetRelative(0, 200 + titleSprite.getHeight()/2).start(manager);
 		
-		Tween.to(nameSprite, SpriteTween.ALPHA, 2.5f)
+		Tween.to(nameSprite, SpriteTween.ALPHA, 2f)
 		.target(1)
 		.ease(TweenEquations.easeInQuad)
 		.repeatYoyo(1, .5f)  // repeat once after X 

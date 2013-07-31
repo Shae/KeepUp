@@ -140,10 +140,13 @@ public class Game implements Screen, InputProcessor {
 	public static Sprite pause;
 
 	public static Sound buzzer;
-	public static Sound bounce;
+	public static Sound bounce1;
 	public static Sound powerUp;
 	public static Sound hardBounce;
 	public static Sound timeBomb;
+	public static Sound bgGymNoise;
+	public static Sound bounce2;
+	public static Sound bounce3;
 
 	public static final int Difficulty_Easy = 1;
 	public static final int Difficulty_Medium = 2;
@@ -214,9 +217,13 @@ public class Game implements Screen, InputProcessor {
 		/// AUDIO  ///
 		powerUp = Gdx.audio.newSound(Gdx.files.internal("audio/PowerUp.wav"));
 		buzzer = Gdx.audio.newSound(Gdx.files.internal("audio/Buzzer.wav"));
-		bounce = Gdx.audio.newSound(Gdx.files.internal("audio/ballbounce04.wav"));
+		bounce1 = Gdx.audio.newSound(Gdx.files.internal("audio/ballbounce04.wav"));
+		bounce2 = Gdx.audio.newSound(Gdx.files.internal("audio/ballBounce03.wav"));
+		bounce3 = Gdx.audio.newSound(Gdx.files.internal("audio/ballBounce02.wav"));
+		
 		hardBounce = Gdx.audio.newSound(Gdx.files.internal("audio/HardBounce.wav"));
 		timeBomb = Gdx.audio.newSound(Gdx.files.internal("audio/timeBombSound.wav"));
+		bgGymNoise = Gdx.audio.newSound(Gdx.files.internal("audio/gymShoes.wav"));
 
 		//// BACKGROUND
 		bgTx = new Texture(Gdx.files.internal("data/bballcourtWhite.png"));
@@ -309,16 +316,6 @@ public class Game implements Screen, InputProcessor {
 		restartBtn.setOrigin(restartBtn.getWidth()/2, restartBtn.getHeight()/2);
 		restartBtn.setPosition(0 - restartBtn.getWidth()/2, -600);	
 
-		//		Tween.registerAccessor(Sprite.class, new SpriteTween());
-		//		manager = new TweenManager();
-		//		
-		//		cb = new TweenCallback() {
-		//			@Override
-		//			public void onEvent(int type, BaseTween<?> source) {
-		//				Gdx.app.log(MainKeepUp.TAG, "TWEEN COMPLETE");
-		//				//tweenCompleted();  // what method to call when Event is triggered
-		//			}
-		//		};
 	}
 
 	@Override
@@ -633,6 +630,8 @@ public class Game implements Screen, InputProcessor {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
+		//bgGymNoise.play(.5);
+		bgGymNoise.play();
 
 		batch.begin();
 		bg.draw(batch);
@@ -1066,27 +1065,27 @@ public class Game implements Screen, InputProcessor {
 					//Gdx.app.log(TAG, "Out of bounds Down");  
 					ball.setXSpeed(ball.getXSpeed() * -1);
 					ball.setXPosition(ball.getXPosition() + ball.getXSpeed());
-					bounce.play(.7f);
+					bounce3.play(.7f);
 				}
 
 				if(yPosSpriteHeight >= screenYRefactor / 2){
 					//Gdx.app.log(TAG, "Out of bounds Right");
 					ball.setYSpeed(ball.getYSpeed() * -1);
 					ball.setYPosition(ball.getYPosition() + ball.getYSpeed());
-					bounce.play(.3f);	
+					bounce1.play(.6f);	
 				}
 				if(xPosition <= (screenXRefactor/2) * -1){
 					//Gdx.app.log(TAG, "Out of bounds Up");
 					ball.setXSpeed(ball.getXSpeed() * -1);
 					ball.setXPosition(ball.getXPosition() + ball.getXSpeed());
-					bounce.play(.5f);
+					bounce2.play(.5f);
 				} 
 				if(yPosition <= (screenYRefactor / 2) * -1){
 					//Gdx.app.log(TAG, "Out of bounds Left");
 					ball.setYSpeed(ball.getYSpeed() * -1);
 					ball.setYPosition(ball.getYPosition() + ball.getYSpeed());
 
-					bounce.play(.8f);	
+					bounce1.play(.8f);	
 				}
 
 				ball.setXPosition(ball.getXPosition() + ball.getXSpeed());
