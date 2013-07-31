@@ -177,35 +177,55 @@ containing a value of this type.
         public static final int button3=0x7f050009;
         public static final int hybrid=0x7f050004;
         public static final int list=0x7f05000f;
+        public static final int minusBtn1=0x7f050016;
+        public static final int minusBtn2=0x7f05001b;
+        public static final int minusBtn3=0x7f050020;
+        public static final int minusBtn4=0x7f050025;
         public static final int none=0x7f050000;
         public static final int normal=0x7f050001;
+        public static final int plusBtn1=0x7f050014;
+        public static final int plusBtn2=0x7f050019;
+        public static final int plusBtn3=0x7f05001e;
+        public static final int plusBtn4=0x7f050023;
+        public static final int pointsText=0x7f050011;
         public static final int radioGrp=0x7f05000c;
         public static final int radioScore=0x7f05000e;
         public static final int radioScoreLow=0x7f05000d;
+        public static final int resSub1=0x7f050013;
+        public static final int resSub2=0x7f050018;
+        public static final int resSub3=0x7f05001d;
+        public static final int resSub4=0x7f050022;
+        public static final int resTitle1=0x7f050012;
+        public static final int resTitle2=0x7f050017;
+        public static final int resTitle3=0x7f05001c;
+        public static final int resTitle4=0x7f050021;
+        public static final int resourceTitle=0x7f050005;
         public static final int satellite=0x7f050002;
         public static final int scoreText=0x7f050006;
+        public static final int subTitle=0x7f050010;
         public static final int terrain=0x7f050003;
         public static final int textName=0x7f05000a;
         public static final int textScore=0x7f05000b;
-        public static final int textView1=0x7f050005;
+        public static final int value1=0x7f050015;
+        public static final int value2=0x7f05001a;
+        public static final int value3=0x7f05001f;
+        public static final int value4=0x7f050024;
     }
     public static final class layout {
         public static final int final_screen=0x7f030000;
         public static final int leaderboard_cell=0x7f030001;
         public static final int local_leaderboard=0x7f030002;
         public static final int main=0x7f030003;
+        public static final int resource_cell=0x7f030004;
+        public static final int resource_manager=0x7f030005;
     }
     public static final class string {
-        public static final int achievement_arrogant=0x7f06001a;
-        public static final int achievement_bored=0x7f060018;
-        public static final int achievement_humble=0x7f060019;
-        public static final int achievement_leet=0x7f06001b;
-        /**  TODO: Replace these by your achievement/leaderboard IDs! 
-         */
-        public static final int achievement_prime=0x7f060016;
-        public static final int achievement_really_bored=0x7f060017;
-        /**  TODO: Replace this by your app's app ID! 
-         */
+        public static final int achievement_1000_points=0x7f06001b;
+        public static final int achievement_500_points=0x7f060019;
+        public static final int achievement_750_points=0x7f06001a;
+        public static final int achievement_doctor_doctor=0x7f060018;
+        public static final int achievement_quick_death=0x7f060016;
+        public static final int achievement_thrify_business=0x7f060017;
         public static final int app_id=0x7f060015;
         public static final int app_name=0x7f06001f;
         /**   Title for notification shown when GooglePlayServices needs to be

@@ -15,16 +15,16 @@
    limitations under the License.
 -->
 <resources>
-    <!-- TODO: Replace this by your app's app ID! -->
+   
     <string name="app_id">763059805787</string>
-
-    <!-- TODO: Replace these by your achievement/leaderboard IDs! -->
-    <string name="achievement_prime">ReplaceMe</string>
-    <string name="achievement_really_bored">ReplaceMe</string>
-    <string name="achievement_bored">ReplaceMe</string>
-    <string name="achievement_humble">ReplaceMe</string>
-    <string name="achievement_arrogant">ReplaceMe</string>
-    <string name="achievement_leet">ReplaceMe</string>
+   
+    <string name="achievement_quick_death">CgkI27yiz5oWEAIQBg</string>
+    <string name="achievement_thrify_business">CgkI27yiz5oWEAIQCA</string>
+    <string name="achievement_doctor_doctor">CgkI27yiz5oWEAIQCQ</string>
+    <string name="achievement_500_points">CgkI27yiz5oWEAIQCg</string>
+    <string name="achievement_750_points">CgkI27yiz5oWEAIQCw</string>
+    <string name="achievement_1000_points">CgkI27yiz5oWEAIQDA</string>
+    
 	<string name="leaderboard_ID">CgkI27yiz5oWEAIQBQ</string>
     <string name="leaderboard_easy">ReplaceMe</string>
     <string name="leaderboard_hard">ReplaceMe</string>

@@ -69,6 +69,9 @@ public class MainMenu implements Screen, InputProcessor{
 	Sprite googleOut;
 	Texture googOutTx;
 	
+	
+	
+	
 	public MainMenu (MainKeepUp game, MainActivity mainActivity){
 		_mainActivity = mainActivity;
 		this.game = game;
@@ -352,12 +355,19 @@ public class MainMenu implements Screen, InputProcessor{
 			
 			Gdx.app.log(MainKeepUp.TAG, "Credits Btn Clicked!");
 			game.setScreen(new CreditsScreen(game, _mainActivity));
+			
 		}
 
 		if(instructionBool == true){
 			
 			Gdx.app.log(MainKeepUp.TAG, "instructions Btn Clicked!");
-			game.setScreen(new InstructionsScreen(game, _mainActivity));
+			//game.setScreen(new InstructionsScreen(game, _mainActivity));
+			
+			//_mainActivity.startResourcePage();  // Testing resource Page
+			_mainActivity.getAchievements();  // Testing Achievements Page
+
+			
+			
 		}
 		
 		

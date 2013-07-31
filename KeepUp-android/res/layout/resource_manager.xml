@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/resourceTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:text="Resource Manager"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/subTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:layout_weight="0.29"
+        android:gravity="center"
+        android:text="Manage your unlocked resources and the % chance they spawn!"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/pointsText"
+        android:layout_width="263dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="15dp"
+        android:gravity="center"
+        android:text="You have 100 points to spend"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:layout_margin="10dp"
+            android:background="@android:color/white"
+            android:orientation="vertical" >
+
+    </LinearLayout>
+    
+  <!-- //////////////////////////////  RESOURCE 1  ////////////////////////////  -->
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:layout_marginLeft="15dp" >
+
+        <LinearLayout
+            android:layout_width="222dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/resTitle1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Health Kit"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:id="@+id/resSub1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_weight="0.91"
+                android:text="Will remove ONE strike mark (if you currently have one).  Don&apos;t waste these!"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@+id/plusBtn1"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="+"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/value1"
+                android:layout_width="47dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="00"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="25sp" />
+
+            <Button
+                android:id="@+id/minusBtn1"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="-"
+                android:textSize="25sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="2px"
+        android:layout_margin="10dp"
+        android:background="@android:color/white"
+        android:orientation="vertical" >
+
+    </LinearLayout>
+    
+     <!-- //////////////////////////////  RESOURCE 2  ////////////////////////////  -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:layout_marginLeft="15dp" >
+
+        <LinearLayout
+            android:layout_width="222dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/resTitle2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Shield"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:id="@+id/resSub2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_weight="0.91"
+                android:text="Provides 4 seconds of involunerability"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@+id/plusBtn2"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="+"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/value2"
+                android:layout_width="47dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="00"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="25sp" />
+
+            <Button
+                android:id="@+id/minusBtn2"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="-"
+                android:textSize="25sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+    
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:layout_margin="10dp"
+            android:background="@android:color/white"
+            android:orientation="vertical" >
+
+    </LinearLayout>
+     <!-- //////////////////////////////  RESOURCE 3  ////////////////////////////  -->
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="130dp"
+           android:layout_marginLeft="15dp" >
+
+        <LinearLayout
+            android:layout_width="222dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/resTitle3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Freeze Time"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:id="@+id/resSub3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_weight="0.91"
+                android:text="Freeze the balls in place, but still avoid them at all cost!"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@+id/plusBtn3"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="+"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/value3"
+                android:layout_width="47dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="00"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="25sp" />
+
+            <Button
+                android:id="@+id/minusBtn3"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="-"
+                android:textSize="25sp" />
+
+        </LinearLayout>
+    </LinearLayout>
+    
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="2px"
+               android:layout_margin="10dp"
+               android:background="@android:color/white"
+               android:orientation="vertical" >
+
+    </LinearLayout>
+    <!-- //////////////////////////////  RESOURCE 4  ////////////////////////////  -->    
+
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="130dp"
+               android:layout_marginBottom="40dp"
+               android:layout_marginLeft="15dp" >
+
+        <LinearLayout
+            android:layout_width="222dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/resTitle4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Bomb"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:id="@+id/resSub4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_weight="0.91"
+                android:text="Used to destroy bombs.  (Not harmful to you)"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@+id/plusBtn4"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="+"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/value4"
+                android:layout_width="47dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="00"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="25sp" />
+
+            <Button
+                android:id="@+id/minusBtn4"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="-"
+                android:textSize="25sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+    
+
+</LinearLayout>
+
+</ScrollView>

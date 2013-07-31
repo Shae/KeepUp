@@ -21,24 +21,27 @@ import com.google.example.games.basegameutils.GameHelper;
 import com.google.example.games.basegameutils.GameHelper.GameHelperListener;
 import com.klusman.keepup.database.ScoreSource;
 import com.klusman.keepup.screens.LocalLeaderboardList;
+import com.klusman.keepup.screens.ResourceManagerActivity;
 
 
 
 public class MainActivity extends AndroidApplication implements GameHelperListener, GoogleInterface {
-	Context context;
+	static Context context;
 	public static GameHelper aHelper;
 	public SQLiteOpenHelper dbHelper;
 	public SQLiteDatabase database;
 	ScoreSource datasource;
 	String userName = "John Doe";
+	public static MainActivity Instance = null;
 
-	
+
 
 	private OnLeaderboardScoresLoadedListener theLeaderboardListener;
 
 	public MainActivity(){
-		
+
 		context = this;
+		Instance = this;
 		aHelper = new GameHelper(this);
 		aHelper.enableDebugLog(true, "KeepUp");
 
@@ -52,24 +55,24 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 				}
 			}
 
-			
+
 		};
 	}
-	
+
 	public String getUserName(){
 		return userName;
 	}
-	
+
 	public boolean isOnline() {
-	    ConnectivityManager cm =
-	        (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-	    NetworkInfo netInfo = cm.getActiveNetworkInfo();
-	    if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-	    	Log.i(MainKeepUp.TAG, "ONLINE CHECK PASSED");
-	        return true;
-	    }
-	    Log.i(MainKeepUp.TAG, "ONLINE CHECK FAILED");
-	    return false;
+		ConnectivityManager cm =
+				(ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo netInfo = cm.getActiveNetworkInfo();
+		if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+			Log.i(MainKeepUp.TAG, "CONNECTION: Online");
+			return true;
+		}
+		Log.i(MainKeepUp.TAG, "CONNECTION: Not Online");
+		return false;
 	}
 
 	@Override
@@ -80,7 +83,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 		cfg.useGL20 = false;
 		aHelper.setup(this);
 		initialize(new MainKeepUp(MainActivity.this), cfg);
-		
+		//initialize(new ReasourceManagerActivity(MainActivity.this), cfg);
 		datasource = new ScoreSource(this);
 		datasource.open();
 	}
@@ -153,6 +156,10 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 		startActivityForResult(aHelper.getGamesClient().getLeaderboardIntent(getString(R.string.leaderboard_ID)), 5001 /*105*/);
 	}
 
+	public void getAchievements(){
+		startActivityForResult(aHelper.getGamesClient().getAchievementsIntent(), 5001 );
+	}
+
 	public void getScoresData() {
 		aHelper.getGamesClient().loadPlayerCenteredScores(theLeaderboardListener,
 				getString(R.string.leaderboard_ID),
@@ -160,7 +167,8 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 				1,
 				25) ;
 	}
-	
+
+
 	/**
 	 * Notifies the played via alert dialog pop-up of their score.
 	 * Also checks to see if the user online and if they are signed into Google Play.
@@ -169,7 +177,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	 * Negative button closes dialog.
 	 * @param Score
 	 */
-	
+
 	public void notifyUser(int Score){
 		final int s = Score;
 
@@ -194,8 +202,6 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 
 					// set title
 					alertDialogBuilder.setTitle("GAME OVER");
-
-
 					// set dialog message
 					alertDialogBuilder
 					.setMessage(stringMsg)
@@ -217,8 +223,6 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 						}
 
 					})
-
-
 					.setNegativeButton("Done",new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog,int id) {
 							Log.i(MainKeepUp.TAG, "Done");
@@ -239,19 +243,19 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 		}
 
 	}
-	
+
 	/**
 	 * Builds an alert dialog box with an edit text input on a separate thread.
 	 * Returns nothing.  Must be caught within code.
 	 */
-	
+
 	public void getUsername(){
 		try {
 			runOnUiThread(new Runnable(){
 
 				//@Override
 				public void run(){
-					
+
 					final AlertDialog.Builder alert = new AlertDialog.Builder(context);
 					final EditText input = new EditText(context);
 					alert.setTitle("Enter User Name");
@@ -264,18 +268,61 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 							userName = value;
 						}
 					});
-					
+
 					alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int whichButton) {
 							dialog.cancel();
 						}
 					});
 					alert.show();   
-					
+
 				}
 			});
 		}catch (final Exception ex){
 
 		}
 	}
+
+
+	public void startResourcePage(){
+		Intent intent = new Intent(this, ResourceManagerActivity.class);
+		startActivity(intent);
+	}
+
+	
+	
+	public void checkAndPushAchievements(int SCORE, int kitsUsed, int pointsReceivedBeforeFirstResourceUsed){
+
+		if(SCORE <= 50){
+			aHelper.getGamesClient().unlockAchievement(getString(R.string.achievement_quick_death));
+			Log.i(MainKeepUp.TAG, "Achievement: Quick Death");
+		}
+
+		if(pointsReceivedBeforeFirstResourceUsed >= 300){
+			aHelper.getGamesClient().unlockAchievement(getString(R.string.achievement_thrify_business));
+			Log.i(MainKeepUp.TAG, "Achievement: Thrifty Business");
+		}
+
+		if(SCORE >= 500){
+			aHelper.getGamesClient().unlockAchievement(getString(R.string.achievement_500_points));
+			Log.i(MainKeepUp.TAG, "Achievement: 500 points");
+		}
+
+		if(SCORE >= 750){
+			aHelper.getGamesClient().unlockAchievement(getString(R.string.achievement_750_points));
+			Log.i(MainKeepUp.TAG, "Achievement: 750 points");
+		}
+
+		if(SCORE >= 1000){
+			aHelper.getGamesClient().unlockAchievement(getString(R.string.achievement_1000_points));
+			Log.i(MainKeepUp.TAG, "Achievement: 1000 points");
+		}
+
+		if(kitsUsed >= 1){
+			aHelper.getGamesClient().incrementAchievement(getString(R.string.achievement_doctor_doctor), kitsUsed);
+			Log.i(MainKeepUp.TAG, "Achievement: Doctor! Doctor!");
+		}
+	}
+
+
 }

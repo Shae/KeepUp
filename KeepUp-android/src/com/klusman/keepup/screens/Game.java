@@ -23,19 +23,22 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
+import com.google.example.games.basegameutils.BaseGameActivity;
 import com.klusman.keepup.Ball;
 import com.klusman.keepup.Bomb;
 import com.klusman.keepup.FreezeMotionTimer;
 import com.klusman.keepup.LifeMarks;
 import com.klusman.keepup.MainActivity;
 import com.klusman.keepup.MainKeepUp;
+import com.klusman.keepup.R;
+import com.klusman.keepup.ScoreHandler;
 import com.klusman.keepup.ShieldBoost;
 import com.klusman.keepup.healthKit;
 import com.klusman.keepup.database.ScoreSource;
 
 
 
-public class Game implements Screen, InputProcessor {
+public class Game /*extends BaseGameActivity*/ implements Screen, InputProcessor {
 	MainActivity _mainActivity;
 	MainKeepUp game;
 	ScoreSource _scoreSource;
@@ -77,7 +80,13 @@ public class Game implements Screen, InputProcessor {
 	float invincibilityTime;
 
 	int starLoop;
+	
+	// Achievement / Leaderboard stuff //
 	int SCORE = 0;
+	int kitsUsed = 0;
+	int pointsReceivedBeforeFirstResourceUsed = 0;
+	
+	
 
 	double randNumXLoc;
 	double randNumSize;
@@ -92,6 +101,7 @@ public class Game implements Screen, InputProcessor {
 	boolean invincibility;
 	boolean shielded;
 	boolean freeze;
+	boolean firstResourceUsed = true;
 	
 
 	public Texture bombTx;
@@ -889,13 +899,21 @@ public class Game implements Screen, InputProcessor {
 			};
 		}
 	}
+	
+	
 //TODO
 	public void checkStrikeOut(){
 		if(Marks.size >= 3){
 			boolean submited = false;
+			
 			if(submited == false){
 				if((_mainActivity.isOnline() == true) && (_mainActivity.getSignedIn() == true)){
+					_mainActivity.checkAndPushAchievements(SCORE, kitsUsed, pointsReceivedBeforeFirstResourceUsed);
 					_mainActivity.submitScore(SCORE);  // SEND SCORE to Google Play
+					//_mainActivity.getAchievements();
+//					ScoreHandler sh = new ScoreHandler();
+//					sh.submitScores(SCORE, kitsUsed, pointsReceivedBeforeFirstResourceUsed);
+			
 					submited = true;
 					try {
 						_mainActivity.notifyUser(SCORE);
@@ -905,8 +923,6 @@ public class Game implements Screen, InputProcessor {
 					}
 					// & SUBMIT TO LOCAL LEADERBOARD
 					_scoreSource.createScore(_mainActivity.getUserName(), SCORE);
-				
-					
 
 				}else{
 					// SUBMIT TO LOCAL LEADERBOARD
@@ -923,6 +939,41 @@ public class Game implements Screen, InputProcessor {
 			gameState = GAME_OVER;
 		}
 	}
+	
+	
+//public void checkAchievements(){
+//		
+//		if(SCORE <= 50){
+//			getGamesClient().unlockAchievement(getString(R.string.achievement_quick_death));
+//		}
+//		
+//		if(pointsReceivedBeforeFirstResourceUsed >= 300){
+//			getGamesClient().unlockAchievement(getString(R.string.achievement_thrify_business));
+//		}
+//		
+//		if(SCORE >= 500){
+//			getGamesClient().unlockAchievement(getString(R.string.achievement_500_points));
+//		}
+//		
+//		if(SCORE >= 750){
+//			getGamesClient().unlockAchievement(getString(R.string.achievement_750_points));
+//		}
+//		
+//		if(SCORE >= 1000){
+//			getGamesClient().unlockAchievement(getString(R.string.achievement_1000_points));
+//		}
+//		
+//		if(kitsUsed >= 1){
+//			getGamesClient().incrementAchievement(getString(R.string.achievement_doctor_doctor), kitsUsed);
+//		}
+//	}
+//	
+//public void submitScores(){
+//	
+//	
+//	checkAchievements();
+//	_mainActivity.submitScore(SCORE);
+//}
 
 	public void ballLoopCheckAndSet(Ball ball){
 		Sprite ballSprite = ball.getBallSprite();
@@ -1057,8 +1108,13 @@ public class Game implements Screen, InputProcessor {
 
 		if(kidVSKitOverlap == true){		
 			powerUp.play(.05f);
-			removeLifeMark();			
-			MedKits.removeValue(kit, true);   
+			removeLifeMark();	
+			kitsUsed = kitsUsed + 1;  // increase kit count for final point 
+			MedKits.removeValue(kit, true);  
+			if(firstResourceUsed == true){
+				pointsReceivedBeforeFirstResourceUsed = SCORE;
+				firstResourceUsed = false;
+			}
 		}
 
 	}
@@ -1098,7 +1154,11 @@ public class Game implements Screen, InputProcessor {
 			powerUp.play(.05f);	
 			shielded = true;
 			deltaShieldTime = Gdx.graphics.getDeltaTime();
-			Shields.removeValue(shield, true);   
+			Shields.removeValue(shield, true);  
+			if(firstResourceUsed == true){
+				pointsReceivedBeforeFirstResourceUsed = SCORE;
+				firstResourceUsed = false;
+			}
 		}
 
 	}
@@ -1142,6 +1202,10 @@ public class Game implements Screen, InputProcessor {
 				bomb.setTheDeltaBombTime(deltaTime);
 				timeBomb.play(.07f);
 				bomb.setYSpeed(0);
+				if(firstResourceUsed == true){
+					pointsReceivedBeforeFirstResourceUsed = SCORE;
+					firstResourceUsed = false;
+				}
 
 			}
 			
@@ -1183,7 +1247,12 @@ public class Game implements Screen, InputProcessor {
 			freeze = true;
 			deltaFreezeTime = elapsedTime + FreezeTimer;
 			powerUp.play(.05f);			
-			Timers.removeValue(timer, true);   
+			Timers.removeValue(timer, true); 
+			
+			if(firstResourceUsed == true){
+				pointsReceivedBeforeFirstResourceUsed = SCORE;
+				firstResourceUsed = false;
+			}
 		}
 		
 
@@ -1354,5 +1423,16 @@ public class Game implements Screen, InputProcessor {
 	public boolean keyTyped(char character) {
 		return false;
 	}
+
+  
+//    public void onShowAchievementsRequested() {
+//        if (isSignedIn()) {
+//   
+//            startActivityForResult(getGamesClient().getAchievementsIntent(), 5001);
+//        } else {
+//            showAlert("Achievements currently not available");
+//        }
+//    }
+	
 	
 }

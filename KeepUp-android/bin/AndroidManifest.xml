@@ -37,6 +37,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.klusman.keepup.screens.LocalLeaderboardList" />
+        <activity android:name="com.klusman.keepup.screens.ResourceManagerActivity" />
     </application>
 
 </manifest>
