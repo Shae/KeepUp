@@ -144,7 +144,7 @@ public class Game implements Screen, InputProcessor {
 	public static Sound powerUp;
 	public static Sound hardBounce;
 	public static Sound timeBomb;
-	public static Sound bgGymNoise;
+	//public Sound bgGymNoise;
 	public static Sound bounce2;
 	public static Sound bounce3;
 
@@ -184,7 +184,8 @@ public class Game implements Screen, InputProcessor {
 
 	@Override
 	public void show() {
-
+		//bgGymNoise = Gdx.audio.newSound(Gdx.files.internal("audio/gymShoes.wav"));
+		//bgGymNoise.play();
 		gameState = GAME_RUNNING;
 		invincibility = false;
 		shielded = false;
@@ -223,7 +224,7 @@ public class Game implements Screen, InputProcessor {
 		
 		hardBounce = Gdx.audio.newSound(Gdx.files.internal("audio/HardBounce.wav"));
 		timeBomb = Gdx.audio.newSound(Gdx.files.internal("audio/timeBombSound.wav"));
-		bgGymNoise = Gdx.audio.newSound(Gdx.files.internal("audio/gymShoes.wav"));
+		
 
 		//// BACKGROUND
 		bgTx = new Texture(Gdx.files.internal("data/bballcourtWhite.png"));
@@ -619,6 +620,7 @@ public class Game implements Screen, InputProcessor {
 
 
 	public void gameReady(){
+		
 	}
 
 
@@ -630,8 +632,6 @@ public class Game implements Screen, InputProcessor {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
-		//bgGymNoise.play(.5);
-		bgGymNoise.play();
 
 		batch.begin();
 		bg.draw(batch);
@@ -968,12 +968,15 @@ public class Game implements Screen, InputProcessor {
 				if((_mainActivity.isOnline() == true) && (_mainActivity.getSignedIn() == true)){
 					_mainActivity.checkAndPushAchievements(SCORE, kitsUsed, pointsReceivedBeforeFirstResourceUsed);
 					_mainActivity.submitScore(SCORE);  // SEND SCORE to Google Play
-					//_mainActivity.getAchievements();
-					//					ScoreHandler sh = new ScoreHandler();
-					//					sh.submitScores(SCORE, kitsUsed, pointsReceivedBeforeFirstResourceUsed);
+					
 
 					submited = true;
 					try {
+						
+						if(MainActivity.userName == ""){
+							_mainActivity.getUsername();  // Popup
+						}
+						
 						_mainActivity.notifyUser(SCORE);
 					} catch (Exception e) {
 						// TODO Auto-generated catch block

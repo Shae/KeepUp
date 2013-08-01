@@ -12,8 +12,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.EditText;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.google.android.gms.games.Player;
 import com.google.android.gms.games.leaderboard.LeaderboardBuffer;
 import com.google.android.gms.games.leaderboard.LeaderboardScoreBuffer;
 import com.google.android.gms.games.leaderboard.OnLeaderboardScoresLoadedListener;
@@ -31,13 +34,15 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	public SQLiteOpenHelper dbHelper;
 	public SQLiteDatabase database;
 	ScoreSource datasource;
-	String userName = "John Doe";
+	public static String userName = "";
 	public static MainActivity Instance = null;
 
 	public static int spawnRateKit = 25;
 	public static int spawnRateShield = 25;
 	public static int spawnRateBomb = 25;
 	public static int spawnRateFreeze = 25;
+
+	
 	
 	private OnLeaderboardScoresLoadedListener theLeaderboardListener;
 
@@ -47,7 +52,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 		Instance = this;
 		aHelper = new GameHelper(this);
 		aHelper.enableDebugLog(true, "KeepUp");
-
+	
 		//create a listener for getting raw data back from leaderboard
 		theLeaderboardListener = new OnLeaderboardScoresLoadedListener() {
 
@@ -115,6 +120,8 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 
 	public void onSignInSucceeded() {
 		System.out.println("sign in succeeded");
+		Player player = aHelper.getGamesClient().getCurrentPlayer();
+		userName = player.getDisplayName();
 	}
 
 	public void Login() {
@@ -138,6 +145,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 				//@Override
 				public void run(){
 					aHelper.signOut();
+					userName = "";
 				}
 			});
 		}catch (final Exception ex){
@@ -183,7 +191,6 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 
 	public void notifyUser(int Score){
 		final int s = Score;
-
 		try {
 			runOnUiThread(new Runnable(){
 
@@ -195,16 +202,16 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 
 					if(isOnline() == true){
 						if(getSignedIn() == true){
-							stringMsg = "FINAL SCORE: " + s + "\nSaved to Google Play Leaderboard. " ;
+							stringMsg = userName + "FINAL SCORE: " + s + "\nSaved to Google Play Leaderboard. " ;
 						}else{
-							stringMsg = "FINAL SCORE: " + s + "\nSaved to your Local Leaderboard. " ;
+							stringMsg = userName + "FINAL SCORE: " + s + "\nSaved to your Local Leaderboard. " ;
 						}
 					}else{
 						stringMsg = "FINAL SCORE: " + s + "\nSaved to your Local Leaderboard. ";
 					}
 
 					// set title
-					alertDialogBuilder.setTitle("GAME OVER");
+					alertDialogBuilder.setTitle("-- GAME OVER --");
 					// set dialog message
 					alertDialogBuilder
 					.setMessage(stringMsg)
@@ -217,14 +224,11 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 									getScores();
 								}
 							}else{
-								Log.i(MainKeepUp.TAG, "Local Leaderboard hit");
 								Intent intent = new Intent(MainActivity.this, LocalLeaderboardList.class);
-								startActivity(intent);
-								Log.i(MainKeepUp.TAG, "Local Leaderboard hit 2");
+								startActivity(intent);				
 							}
 							Log.i(MainKeepUp.TAG, "Leaderboard");
 						}
-
 					})
 					.setNegativeButton("Done",new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog,int id) {
@@ -232,7 +236,6 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 							dialog.cancel();
 						}
 					});
-
 
 					// create alert dialog
 					AlertDialog alertDialog = alertDialogBuilder.create();
@@ -286,7 +289,56 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 		}
 	}
 
+	public void whichLeaderboard(){
+		
+		try {
+			runOnUiThread(new Runnable(){
 
+				//@Override
+				public void run(){
+					AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+					String stringMsg;
+	
+					stringMsg = "Which Leaderboard would you like to view?";
+
+					// set title
+					alertDialogBuilder.setTitle("-- Leaderboard Menu --");
+					// set dialog message
+					alertDialogBuilder
+					.setMessage(stringMsg)
+					.setCancelable(false)
+
+					.setPositiveButton("Google+",new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog,int id) {
+							getScores();
+						}
+
+					})
+					.setNegativeButton("Local",new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog,int id) {
+							getLocalLeaderboard();
+							dialog.cancel();
+						}
+					});
+
+					// create alert dialog
+					AlertDialog alertDialog = alertDialogBuilder.create();
+
+					// show it
+					alertDialog.show();
+				}
+			});
+		}catch (final Exception ex){
+
+		}
+
+	}
+	
+	
+	
+	/**
+	 * Starts the page where the user can set the resource spawn ratio
+	 */		
 	public void startResourcePage(){
 		Intent intent = new Intent(this, ResourceManagerActivity.class);
 		startActivity(intent);
@@ -327,5 +379,9 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 		}
 	}
 
+	public void getLocalLeaderboard(){
+		Intent intent = new Intent(MainActivity.this, LocalLeaderboardList.class);
+		startActivity(intent);
+	}
 
 }

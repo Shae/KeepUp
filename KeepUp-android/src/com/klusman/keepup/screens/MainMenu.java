@@ -1,5 +1,6 @@
 package com.klusman.keepup.screens;
 
+import android.content.Intent;
 import android.util.Log;
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Tween;
@@ -104,11 +105,7 @@ public class MainMenu implements Screen, InputProcessor{
 	}
 
 	public void checkLogin(){
-		// USED TO GET THE PLAYER TO SIGN IN LOCAL
-//		if(_mainActivity.getUserName().compareTo("John Doe") == 0){
-//			_mainActivity.getUsername();  
-//		}
-		  
+ 
 		if(Online == true){
 			SignedIn = _mainActivity.getSignedIn();
 		}else{
@@ -357,7 +354,7 @@ public class MainMenu implements Screen, InputProcessor{
 		.start(manager);  // start the tween using the passed in manager
 		
 		Tween.to(BlueBallButton, SpriteTween.POSITION_XY, .4f)
-		.target(75, -25)
+		.target(90, 0)
 		.ease(TweenEquations.easeInQuad)
 		.setCallback(cbBOUNCE3)
 		.setCallbackTriggers(TweenCallback.COMPLETE)
@@ -450,48 +447,41 @@ public class MainMenu implements Screen, InputProcessor{
 		boolean playBool = GreenBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
 		boolean leaderboardBool = PurpleBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
 		boolean instructionBool = BlueBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
-		boolean achievementsBool = RedBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
 		boolean settingsBool = YellowBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
+		boolean googBool = false;
+		boolean achievementsBool = false;
+		boolean googOutBool = false;
 		
+		if(SignedIn == true){
+			achievementsBool = RedBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
+			googOutBool = googleOut.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
+		}else{
+			googBool = googlePlay.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);	
+		}
 		
-		boolean googBool = googlePlay.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
-		boolean googOutBool = googleOut.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
 		
 		if(playBool == true){
 			bounce1.play();
-			Log.i(MainKeepUp.TAG, "Play Button Touched");
-	
 		}
 		
 		if(leaderboardBool == true){
 			bounce2.play();
-			Log.i(MainKeepUp.TAG, "Leaderboard Button Touched");
-	
 		}
 		
 		if(instructionBool == true){
 			bounce3.play();
-			Log.i(MainKeepUp.TAG, "Instructions Button Touched");
 	
 		}
 		
 		if(achievementsBool == true){
 			bounce1.play();
-			Log.i(MainKeepUp.TAG, "Achievements Button Touched");
 	
 		}
 		
 		if(settingsBool == true){
 			bounce2.play();
-			//playBtn.setRegion(playBtnTxDwn2);
-			Log.i(MainKeepUp.TAG, "Setting Button Touched");
-	
-		}
-		
 
-		
-		
-		
+		}
 		
 		if(googOutBool == true){
 			bounce3.play();
@@ -538,9 +528,11 @@ public class MainMenu implements Screen, InputProcessor{
 		boolean playBool = GreenBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
 		boolean leaderboardBool = PurpleBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
 		boolean instructionBool = BlueBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
-		boolean achievementsBool = RedBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
 		boolean settingsBool = YellowBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
-		
+		boolean achievementsBool= false;
+		if(SignedIn == true){
+			achievementsBool = RedBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
+		}
 		if(playBool == true){
 			
 			
@@ -552,7 +544,12 @@ public class MainMenu implements Screen, InputProcessor{
 		if(leaderboardBool == true){
 			
 			Gdx.app.log(MainKeepUp.TAG, "Leaderboard Btn Clicked!");
-			game.setScreen(new CreditsScreen(game));
+			//game.setScreen(new CreditsScreen(game));
+			if(SignedIn == false){
+				_mainActivity.getLocalLeaderboard();
+			}else{
+				_mainActivity.whichLeaderboard();
+			}
 			
 		}
 
@@ -561,7 +558,7 @@ public class MainMenu implements Screen, InputProcessor{
 			game.setScreen(new InstructionsScreen(game));
 			
 			//_mainActivity.startResourcePage();  // Testing resource Page // WORKS
-			// _mainActivity.getAchievements();  // Testing Achievements Page // WORKS
+			 _mainActivity.getAchievements();  // Testing Achievements Page // WORKS
 		}
 		
 		if(instructionBool == true){		
