@@ -211,9 +211,9 @@ public class Game implements Screen, InputProcessor {
 
 		//// FONT SPECIFIC
 		generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/SourceFont.otf"));
-		font = generator.generateData(50);  // size based on the 1000px camera ratio
+		font = generator.generateData(60);  // size based on the 1000px camera ratio
 		gameText = new BitmapFont(font, font.getTextureRegion(), false);
-		gameText.setColor(00, 00, 00, 1);  // black
+		gameText.setColor(200, 00, 00, 1);  
 
 		/// AUDIO  ///
 		powerUp = Gdx.audio.newSound(Gdx.files.internal("audio/PowerUp.wav"));
@@ -227,9 +227,9 @@ public class Game implements Screen, InputProcessor {
 		
 
 		//// BACKGROUND
-		bgTx = new Texture(Gdx.files.internal("data/bballcourtWhite.png"));
+		bgTx = new Texture(Gdx.files.internal("data/darkCOURT_lrg.png"));
 		bgTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);	
-		TextureRegion bgRegion = new TextureRegion(bgTx, 0, 0, bgTx.getWidth(), bgTx.getHeight() - 90);
+		TextureRegion bgRegion = new TextureRegion(bgTx, 0, 40, bgTx.getWidth() , 1620 );
 		bg = new Sprite(bgRegion);
 		bg.setSize(screenXRefactor,  screenYRefactor);  
 		bg.setOrigin(bg.getWidth()/2, bg.getHeight()/2);
@@ -637,7 +637,7 @@ public class Game implements Screen, InputProcessor {
 		bg.draw(batch);
 
 		gameText.setFixedWidthGlyphs("Score: " + SCORE);
-		gameText.draw(batch, "Score: " + SCORE, -500, (screenYRefactor / 2) - 40);
+		gameText.draw(batch, "Score: " + SCORE, -480, (screenYRefactor / 2) - 5);
 
 
 		if((invincibility == false) && (shielded == false)){
@@ -1002,40 +1002,7 @@ public class Game implements Screen, InputProcessor {
 	}
 
 
-	//public void checkAchievements(){
-	//		
-	//		if(SCORE <= 50){
-	//			getGamesClient().unlockAchievement(getString(R.string.achievement_quick_death));
-	//		}
-	//		
-	//		if(pointsReceivedBeforeFirstResourceUsed >= 300){
-	//			getGamesClient().unlockAchievement(getString(R.string.achievement_thrify_business));
-	//		}
-	//		
-	//		if(SCORE >= 500){
-	//			getGamesClient().unlockAchievement(getString(R.string.achievement_500_points));
-	//		}
-	//		
-	//		if(SCORE >= 750){
-	//			getGamesClient().unlockAchievement(getString(R.string.achievement_750_points));
-	//		}
-	//		
-	//		if(SCORE >= 1000){
-	//			getGamesClient().unlockAchievement(getString(R.string.achievement_1000_points));
-	//		}
-	//		
-	//		if(kitsUsed >= 1){
-	//			getGamesClient().incrementAchievement(getString(R.string.achievement_doctor_doctor), kitsUsed);
-	//		}
-	//	}
-	//	
-	//public void submitScores(){
-	//	
-	//	
-	//	checkAchievements();
-	//	_mainActivity.submitScore(SCORE);
-	//}
-
+	
 	public void ballLoopCheckAndSet(Ball ball){
 		Sprite ballSprite = ball.getBallSprite();
 		boolean blownUp = false;

@@ -196,15 +196,15 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 
 				//@Override
 				public void run(){
-					//final boolean t = getSignedIn();
+				
 					AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
 					String stringMsg;
 
 					if(isOnline() == true){
 						if(getSignedIn() == true){
-							stringMsg = userName + "FINAL SCORE: " + s + "\nSaved to Google Play Leaderboard. " ;
+							stringMsg = userName + "\nYour final score was: " + s + "\nSaved to Google Play and Local Leaderboards. " ;
 						}else{
-							stringMsg = userName + "FINAL SCORE: " + s + "\nSaved to your Local Leaderboard. " ;
+							stringMsg = userName + "\nYour final score was: " + s + "\nSaved to your Local Leaderboard. " ;
 						}
 					}else{
 						stringMsg = "FINAL SCORE: " + s + "\nSaved to your Local Leaderboard. ";

@@ -1,5 +1,6 @@
 package com.klusman.keepup.screens;
 
+import com.klusman.keepup.MainActivity;
 import com.klusman.keepup.MainKeepUp;
 import com.klusman.keepup.R;
 
@@ -16,10 +17,6 @@ import android.widget.TextView;
 public class ResourceManagerActivity extends Activity{
 
 	int MaxPoints = 100;
-	int res1 = 25;
-	int res2 = 25;
-	int res3 = 25;
-	int res4 = 25;
 	int allPointsSpent = 100;
 	int PointsLeft = 100 - allPointsSpent;
 	
@@ -56,16 +53,16 @@ public class ResourceManagerActivity extends Activity{
 		
 
 		final TextView tv1 = (TextView)findViewById(R.id.value1);
-		tv1.setText(String.valueOf(res1));
+		tv1.setText(String.valueOf(MainActivity.spawnRateKit)+ "%");
 
 		final TextView tv2 = (TextView)findViewById(R.id.value2);
-		tv2.setText(String.valueOf(res2));
+		tv2.setText(String.valueOf(MainActivity.spawnRateShield+ "%"));
 	
 		final TextView tv3 = (TextView)findViewById(R.id.value3);
-		tv3.setText(String.valueOf(res3));
+		tv3.setText(String.valueOf(MainActivity.spawnRateFreeze)+ "%");
 
 		final TextView tv4 = (TextView)findViewById(R.id.value4);
-		tv4.setText(String.valueOf(res4));
+		tv4.setText(String.valueOf(MainActivity.spawnRateBomb)+ "%");
 
 		
 	
@@ -74,9 +71,9 @@ public class ResourceManagerActivity extends Activity{
 			@Override
 			public void onClick(View arg0) {
 				if(PointsLeft > 0){
-					res1 = res1 + 1;
+					MainActivity.spawnRateKit = MainActivity.spawnRateKit + 1;
 					getPointsLeft();
-					tv1.setText(String.valueOf(res1));
+					tv1.setText(String.valueOf(MainActivity.spawnRateKit)+ "%");
 					textLeft.setText(getPointsString());
 				}
 			}
@@ -85,10 +82,10 @@ public class ResourceManagerActivity extends Activity{
 		dwn1.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				if(res1 > 1){
-					res1 = res1 - 1;
+				if(MainActivity.spawnRateKit > 1){
+					MainActivity.spawnRateKit = MainActivity.spawnRateKit - 1;
 					getPointsLeft();
-					tv1.setText(String.valueOf(res1));
+					tv1.setText(String.valueOf(MainActivity.spawnRateKit)+ "%");
 					textLeft.setText(getPointsString());
 				}
 			}
@@ -100,9 +97,9 @@ public class ResourceManagerActivity extends Activity{
 			@Override
 			public void onClick(View arg0) {
 				if(PointsLeft > 0){
-					res2 = res2 + 1;
+					MainActivity.spawnRateShield = MainActivity.spawnRateShield + 1;
 					getPointsLeft();
-					tv2.setText(String.valueOf(res2));
+					tv2.setText(String.valueOf(MainActivity.spawnRateShield)+ "%");
 					textLeft.setText(getPointsString());
 				}
 			}
@@ -111,10 +108,10 @@ public class ResourceManagerActivity extends Activity{
 		dwn2.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				if(res2 + PointsLeft > 1){
-					res2 = res2 - 1;
+				if(MainActivity.spawnRateShield > 1){
+					MainActivity.spawnRateShield = MainActivity.spawnRateShield - 1;
 					getPointsLeft();
-					tv2.setText(String.valueOf(res2));
+					tv2.setText(String.valueOf(MainActivity.spawnRateShield)+ "%");
 					textLeft.setText(getPointsString());
 				}
 			}
@@ -126,9 +123,9 @@ public class ResourceManagerActivity extends Activity{
 			@Override
 			public void onClick(View arg0) {
 				if(PointsLeft > 0){
-					res3 = res3 + 1;
+					MainActivity.spawnRateFreeze = MainActivity.spawnRateFreeze + 1;
 					getPointsLeft();
-					tv3.setText(String.valueOf(res3));
+					tv3.setText(String.valueOf(MainActivity.spawnRateFreeze) + "%");
 					textLeft.setText(getPointsString());
 				}
 			}
@@ -137,10 +134,10 @@ public class ResourceManagerActivity extends Activity{
 		dwn3.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				if(res3 > 1){
-					res3 = res3 - 1;
+				if(MainActivity.spawnRateFreeze > 1){
+					MainActivity.spawnRateFreeze = MainActivity.spawnRateFreeze - 1;
 					getPointsLeft();
-					tv3.setText(String.valueOf(res3));
+					tv3.setText(String.valueOf(MainActivity.spawnRateFreeze)+ "%");
 					textLeft.setText(getPointsString());
 				}
 			}
@@ -152,9 +149,9 @@ public class ResourceManagerActivity extends Activity{
 			@Override
 			public void onClick(View arg0) {
 				if(PointsLeft > 0){
-					res4 = res4 + 1;
+					MainActivity.spawnRateBomb = MainActivity.spawnRateBomb + 1;
 					getPointsLeft();
-					tv4.setText(String.valueOf(res4));
+					tv4.setText(String.valueOf(MainActivity.spawnRateBomb)+ "%");
 					textLeft.setText(getPointsString());
 				}
 			}
@@ -163,10 +160,10 @@ public class ResourceManagerActivity extends Activity{
 		dwn4.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				if(res4 > 1){
-					res4 = res4 - 1;
+				if(MainActivity.spawnRateBomb > 1){
+					MainActivity.spawnRateBomb = MainActivity.spawnRateBomb - 1;
 					getPointsLeft();
-					tv4.setText(String.valueOf(res4));
+					tv4.setText(String.valueOf(MainActivity.spawnRateBomb)+ "%");
 					textLeft.setText(getPointsString());
 					
 				}
@@ -181,14 +178,17 @@ public class ResourceManagerActivity extends Activity{
 	
 	
 	private void getPointsLeft(){
-		int addAll = res1 + res2 + res3 + res4;
+		int addAll = MainActivity.spawnRateKit + 
+				MainActivity.spawnRateShield + 
+				MainActivity.spawnRateFreeze + 
+				MainActivity.spawnRateBomb;
 		allPointsSpent = addAll;
 		PointsLeft = 100 - allPointsSpent;
 		
 		
 	}
 	
-	
+	//TODO fix plural
 	public String getPointsString(){
 		String s = "You have " + PointsLeft + " points left to spend";
 		return s;

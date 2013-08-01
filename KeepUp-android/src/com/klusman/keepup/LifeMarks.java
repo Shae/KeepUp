@@ -26,8 +26,8 @@ public class LifeMarks {
 		lifeSprite = new Sprite(lifeRegion);
 		lifeSprite.setSize(sizeX , sizeY );
 		lifeSprite.setOrigin(lifeSprite.getWidth()/2, lifeSprite.getHeight()/2);
-		PositionX = ((Game.screenXRefactor/2) - ( sizeX  * (Game.Marks.size +1) ) );
-		PositionY = (Game.screenYRefactor/2 - lifeSprite.getHeight()) - 10;
+		PositionX = (((Game.screenXRefactor/2) - 20 ) - ( sizeX  * (Game.Marks.size +1) ) );
+		PositionY = (Game.screenYRefactor/2 - lifeSprite.getHeight()) - 5;
 		lifeSprite.setPosition(PositionX, PositionY);	
 	
 	}

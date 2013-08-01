@@ -1,6 +1,5 @@
 package com.klusman.keepup.screens;
 
-import android.content.Intent;
 import android.util.Log;
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Tween;
@@ -40,8 +39,8 @@ public class MainMenu implements Screen, InputProcessor{
 	public static Sound bounce2;
 	public static Sound bounce3;
 	public String textureAddress;
-	boolean SignedIn;
-	boolean Online;
+	boolean SignedIn = false;
+	boolean Online = false;
 	
 	SpriteBatch batch;
 	
@@ -59,11 +58,14 @@ public class MainMenu implements Screen, InputProcessor{
 	Sprite GreenBallButton;
 	TextureRegion GreenButton;
 	
-	Sprite YellowBallButton;
-	TextureRegion YellowButton;
+	Sprite OrngBallButton;
+	TextureRegion OrngButton;
 	
 	Sprite PurpleBallButton;
 	TextureRegion PurpleButton;
+	
+	Sprite YellowBallButton;
+	TextureRegion YellowButton;
 	
 	Sprite googlePlay;
 	Texture googTx;
@@ -71,11 +73,13 @@ public class MainMenu implements Screen, InputProcessor{
 	Sprite googleOut;
 	Texture googOutTx;
 	
-	TweenCallback cbYlw;
-	TweenCallback cbRed;
 	TweenCallback cbBlue;
-	TweenCallback cbPurp;
 	TweenCallback cbGrn;
+	TweenCallback cbOrng;
+	TweenCallback cbPurp;
+	TweenCallback cbRed;
+	TweenCallback cbYlw;
+	
 	TweenCallback cbBOUNCE1;
 	TweenCallback cbBOUNCE2;
 	TweenCallback cbBOUNCE3;
@@ -84,8 +88,6 @@ public class MainMenu implements Screen, InputProcessor{
 		_mainActivity = MainActivity.Instance;
 		this.game = game;
 		
-		checkOnLIneStatus();
-		checkLogin();
 		
 		x = Gdx.graphics.getWidth();
 		y = Gdx.graphics.getHeight();
@@ -95,8 +97,10 @@ public class MainMenu implements Screen, InputProcessor{
 		camera = new OrthographicCamera(screenXRefactor, screenYRefactor);
 		Gdx.input.setInputProcessor(this);
 		
+		checkOnLIneStatus();
+		checkLogin();
+		
 		Tween.registerAccessor(Sprite.class, new SpriteTween());
-		//Tween.setCombinedAttributesLimit(4);
 		manager = new TweenManager();
 		textureAddress = "data/menusButtons.png";
 		bounce1 = Gdx.audio.newSound(Gdx.files.internal("audio/ballbounce04.wav"));
@@ -108,6 +112,7 @@ public class MainMenu implements Screen, InputProcessor{
  
 		if(Online == true){
 			SignedIn = _mainActivity.getSignedIn();
+			
 		}else{
 			SignedIn = false;
 		}
@@ -152,15 +157,15 @@ public class MainMenu implements Screen, InputProcessor{
 		googleOut.setPosition(50, (screenYRefactor/2 * -1) + 10);
 
 		
-		ballGroupPng = new Texture(Gdx.files.internal("data/ballGroupIconsPng.png"));
+		ballGroupPng = new Texture(Gdx.files.internal("data/ballGroupIcons2.png"));
 		ballGroupPng.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		
 		BlueButton = new TextureRegion(ballGroupPng, 0, 0, ballGroupPng.getWidth(), ballGroupPng.getWidth());
 		GreenButton = new TextureRegion(ballGroupPng, 0, 256, ballGroupPng.getWidth(), ballGroupPng.getWidth());
-		PurpleButton = new TextureRegion(ballGroupPng, 0, 512, ballGroupPng.getWidth(), ballGroupPng.getWidth());
-		RedButton = new TextureRegion(ballGroupPng, 0, 768, ballGroupPng.getWidth(), ballGroupPng.getWidth());
-		YellowButton = new TextureRegion(ballGroupPng, 0, 1024, ballGroupPng.getWidth(), ballGroupPng.getWidth());
-		
+		OrngButton  = new TextureRegion(ballGroupPng, 0, 512, ballGroupPng.getWidth(), ballGroupPng.getWidth());
+		PurpleButton  = new TextureRegion(ballGroupPng, 0, 768, ballGroupPng.getWidth(), ballGroupPng.getWidth());
+		RedButton = new TextureRegion(ballGroupPng, 0, 1024, ballGroupPng.getWidth(), ballGroupPng.getWidth());
+		YellowButton = new TextureRegion(ballGroupPng, 0, 1280, ballGroupPng.getWidth(), ballGroupPng.getWidth());
 		
 		BlueBallButton = new Sprite(BlueButton);
 		BlueBallButton.setSize(20,  20); 
@@ -188,8 +193,15 @@ public class MainMenu implements Screen, InputProcessor{
 		RedBallButton.setPosition(-10, - 90);
 		RedBallButton.setColor(1, 1, 1, 0);
 		
+		OrngBallButton = new Sprite(OrngButton);
+		OrngBallButton.setSize(20,  20); 
+		//YellowBallButton.setOrigin(YellowBallButton.getWidth()/2, YellowBallButton.getHeight()/2);
+		OrngBallButton.setPosition(-10, - 90);
+		OrngBallButton.setColor(1, 1, 1, 0);
+		
 		YellowBallButton = new Sprite(YellowButton);
 		YellowBallButton.setSize(20,  20); 
+		YellowBallButton.setRotation(10);
 		//YellowBallButton.setOrigin(YellowBallButton.getWidth()/2, YellowBallButton.getHeight()/2);
 		YellowBallButton.setPosition(-10, - 90);
 		YellowBallButton.setColor(1, 1, 1, 0);
@@ -211,6 +223,13 @@ public class MainMenu implements Screen, InputProcessor{
 		cbBlue = new TweenCallback() {
 			@Override
 			public void onEvent(int type, BaseTween<?> source) {
+				tweenOrng();  // what method to call when Event is triggered
+			}
+		};
+		
+		cbOrng = new TweenCallback() {
+			@Override
+			public void onEvent(int type, BaseTween<?> source) {
 				tweenYellow();  // what method to call when Event is triggered
 			}
 		};
@@ -218,9 +237,13 @@ public class MainMenu implements Screen, InputProcessor{
 		cbYlw = new TweenCallback() {
 			@Override
 			public void onEvent(int type, BaseTween<?> source) {
-				tweenRed();  // what method to call when Event is triggered
+				if(SignedIn == true){
+					tweenRed();  
+				}
 			}
 		};
+		
+		
 		
 		cbRed = new TweenCallback() {
 			@Override
@@ -269,7 +292,7 @@ public class MainMenu implements Screen, InputProcessor{
 		.start(manager);  // start the tween using the passed in manager
 		
 		Tween.to(GreenBallButton, SpriteTween.POSITION_XY, .5f)
-		.target(-400 , -200)
+		.target(-490 , -200)
 		.ease(TweenEquations.easeInQuad)
 		.setCallback(cbBOUNCE1)
 		.setCallbackTriggers(TweenCallback.COMPLETE)
@@ -278,25 +301,26 @@ public class MainMenu implements Screen, InputProcessor{
 	
 	
 	private void tweenYellow(){
-		Tween.to(YellowBallButton, SpriteTween.ALPHA, .15f)
+		Tween.to(YellowBallButton, SpriteTween.ALPHA, .2f)
 		.target(1)
 		.ease(TweenEquations.easeInQuad)
 		.setCallback(cbYlw)
 		.setCallbackTriggers(TweenCallback.COMPLETE)
 		.start(manager);  // start the tween using the passed in manager
 		
-		Tween.to(YellowBallButton, SpriteTween.SCALE_XY, .15f)
-		.target(200, 200)
+		Tween.to(YellowBallButton, SpriteTween.SCALE_XY, .2f)
+		.target(230, 230)
 		.ease(TweenEquations.easeInQuad)
 		.start(manager);  // start the tween using the passed in manager
 		
-		Tween.to(YellowBallButton, SpriteTween.POSITION_XY, .15f)
-		.target(-490 , -450)
+		Tween.to(YellowBallButton, SpriteTween.POSITION_XY, .2f)
+		.target(230 , -425)
 		.ease(TweenEquations.easeInQuad)
-		.setCallback(cbBOUNCE3)
+		.setCallback(cbBOUNCE1)
 		.setCallbackTriggers(TweenCallback.COMPLETE)
 		.start(manager);  // start the tween using the passed in manager
 	}
+	
 	
 	private void tweenPurple(){
 		Tween.to(PurpleBallButton, SpriteTween.ALPHA, .3f)
@@ -307,7 +331,7 @@ public class MainMenu implements Screen, InputProcessor{
 		.start(manager);  // start the tween using the passed in manager
 		
 		Tween.to(PurpleBallButton, SpriteTween.SCALE_XY, .3f)
-		.target(300, 300)
+		.target(280, 280)
 		.ease(TweenEquations.easeInQuad)
 		.start(manager);  // start the tween using the passed in manager
 		
@@ -319,26 +343,28 @@ public class MainMenu implements Screen, InputProcessor{
 		.start(manager);  // start the tween using the passed in manager
 	}
 	
+	
 	private void tweenRed(){
-		Tween.to(RedBallButton, SpriteTween.ALPHA, .4f)
+		Tween.to(RedBallButton, SpriteTween.ALPHA, .25f)
 		.target(1)
 		.ease(TweenEquations.easeInQuad)
 		.setCallback(cbRed)
 		.setCallbackTriggers(TweenCallback.COMPLETE)
 		.start(manager);  // start the tween using the passed in manager
 		
-		Tween.to(RedBallButton, SpriteTween.SCALE_XY, .4f)
-		.target(350, 350)
+		Tween.to(RedBallButton, SpriteTween.SCALE_XY, .25f)
+		.target(260, 260)
 		.ease(TweenEquations.easeInQuad)
 		.start(manager);  // start the tween using the passed in manager
 		
-		Tween.to(RedBallButton, SpriteTween.POSITION_XY, .4f)
-		.target(100, -425)
+		Tween.to(RedBallButton, SpriteTween.POSITION_XY, .25f)
+		.target(-80 , -250)
 		.ease(TweenEquations.easeInQuad)
 		.setCallback(cbBOUNCE2)
 		.setCallbackTriggers(TweenCallback.COMPLETE)
 		.start(manager);  // start the tween using the passed in manager
 	}
+	
 	
 	private void tweenBlue(){
 		Tween.to(BlueBallButton, SpriteTween.ALPHA, .4f)
@@ -362,6 +388,31 @@ public class MainMenu implements Screen, InputProcessor{
 	}
 	
 	
+	private void tweenOrng(){
+		Tween.to(OrngBallButton, SpriteTween.ALPHA, .15f)
+		.target(1)
+		.ease(TweenEquations.easeInQuad)
+		.setCallback(cbOrng)
+		.setCallbackTriggers(TweenCallback.COMPLETE)
+		.start(manager);  // start the tween using the passed in manager
+		
+		Tween.to(OrngBallButton, SpriteTween.SCALE_XY, .15f)
+		.target(200, 200)
+		.ease(TweenEquations.easeInQuad)
+		.start(manager);  // start the tween using the passed in manager
+		
+		Tween.to(OrngBallButton, SpriteTween.POSITION_XY, .15f)
+		.target(-490 , -450)
+		.ease(TweenEquations.easeInQuad)
+		.setCallback(cbBOUNCE3)
+		.setCallbackTriggers(TweenCallback.COMPLETE)
+		.start(manager);  // start the tween using the passed in manager
+	}
+	
+	
+	
+	
+	
 	@Override
 	public void render(float delta) {
 	
@@ -375,11 +426,11 @@ public class MainMenu implements Screen, InputProcessor{
 		batch.begin();
 			titleSprite.draw(batch);
 			
-			BlueBallButton.draw(batch);
-			YellowBallButton.draw(batch);
 			GreenBallButton.draw(batch);
 			PurpleBallButton.draw(batch);	
-			
+			BlueBallButton.draw(batch);
+			OrngBallButton.draw(batch);
+			YellowBallButton.draw(batch);
 			if(SignedIn == false){
 				googlePlay.draw(batch);
 			}else{
@@ -447,7 +498,7 @@ public class MainMenu implements Screen, InputProcessor{
 		boolean playBool = GreenBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
 		boolean leaderboardBool = PurpleBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
 		boolean instructionBool = BlueBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
-		boolean settingsBool = YellowBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
+		boolean settingsBool = OrngBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
 		boolean googBool = false;
 		boolean achievementsBool = false;
 		boolean googOutBool = false;
@@ -489,6 +540,7 @@ public class MainMenu implements Screen, InputProcessor{
 			try {
 				_mainActivity.LogOut();
 				SignedIn = false;
+				
 				Log.i(MainKeepUp.TAG, "LOGGED OUT");
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -504,7 +556,7 @@ public class MainMenu implements Screen, InputProcessor{
 				if(_mainActivity.getSignedIn() == false){
 					try {
 						_mainActivity.Login();
-						SignedIn = true;
+						SignedIn = true;		
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -528,11 +580,15 @@ public class MainMenu implements Screen, InputProcessor{
 		boolean playBool = GreenBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
 		boolean leaderboardBool = PurpleBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
 		boolean instructionBool = BlueBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
-		boolean settingsBool = YellowBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
+		boolean settingsBool = OrngBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
+		boolean optionsBool = YellowBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
 		boolean achievementsBool= false;
+		
 		if(SignedIn == true){
 			achievementsBool = RedBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
+			tweenRed();
 		}
+		
 		if(playBool == true){
 			
 			
@@ -556,25 +612,28 @@ public class MainMenu implements Screen, InputProcessor{
 		if(achievementsBool == true){		
 			Gdx.app.log(MainKeepUp.TAG, "Achievements Btn Clicked!");
 			game.setScreen(new InstructionsScreen(game));
-			
-			//_mainActivity.startResourcePage();  // Testing resource Page // WORKS
 			 _mainActivity.getAchievements();  // Testing Achievements Page // WORKS
 		}
 		
 		if(instructionBool == true){		
 			Gdx.app.log(MainKeepUp.TAG, "Instructions Btn Clicked!");
 			game.setScreen(new InstructionsScreen(game));
-			
-			//_mainActivity.startResourcePage();  // Testing resource Page // WORKS
-			// _mainActivity.getAchievements();  // Testing Achievements Page // WORKS
 		}
 		
 		if(settingsBool == true){		
 			Gdx.app.log(MainKeepUp.TAG, "Settings Btn Clicked!");
-			game.setScreen(new InstructionsScreen(game));
-			
-			//_mainActivity.startResourcePage();  // Testing resource Page // WORKS
-			// _mainActivity.getAchievements();  // Testing Achievements Page // WORKS
+			if(SplashScreen.bgMusic.isPlaying()){
+				SplashScreen.bgMusic.stop();
+			}
+			game.setScreen(new InstructionsScreen(game));	
+		}
+		
+		if(optionsBool == true){		
+			Gdx.app.log(MainKeepUp.TAG, "Options Btn Clicked!");
+			if(SplashScreen.bgMusic.isPlaying()){
+				SplashScreen.bgMusic.stop();
+			}
+			_mainActivity.startResourcePage();  // Testing resource Page // WORKS
 		}
 		return true;
 	}

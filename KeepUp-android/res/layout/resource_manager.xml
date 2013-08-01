@@ -77,7 +77,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_weight="0.91"
-                android:text="Will remove ONE strike mark (if you currently have one).  Don&apos;t waste these!"
+                android:text="When collected, will remove ONE strike mark (if you currently have one).  Don&apos;t waste these!"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
         </LinearLayout>
 
@@ -154,7 +154,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_weight="0.91"
-                android:text="Provides 4 seconds of involunerability"
+                android:text="When collected, will provide 4 seconds of invulnerability"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
         </LinearLayout>
 
@@ -230,7 +230,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_weight="0.91"
-                android:text="Freeze the balls in place, but still avoid them at all cost!"
+                android:text="When collected, will freeze the balls in place for 4 seconds, but still avoid the balls at all cost!"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
         </LinearLayout>
 
@@ -306,7 +306,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_weight="0.91"
-                android:text="Used to destroy bombs.  (Not harmful to you)"
+                android:text="When collected will count down to explosion.  Will destroy any balls it collides with the explosion.  (Not harmful to you)"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
         </LinearLayout>
 
