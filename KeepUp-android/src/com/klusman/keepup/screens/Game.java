@@ -1373,11 +1373,8 @@ public class Game implements Screen, InputProcessor {
 
 		if(gameOver == true){
 			boolean touchRestart = restartBtn.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
-
 			if(touchRestart == true){
 				gameRestart();
-				//	Intent intent = new Intent(Game.this, FinalScoreActivity.class);
-				//  startActivity(intent);
 			}
 		}
 		kidMove = false;
@@ -1394,27 +1391,11 @@ public class Game implements Screen, InputProcessor {
 			float xPos = cameraRay.origin.x;
 			float yPos = cameraRay.origin.y;
 
-			if(cameraRay.origin.x >= ( (screenXRefactor / 2) ) - kid.getWidth() ){
-				xPos = ((screenXRefactor / 2) - 10) - kid.getWidth();
-			}
+			kid.setX(xPos - (kid.getWidth()/2));
+			kid.setY(yPos - (kid.getHeight()/2));
 
-			if(cameraRay.origin.x <= ((screenXRefactor / 2)) * -1 ){
-				xPos = ((screenXRefactor / 2) - 10) * -1 ;
-			}
-
-			if(cameraRay.origin.y >= ( (screenYRefactor / 2) ) - kid.getHeight() ){
-				yPos = ((screenYRefactor / 2) - 10) - kid.getHeight() ;
-			}
-
-			if(cameraRay.origin.y <= ( (screenYRefactor / 2) ) * -1 ){
-				yPos = ((screenYRefactor / 2) - 10) * -1 ;
-			}
-
-			kid.setX(xPos);
-			kid.setY(yPos);
-
-			starSprite.setX(kid.getX());
-			starSprite.setY(kid.getY() + kid.getHeight());
+			starSprite.setX(kid.getX());  // add the star sprite above character
+			starSprite.setY(kid.getY() + kid.getHeight());// add the star sprite above character
 			return true;
 		}
 		return false;
@@ -1451,16 +1432,6 @@ public class Game implements Screen, InputProcessor {
 	public boolean keyTyped(char character) {
 		return false;
 	}
-
-
-	//    public void onShowAchievementsRequested() {
-	//        if (isSignedIn()) {
-	//   
-	//            startActivityForResult(getGamesClient().getAchievementsIntent(), 5001);
-	//        } else {
-	//            showAlert("Achievements currently not available");
-	//        }
-	//    }
 
 
 }

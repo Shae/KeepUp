@@ -188,7 +188,8 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	 * Negative button closes dialog.
 	 * @param Score
 	 */
-
+//TODO  
+	// DOUBLE CHECK: fix this for if the user is not connected to internet
 	public void notifyUser(int Score){
 		final int s = Score;
 		try {

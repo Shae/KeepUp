@@ -56,9 +56,9 @@ public class SplashScreen implements Screen{
 	@Override
 	public void show() {
 
-		bgMusic = Gdx.audio.newMusic(Gdx.files.internal("audio/Ttimes.mp3"));	
-		bgMusic.setLooping(false);  
-		bgMusic.setVolume(0.03f);
+		bgMusic = Gdx.audio.newMusic(Gdx.files.internal("audio/gymShoes16.mp3"));	
+		bgMusic.setLooping(true);  
+		bgMusic.setVolume(0.4f);
 		bgMusic.play();
 
 		titleTx = new Texture(Gdx.files.internal("data/splashTitle.png"));

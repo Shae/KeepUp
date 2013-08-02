@@ -255,14 +255,14 @@ public class MainMenu implements Screen, InputProcessor{
 		cbBOUNCE1 = new TweenCallback() {
 			@Override
 			public void onEvent(int type, BaseTween<?> source) {
-				bounce1.play();
+				bounce1.play(.5f);
 			}
 		}; 
 		
 		cbBOUNCE2 = new TweenCallback() {
 			@Override
 			public void onEvent(int type, BaseTween<?> source) {
-				bounce2.play();
+				bounce2.play(.8f);
 			}
 		}; 
 		
@@ -611,7 +611,7 @@ public class MainMenu implements Screen, InputProcessor{
 
 		if(achievementsBool == true){		
 			Gdx.app.log(MainKeepUp.TAG, "Achievements Btn Clicked!");
-			game.setScreen(new InstructionsScreen(game));
+			//game.setScreen(new InstructionsScreen(game));
 			 _mainActivity.getAchievements();  // Testing Achievements Page // WORKS
 		}
 		
@@ -623,7 +623,7 @@ public class MainMenu implements Screen, InputProcessor{
 		if(settingsBool == true){		
 			Gdx.app.log(MainKeepUp.TAG, "Settings Btn Clicked!");
 			if(SplashScreen.bgMusic.isPlaying()){
-				SplashScreen.bgMusic.stop();
+				//SplashScreen.bgMusic.stop();
 			}
 			game.setScreen(new InstructionsScreen(game));	
 		}
@@ -631,7 +631,7 @@ public class MainMenu implements Screen, InputProcessor{
 		if(optionsBool == true){		
 			Gdx.app.log(MainKeepUp.TAG, "Options Btn Clicked!");
 			if(SplashScreen.bgMusic.isPlaying()){
-				SplashScreen.bgMusic.stop();
+				//SplashScreen.bgMusic.stop();
 			}
 			_mainActivity.startResourcePage();  // Testing resource Page // WORKS
 		}

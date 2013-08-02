@@ -1,5 +1,7 @@
 package com.klusman.keepup.screens;
 
+import android.util.Log;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
@@ -11,6 +13,9 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.collision.Ray;
+import com.badlogic.gdx.utils.Array;
 import com.klusman.keepup.MainActivity;
 import com.klusman.keepup.MainKeepUp;
 
@@ -26,8 +31,26 @@ public class InstructionsScreen implements Screen, InputProcessor{
 	float screenRatio;
 	private SpriteBatch batch;
 	
+	int touchCount = 0;
+	Texture instructionsTx1;
+	Texture instructionsTx2;
+	Texture instructionsTx3;
+	Texture instructionsTx4;
+	Texture instructionsTx5;
+	Texture instructionsTx6;
 	Sprite instructionsSprite;
-	Texture instructionsTx;
+	int textureRegionLengthByRatio;
+	
+	TextureRegion instReg1;
+	TextureRegion instReg2;
+	TextureRegion instReg3;
+	TextureRegion instReg4;
+	TextureRegion instReg5;
+	TextureRegion instReg6;
+	Array<TextureRegion> InstRegionHolder;
+	
+	
+	
 	
 	public InstructionsScreen(MainKeepUp game){
 		this.game = game;
@@ -37,10 +60,13 @@ public class InstructionsScreen implements Screen, InputProcessor{
 		screenXRefactor = 1000;
 		screenRatio = y/x;
 		screenYRefactor = (int) (screenRatio * screenXRefactor);
+		textureRegionLengthByRatio = (int) ( screenRatio * 500);
 		camera = new OrthographicCamera(screenXRefactor, screenYRefactor);
 		Gdx.input.setInputProcessor(this);
 		Gdx.input.setCatchBackKey(true);
 		batch = new SpriteBatch();
+		touchCount = 0;
+		InstRegionHolder = new Array<TextureRegion>();
 	}
 	
 	@Override
@@ -50,6 +76,7 @@ public class InstructionsScreen implements Screen, InputProcessor{
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
+		
 		instructionsSprite.draw(batch);
 			
 		batch.end();
@@ -63,12 +90,47 @@ public class InstructionsScreen implements Screen, InputProcessor{
 
 	@Override
 	public void show() {
-		instructionsTx = new Texture(Gdx.files.internal("data/rules.png"));
-		instructionsTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		TextureRegion creditReg = new TextureRegion(instructionsTx, 0, 0, instructionsTx.getWidth(), instructionsTx.getHeight() - 200);
-		float stretchRatioCredits = (float) (instructionsTx.getHeight() - 200) / instructionsTx.getWidth();
-		instructionsSprite = new Sprite(creditReg);
-		instructionsSprite.setSize(screenXRefactor,  screenXRefactor * stretchRatioCredits);  
+	
+		//instructionsTx = new Texture(Gdx.files.internal("data/InstBgPages.png"));
+		instructionsTx1 = new Texture(Gdx.files.internal("data/instPg1.png"));
+		instructionsTx1.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		Log.i(MainKeepUp.TAG, "500x by " + textureRegionLengthByRatio + "y");
+		instReg1 = new TextureRegion(instructionsTx1,    0, 0, 500, textureRegionLengthByRatio);
+		InstRegionHolder.add(instReg1);
+		
+		instructionsTx2 = new Texture(Gdx.files.internal("data/instPg2.png"));
+		instructionsTx2.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		Log.i(MainKeepUp.TAG, "500x by " + textureRegionLengthByRatio + "y");
+		instReg2 = new TextureRegion(instructionsTx2,    0, 0, 500, textureRegionLengthByRatio);
+		InstRegionHolder.add(instReg2);
+		
+		instructionsTx3 = new Texture(Gdx.files.internal("data/instPg3.png"));
+		instructionsTx3.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		Log.i(MainKeepUp.TAG, "500x by " + textureRegionLengthByRatio + "y");
+		instReg3 = new TextureRegion(instructionsTx3,    0, 0, 500, textureRegionLengthByRatio);
+		InstRegionHolder.add(instReg3);
+		
+		instructionsTx4 = new Texture(Gdx.files.internal("data/instPg4.png"));
+		instructionsTx4.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		Log.i(MainKeepUp.TAG, "500x by " + textureRegionLengthByRatio + "y");
+		instReg4 = new TextureRegion(instructionsTx4,    0, 0, 500, textureRegionLengthByRatio);
+		InstRegionHolder.add(instReg4);
+		
+		instructionsTx5 = new Texture(Gdx.files.internal("data/instPg5.png"));
+		instructionsTx5.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		Log.i(MainKeepUp.TAG, "500x by " + textureRegionLengthByRatio + "y");
+		instReg5 = new TextureRegion(instructionsTx5,    0, 0, 500, textureRegionLengthByRatio);
+		InstRegionHolder.add(instReg5);
+		
+		instructionsTx6 = new Texture(Gdx.files.internal("data/instPg6.png"));
+		instructionsTx6.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		Log.i(MainKeepUp.TAG, "500x by " + textureRegionLengthByRatio + "y");
+		instReg6 = new TextureRegion(instructionsTx6,    0, 0, 500, textureRegionLengthByRatio);
+		InstRegionHolder.add(instReg6);
+
+		instructionsSprite = new Sprite(InstRegionHolder.get(0));
+		//instructionsSprite = new Sprite(instReg1);
+		instructionsSprite.setSize(screenXRefactor,  screenYRefactor);  
 		instructionsSprite.setOrigin(instructionsSprite.getWidth()/2, instructionsSprite.getHeight()/2);
 		instructionsSprite.setPosition(0 - instructionsSprite.getWidth()/2, 0 - instructionsSprite.getHeight()/2);
 		
@@ -91,7 +153,12 @@ public class InstructionsScreen implements Screen, InputProcessor{
 
 	@Override
 	public void dispose() {
-		instructionsTx.dispose();
+		instructionsTx1.dispose();
+		instructionsTx2.dispose();
+		instructionsTx3.dispose();
+		instructionsTx4.dispose();
+		instructionsTx5.dispose();
+		instructionsTx6.dispose();
 	}
 
 	@Override
@@ -114,7 +181,40 @@ public class InstructionsScreen implements Screen, InputProcessor{
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		return false;
+		Vector2 touchPos = new Vector2();
+		touchPos.set(Gdx.input.getX(), Gdx.input.getY());
+		Ray cameraRay = camera.getPickRay(touchPos.x, touchPos.y);
+
+		boolean touchScreenDown = instructionsSprite.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
+		if(touchScreenDown == true){
+			touchCount = touchCount +1;
+			if(touchCount == 1){
+				instructionsSprite.setRegion(InstRegionHolder.get(1));
+			}
+			else if(touchCount == 2){
+				instructionsSprite.setRegion(InstRegionHolder.get(2));	
+			}
+			else if(touchCount == 3){
+				instructionsSprite.setRegion(InstRegionHolder.get(3));
+				
+			}
+			else if(touchCount == 4){
+				instructionsSprite.setRegion(InstRegionHolder.get(4));
+				
+			}
+			else if(touchCount == 5){
+				instructionsSprite.setRegion(InstRegionHolder.get(5));
+				
+			}
+			else if(touchCount == 6){
+				game.setScreen(new MainMenu(game));
+				touchCount = 0;
+			}
+			else{
+				instructionsSprite.setRegion(instReg1);
+			}
+		}
+		return true;
 	}
 
 	@Override
