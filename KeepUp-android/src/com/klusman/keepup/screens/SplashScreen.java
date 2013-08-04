@@ -38,6 +38,7 @@ public class SplashScreen implements Screen{
 	TweenManager manager;
 	private SpriteBatch batch;
 	public static Music bgMusic;
+	boolean playTheMusic;
 	
 	public SplashScreen( MainKeepUp game){
 		_mainActivity = MainActivity.Instance;
@@ -50,7 +51,7 @@ public class SplashScreen implements Screen{
 		camera = new OrthographicCamera(screenXRefactor, screenYRefactor);
 		Tween.registerAccessor(Sprite.class, new SpriteTween());
 		manager = new TweenManager();
-
+		playTheMusic = _mainActivity.getSoundBool();
 	}
 
 	@Override
@@ -59,7 +60,9 @@ public class SplashScreen implements Screen{
 		bgMusic = Gdx.audio.newMusic(Gdx.files.internal("audio/gymShoes16.mp3"));	
 		bgMusic.setLooping(true);  
 		bgMusic.setVolume(0.4f);
-		bgMusic.play();
+		if(playTheMusic == true){
+			bgMusic.play();
+		}
 
 		titleTx = new Texture(Gdx.files.internal("data/splashTitle.png"));
 		titleTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);	

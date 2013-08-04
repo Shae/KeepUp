@@ -74,12 +74,12 @@ public class LocalLeaderboardList extends Activity {
 				case R.id.radioScoreLow:
 					_scoreList =  ScoreSource.findAllLowToHigh();
 					listBuilder();
-					//MoveRadioUpdate(spPos);
+					
 					break;
 				case R.id.radioScore:
 					_scoreList =  ScoreSource.findAllHighToLow();
 					listBuilder();
-					//MoveRadioUpdate(spPos);
+					
 					break;
 				
 				default:
@@ -90,21 +90,4 @@ public class LocalLeaderboardList extends Activity {
 		});
 	}
 	
-//	private void MoveRadioUpdate(int pos){
-//		switch(pos){
-//
-//		case 0: 
-//			//Log.i(TAG, "Radio Updated to: " + sort);
-//			_scoreList =  ScoreSource.findAllLowToHigh();
-//			listBuilder();
-//			break;
-//
-//		case 1:
-//			//Log.i(TAG, "Radio Updated to: " + sort);
-//			_scoreList =  ScoreSource.findAllHighToLow();
-//			listBuilder();
-//			break;
-//		}
-//
-//	}
 }

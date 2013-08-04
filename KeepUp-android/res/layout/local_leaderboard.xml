@@ -5,14 +5,6 @@
     android:orientation="vertical"
     tools:context=".MainActivity" >
 
-<!--     <TextView
-        android:id="@+id/textName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Sort by:"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        tools:ignore="HardcodedText" /> -->
 
 <RadioGroup
     android:id="@+id/radioGrp"
@@ -40,6 +32,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="20dp"
         android:text="High to Low"
+        android:checked  = "true"
         tools:ignore="HardcodedText" />
 
 </RadioGroup>

@@ -1,5 +1,6 @@
 package com.klusman.keepup.screens;
 
+import android.util.Log;
 import aurelienribon.tweenengine.TweenManager;
 
 import com.badlogic.gdx.Gdx;
@@ -227,7 +228,14 @@ public class Game implements Screen, InputProcessor {
 		
 
 		//// BACKGROUND
-		bgTx = new Texture(Gdx.files.internal("data/darkCOURT_lrg.png"));
+		if(_mainActivity.getCourtBool() == true){
+			Log.i(MainKeepUp.TAG, "DARK COURT YARD");
+			bgTx = new Texture(Gdx.files.internal("data/darkCOURT_lrg.png"));
+		}else{
+			//TODO  Add lighter courtyard png
+			Log.i(MainKeepUp.TAG, "LIGHT COURT YARD");
+			bgTx = new Texture(Gdx.files.internal("data/lightCOURT_lrg.png"));
+		}
 		bgTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);	
 		TextureRegion bgRegion = new TextureRegion(bgTx, 0, 40, bgTx.getWidth() , 1620 );
 		bg = new Sprite(bgRegion);
@@ -1076,7 +1084,9 @@ public class Game implements Screen, InputProcessor {
 					if(ball.collision == false){  //  check for current collision
 						if(shielded == false){
 							if(invincibility == false){
-
+								if(_mainActivity.getVibBool() == true){
+									_mainActivity.vibrate(300);
+								}
 								invincibility = true;
 								deltaShieldTime = Gdx.graphics.getDeltaTime();
 								addLifeMark();

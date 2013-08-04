@@ -210,6 +210,7 @@ public class MainMenu implements Screen, InputProcessor{
 			@Override
 			public void onEvent(int type, BaseTween<?> source) {
 				tweenPurple();  // what method to call when Event is triggered
+				//_mainActivity.vibrate(75);
 			}
 		};
 		
@@ -217,6 +218,7 @@ public class MainMenu implements Screen, InputProcessor{
 			@Override
 			public void onEvent(int type, BaseTween<?> source) {
 				tweenBlue();  // what method to call when Event is triggered
+				//_mainActivity.vibrate(50);
 			}
 		};
 		
@@ -224,6 +226,7 @@ public class MainMenu implements Screen, InputProcessor{
 			@Override
 			public void onEvent(int type, BaseTween<?> source) {
 				tweenOrng();  // what method to call when Event is triggered
+				//_mainActivity.vibrate(50);
 			}
 		};
 		
@@ -231,6 +234,7 @@ public class MainMenu implements Screen, InputProcessor{
 			@Override
 			public void onEvent(int type, BaseTween<?> source) {
 				tweenYellow();  // what method to call when Event is triggered
+				//_mainActivity.vibrate(50);
 			}
 		};
 		
@@ -239,6 +243,7 @@ public class MainMenu implements Screen, InputProcessor{
 			public void onEvent(int type, BaseTween<?> source) {
 				if(SignedIn == true){
 					tweenRed();  
+				//	_mainActivity.vibrate(50);
 				}
 			}
 		};
@@ -248,7 +253,7 @@ public class MainMenu implements Screen, InputProcessor{
 		cbRed = new TweenCallback() {
 			@Override
 			public void onEvent(int type, BaseTween<?> source) {
-				
+				//_mainActivity.vibrate(50);
 			}
 		};
 		
@@ -464,9 +469,10 @@ public class MainMenu implements Screen, InputProcessor{
 	@Override
 	public void dispose() {
 		titleTx.dispose();
+		ballGroupPng.dispose();
 		googTx.dispose();
 		googOutTx.dispose();
-		ballGroupPng.dispose();
+		
 		
 	}
 
@@ -622,17 +628,17 @@ public class MainMenu implements Screen, InputProcessor{
 		
 		if(settingsBool == true){		
 			Gdx.app.log(MainKeepUp.TAG, "Settings Btn Clicked!");
-			if(SplashScreen.bgMusic.isPlaying()){
-				//SplashScreen.bgMusic.stop();
-			}
-			game.setScreen(new InstructionsScreen(game));	
+//			if(SplashScreen.bgMusic.isPlaying()){
+//				//SplashScreen.bgMusic.stop();
+//			}
+			_mainActivity.startUserPrefsPage();
 		}
 		
 		if(optionsBool == true){		
 			Gdx.app.log(MainKeepUp.TAG, "Options Btn Clicked!");
-			if(SplashScreen.bgMusic.isPlaying()){
-				//SplashScreen.bgMusic.stop();
-			}
+//			if(SplashScreen.bgMusic.isPlaying()){
+//				//SplashScreen.bgMusic.stop();
+//			}
 			_mainActivity.startResourcePage();  // Testing resource Page // WORKS
 		}
 		return true;

@@ -4,11 +4,14 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Vibrator;
+import android.renderscript.ProgramStore.BlendDstFunc;
 import android.util.Log;
 import android.widget.EditText;
 
@@ -25,6 +28,7 @@ import com.google.example.games.basegameutils.GameHelper.GameHelperListener;
 import com.klusman.keepup.database.ScoreSource;
 import com.klusman.keepup.screens.LocalLeaderboardList;
 import com.klusman.keepup.screens.ResourceManagerActivity;
+import com.klusman.keepup.screens.GameSettings;
 
 
 
@@ -41,13 +45,13 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	public static int spawnRateShield = 25;
 	public static int spawnRateBomb = 25;
 	public static int spawnRateFreeze = 25;
-
-	
-	
+	SharedPreferences prefs;
+	public static boolean vibrate = true;
 	private OnLeaderboardScoresLoadedListener theLeaderboardListener;
 
 	public MainActivity(){
-
+		
+	
 		context = this;
 		Instance = this;
 		aHelper = new GameHelper(this);
@@ -62,15 +66,30 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 					System.out.println(arg2.get(i).getScoreHolderDisplayName() + " : " + arg2.get(i).getDisplayScore());
 				}
 			}
-
-
 		};
+	}
+
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		
+		AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
+		cfg.useGL20 = false;
+		aHelper.setup(this);
+		initialize(new MainKeepUp(MainActivity.this), cfg);
+		
+		
+		prefs = getSharedPreferences("userPrefs", MODE_PRIVATE);
+
+		datasource = new ScoreSource(this);
+		datasource.open();
 	}
 
 	public String getUserName(){
 		return userName;
 	}
-
+	
 	public boolean isOnline() {
 		ConnectivityManager cm =
 				(ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -82,20 +101,8 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 		Log.i(MainKeepUp.TAG, "CONNECTION: Not Online");
 		return false;
 	}
-
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-
-		AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
-		cfg.useGL20 = false;
-		aHelper.setup(this);
-		initialize(new MainKeepUp(MainActivity.this), cfg);
-		//initialize(new ReasourceManagerActivity(MainActivity.this), cfg);
-		datasource = new ScoreSource(this);
-		datasource.open();
-	}
-
+	
+	
 	@Override
 	public void onStart(){
 		super.onStart();
@@ -346,6 +353,17 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	}
 
 	
+	/**
+	 * Starts the User Prefs page
+	 */		
+	public void startUserPrefsPage(){
+		Log.i(MainKeepUp.TAG, "Start User Prefs Page");
+		Intent intent = new Intent(this, GameSettings.class);
+		
+			startActivity(intent);
+
+	}
+	
 	
 	public void checkAndPushAchievements(int SCORE, int kitsUsed, int pointsReceivedBeforeFirstResourceUsed){
 
@@ -385,4 +403,28 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 		startActivity(intent);
 	}
 
+	public void vibrate(int howLong){
+		Vibrator v = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
+		v.vibrate(howLong);
+	}
+	
+	public boolean getVibBool(){
+		prefs = getSharedPreferences("userPrefs", MODE_PRIVATE);
+		Log.i(MainKeepUp.TAG, "VibrateBool " + prefs.getBoolean("vibrateBool", true));
+		return prefs.getBoolean("vibrateBool", true);
+	}
+	
+	public boolean getSoundBool(){
+		prefs = getSharedPreferences("userPrefs", MODE_PRIVATE);
+		Log.i(MainKeepUp.TAG, "SoundBool " + prefs.getBoolean("soundBool", true));
+		return prefs.getBoolean("soundBool", true);
+	}
+	
+	public boolean getCourtBool(){
+		prefs = getSharedPreferences("userPrefs", MODE_PRIVATE);
+		Log.i(MainKeepUp.TAG, "DarkCourtBool " + prefs.getBoolean("darkCourt", true));
+		return prefs.getBoolean("darkCourt", true);
+	}
+	
+	
 }
