@@ -25,7 +25,7 @@ public class GameSettings extends Activity {
 	RadioButton light;
 
 	public GameSettings (){
-		Log.i(MainKeepUp.TAG, "IN Settings Activity");
+		
 	}
 	
 	@Override

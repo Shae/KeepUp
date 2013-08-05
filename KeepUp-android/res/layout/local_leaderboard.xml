@@ -16,13 +16,13 @@
     android:orientation="horizontal" >
 
     <RadioButton
-        android:id="@+id/radioScoreLow"
+        android:id="@+id/radioByAlpha"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:checked="true"
-        android:text="Low to High"
+        android:text="Sort by Alpha"
         tools:ignore="HardcodedText" />
 
     <RadioButton
@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="20dp"
-        android:text="High to Low"
+        android:text="Sort by Score"
         android:checked  = "true"
         tools:ignore="HardcodedText" />
 

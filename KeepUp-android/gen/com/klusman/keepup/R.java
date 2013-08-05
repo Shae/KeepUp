@@ -129,6 +129,9 @@ containing a value of this type.
         public static final int zOrderOnTop=0x7f01000d;
     }
     public static final class color {
+        public static final int accent_green=0x7f04000c;
+        public static final int black=0x7f040010;
+        public static final int blue=0x7f040013;
         public static final int common_action_bar_splitter=0x7f040009;
         /**  Sign-in Button Colors 
          */
@@ -141,8 +144,16 @@ containing a value of this type.
         public static final int common_signin_btn_light_text_disabled=0x7f040006;
         public static final int common_signin_btn_light_text_focused=0x7f040007;
         public static final int common_signin_btn_light_text_pressed=0x7f040005;
-        public static final int common_signin_btn_text_dark=0x7f04000a;
-        public static final int common_signin_btn_text_light=0x7f04000b;
+        public static final int common_signin_btn_text_dark=0x7f040015;
+        public static final int common_signin_btn_text_light=0x7f040016;
+        public static final int lwd_drk_blue=0x7f04000e;
+        public static final int lwd_lt_blue=0x7f04000f;
+        public static final int lwd_purple=0x7f04000d;
+        public static final int pink=0x7f040014;
+        public static final int red=0x7f040011;
+        public static final int sa_green=0x7f04000a;
+        public static final int stacked_green=0x7f04000b;
+        public static final int yellow=0x7f040012;
     }
     public static final class drawable {
         public static final int blue_ball=0x7f020000;
@@ -191,12 +202,12 @@ containing a value of this type.
         public static final int plusBtn3=0x7f05001a;
         public static final int plusBtn4=0x7f05001f;
         public static final int pointsText=0x7f05000d;
+        public static final int radioByAlpha=0x7f050008;
         public static final int radioCourtColorDark=0x7f050028;
         public static final int radioCourtColorLight=0x7f050029;
         public static final int radioGrp=0x7f050007;
         public static final int radioGrpSettings=0x7f050027;
         public static final int radioScore=0x7f050009;
-        public static final int radioScoreLow=0x7f050008;
         public static final int resSub1=0x7f05000f;
         public static final int resSub2=0x7f050014;
         public static final int resSub3=0x7f050019;

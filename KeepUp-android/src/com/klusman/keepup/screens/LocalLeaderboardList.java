@@ -71,8 +71,8 @@ public class LocalLeaderboardList extends Activity {
 		radioGrp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 			public void onCheckedChanged(RadioGroup arg0, int id) {
 				switch (id) {
-				case R.id.radioScoreLow:
-					_scoreList =  ScoreSource.findAllLowToHigh();
+				case R.id.radioByAlpha:
+					_scoreList =  ScoreSource.findAllbyName();
 					listBuilder();
 					
 					break;

@@ -79,7 +79,7 @@ public class Game implements Screen, InputProcessor {
 	float spawnRate = 7;
 	
 	int starLoop;
-
+	int countDownFrame = 0;
 	/// Achievement / Leaderboard stuff ///
 	int SCORE = 0;
 	int kitsUsed = 0;
@@ -121,7 +121,14 @@ public class Game implements Screen, InputProcessor {
 	TextureRegion starRegion0;
 	Array<TextureRegion> starHolder;
 
-
+	private Texture countDownNumTx;
+	TextureRegion count3;
+	TextureRegion count2;
+	TextureRegion count1;
+	TextureRegion countGo;
+	private Sprite CountSprite;
+	Array<TextureRegion> countHolder;
+	
 	private Sprite starSprite;
 
 	private Texture psTx;
@@ -145,17 +152,13 @@ public class Game implements Screen, InputProcessor {
 	public static Sound powerUp;
 	public static Sound hardBounce;
 	public static Sound timeBomb;
-	//public Sound bgGymNoise;
 	public static Sound bounce2;
 	public static Sound bounce3;
 
-	public static final int Difficulty_Easy = 1;
-	public static final int Difficulty_Medium = 2;
-	public static final int Difficulty_Hard = 3;
 
 	int frameLength;
 	int currentFrame;
-	int gameDifficulty = Difficulty_Medium;
+	int gameDifficulty;
 
 	FreeTypeFontGenerator generator;
 	FreeTypeBitmapFontData font;
@@ -168,7 +171,7 @@ public class Game implements Screen, InputProcessor {
 	public static Array<LifeMarks> Marks;
 	public Array<Sprite> starArray;
 	Animation starAnimation;
-	//TweenCallback cb;
+
 
 
 	public Game( MainKeepUp game){
@@ -185,9 +188,15 @@ public class Game implements Screen, InputProcessor {
 
 	@Override
 	public void show() {
-		//bgGymNoise = Gdx.audio.newSound(Gdx.files.internal("audio/gymShoes.wav"));
-		//bgGymNoise.play();
-		gameState = GAME_RUNNING;
+		gameDifficulty = _mainActivity.getGameDifficulty();
+		if(gameDifficulty == 1){
+			scoreTimeInterval = 2f;
+		}else if(gameDifficulty == 2){
+			scoreTimeInterval = 1.5f;
+		}else{
+			scoreTimeInterval = 1f;
+		}
+		gameState = GAME_READY;
 		invincibility = false;
 		shielded = false;
 		pauseGame = false;
@@ -313,9 +322,29 @@ public class Game implements Screen, InputProcessor {
 		starSprite = new Sprite(starRegion0);
 		starSprite.setSize(100f , 100f );
 		starSprite.setOrigin(starSprite.getWidth()/2, starSprite.getHeight()/2);
-		starSprite.setPosition(kid.getX(), kid.getY() + kid.getHeight());	
+		starSprite.setPosition(kid.getX(), kid.getY() + kid.getHeight());
 		starLoop = 0;
 
+
+		countHolder = new Array<TextureRegion>();
+		countDownNumTx = new Texture(Gdx.files.internal("data/countDownNumbers.png"));
+		countDownNumTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		count3  = new TextureRegion(countDownNumTx, 0, 512, countDownNumTx.getWidth(), 256); 
+		countHolder.add(count3);
+		count2  = new TextureRegion(countDownNumTx, 0, 256, countDownNumTx.getWidth(), 256); 
+		countHolder.add(count2);
+		count1  = new TextureRegion(countDownNumTx, 0, 0, countDownNumTx.getWidth(), 256); 
+		countHolder.add(count1);
+		countGo  = new TextureRegion(countDownNumTx, 0, 768, countDownNumTx.getWidth(), 256); 
+		countHolder.add(countGo);
+		
+		CountSprite = new Sprite(countHolder.get(countDownFrame));
+		CountSprite.setSize(CountSprite.getWidth() * 2, CountSprite.getHeight() * 2);
+		CountSprite.setOrigin(CountSprite.getWidth()/2, CountSprite.getHeight()/2);
+		CountSprite.setPosition(0 - CountSprite.getWidth()/2 , 0 - CountSprite.getHeight()/2);	
+		//TODO
+		
+		
 		//// Restart Btn
 		restartBtnTx = new Texture(Gdx.files.internal("data/restartBtn.png"));
 		restartBtnTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);
@@ -381,7 +410,8 @@ public class Game implements Screen, InputProcessor {
 		restartBtnTx.dispose();
 		star2Tx.dispose();
 		generator.dispose();
-
+		countDownNumTx.dispose();
+		
 		if(Balls.size > 0){
 			for(Ball ball: Balls) {
 				ball.ballTx.dispose();
@@ -565,8 +595,17 @@ public class Game implements Screen, InputProcessor {
 
 	public void updateBallTimer(float deltaTime){
 		elapsedTime = deltaTime;
-		if(elapsedTime / 5 > Balls.size){  // Make a new ball every 5 seconds
-			makeNewBall();
+		if(Balls.size == 0){
+			if(elapsedTime >= 5){
+				makeNewBall();
+			}
+		}else{
+			if((elapsedTime / (4 + (4 - gameDifficulty))) > Balls.size){  
+				// Make a new ball every 7 seconds on Easy
+				// Make a new ball every 6 seconds on Medium
+				// Make a new ball every 5 seconds on Hard
+				makeNewBall();
+			}
 		}
 	}
 
@@ -579,7 +618,7 @@ public class Game implements Screen, InputProcessor {
 	 */
 	public void updateResourceTimer(float deltaTime){
 		elapsedTime = deltaTime;
-
+		
 		if(elapsedTime > resourceTimer){
 			
 			// Pull User defined resource spawn values
@@ -626,8 +665,46 @@ public class Game implements Screen, InputProcessor {
 
 	}
 
-
+//TODO
 	public void gameReady(){
+		scoreUpdate();
+		checkStrikeOut();
+		deltaTime += Gdx.graphics.getDeltaTime();   
+		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		camera.update();
+		batch.setProjectionMatrix(camera.combined);
+
+		elapsedTime = deltaTime;
+		
+		
+		if(elapsedTime > 1 + countDownFrame){  
+			
+			if(countDownFrame <= 3){
+				CountSprite.setRegion(countHolder.get(countDownFrame));
+			}
+			countDownFrame=(countDownFrame+1);
+		} 
+		
+		if(countDownFrame == 4){
+			gameState = GAME_RUNNING;
+			
+		}
+	
+		
+		batch.begin();
+		bg.draw(batch);
+
+		gameText.setFixedWidthGlyphs("Score: " + SCORE);
+		gameText.draw(batch, "Score: " + SCORE, -480, (screenYRefactor / 2) - 5);
+		CountSprite.draw(batch);
+
+		kid.draw(batch);
+		starSprite.draw(batch);
+		
+		batch.end();
+		
+		
 		
 	}
 
@@ -967,17 +1044,39 @@ public class Game implements Screen, InputProcessor {
 	}
 
 
+
 	//TODO
 	public void checkStrikeOut(){
 		if(Marks.size >= 3){
 			boolean submited = false;
+			_mainActivity.setFinalScore(SCORE);
 
 			if(submited == false){
+				// if Online and Signed in
+				
 				if((_mainActivity.isOnline() == true) && (_mainActivity.getSignedIn() == true)){
 					_mainActivity.checkAndPushAchievements(SCORE, kitsUsed, pointsReceivedBeforeFirstResourceUsed);
 					_mainActivity.submitScore(SCORE);  // SEND SCORE to Google Play
+					submited = true;
+					try {
+						
+						if(MainActivity.userName == ""){
+							_mainActivity.getUsername();  
+						}else{
+							_scoreSource.createScore(_mainActivity.userName, SCORE);
+							_mainActivity.notifyUser(SCORE);
+							
+						}
+						
+						//_mainActivity.notifyUser(SCORE);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					
 
+				}else{  // not signed 
+					// SUBMIT TO LOCAL LEADERBOARD
 					submited = true;
 					try {
 						
@@ -985,24 +1084,13 @@ public class Game implements Screen, InputProcessor {
 							_mainActivity.getUsername();  // Popup
 						}
 						
-						_mainActivity.notifyUser(SCORE);
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					// & SUBMIT TO LOCAL LEADERBOARD
-					_scoreSource.createScore(_mainActivity.getUserName(), SCORE);
-
-				}else{
-					// SUBMIT TO LOCAL LEADERBOARD
-
-					_scoreSource.createScore(_mainActivity.getUserName(), SCORE);
-					try {
-						_mainActivity.notifyUser(SCORE);
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					//_scoreSource.createScore(_mainActivity.getUserName(), SCORE);  // move to popups
+					
+					
 				}
 			}
 			gameState = GAME_OVER;
@@ -1443,5 +1531,8 @@ public class Game implements Screen, InputProcessor {
 		return false;
 	}
 
+	private void startTimer(float deltaTime){
+		
+	}
 
 }

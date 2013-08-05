@@ -1,5 +1,6 @@
 package com.klusman.keepup.screens;
 
+import android.content.SharedPreferences;
 import android.util.Log;
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Tween;
@@ -87,8 +88,6 @@ public class MainMenu implements Screen, InputProcessor{
 	public MainMenu (MainKeepUp game){
 		_mainActivity = MainActivity.Instance;
 		this.game = game;
-		
-		
 		x = Gdx.graphics.getWidth();
 		y = Gdx.graphics.getHeight();
 		screenXRefactor = 1000;
@@ -106,6 +105,7 @@ public class MainMenu implements Screen, InputProcessor{
 		bounce1 = Gdx.audio.newSound(Gdx.files.internal("audio/ballbounce04.wav"));
 		bounce2 = Gdx.audio.newSound(Gdx.files.internal("audio/ballBounce03.wav"));
 		bounce3 = Gdx.audio.newSound(Gdx.files.internal("audio/ballBounce02.wav"));
+		
 	}
 
 	public void checkLogin(){
@@ -505,16 +505,10 @@ public class MainMenu implements Screen, InputProcessor{
 		boolean leaderboardBool = PurpleBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
 		boolean instructionBool = BlueBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
 		boolean settingsBool = OrngBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
-		boolean googBool = false;
+		boolean optionsBool = YellowBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
 		boolean achievementsBool = false;
-		boolean googOutBool = false;
+	
 		
-		if(SignedIn == true){
-			achievementsBool = RedBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
-			googOutBool = googleOut.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
-		}else{
-			googBool = googlePlay.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);	
-		}
 		
 		
 		if(playBool == true){
@@ -540,38 +534,11 @@ public class MainMenu implements Screen, InputProcessor{
 
 		}
 		
-		if(googOutBool == true){
+		if(optionsBool == true){
 			bounce3.play();
-			Gdx.app.log(MainKeepUp.TAG, "GOOGLE Log Out TOUCHED");
-			try {
-				_mainActivity.LogOut();
-				SignedIn = false;
-				
-				Log.i(MainKeepUp.TAG, "LOGGED OUT");
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		}
 		
 		
-		if(googBool == true){
-			bounce1.play();
-			Gdx.app.log(MainKeepUp.TAG, "GOOGLE TOUCHED");
-			if(_mainActivity.isOnline() == true){
-				if(_mainActivity.getSignedIn() == false){
-					try {
-						_mainActivity.Login();
-						SignedIn = true;		
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
-				}
-			}
-	
-		}
 		return false;
 	}
 	
@@ -588,58 +555,79 @@ public class MainMenu implements Screen, InputProcessor{
 		boolean instructionBool = BlueBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
 		boolean settingsBool = OrngBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
 		boolean optionsBool = YellowBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
-		boolean achievementsBool= false;
 		
+		boolean achievementsBool= false;
+		boolean googBool = false;
+		boolean googOutBool = false;
+		
+
 		if(SignedIn == true){
 			achievementsBool = RedBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
-			tweenRed();
+			googOutBool = googleOut.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
+			tweenRed(); // to build the red button
+		}else{
+			googBool = googlePlay.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);	
 		}
 		
+		
 		if(playBool == true){
-			
-			
-			Log.i(MainKeepUp.TAG, "Play Button Touched");
-			runGame(game);
-			
+			game.setScreen(new DifficultySetupScreen(game));	
 		}
 		
 		if(leaderboardBool == true){
-			
-			Gdx.app.log(MainKeepUp.TAG, "Leaderboard Btn Clicked!");
-			//game.setScreen(new CreditsScreen(game));
-			if(SignedIn == false){
-				_mainActivity.getLocalLeaderboard();
-			}else{
+			if(SignedIn == true){
 				_mainActivity.whichLeaderboard();
+			}else{
+				_mainActivity.getLocalLeaderboard();
 			}
-			
 		}
 
 		if(achievementsBool == true){		
-			Gdx.app.log(MainKeepUp.TAG, "Achievements Btn Clicked!");
-			//game.setScreen(new InstructionsScreen(game));
 			 _mainActivity.getAchievements();  // Testing Achievements Page // WORKS
 		}
 		
 		if(instructionBool == true){		
-			Gdx.app.log(MainKeepUp.TAG, "Instructions Btn Clicked!");
 			game.setScreen(new InstructionsScreen(game));
 		}
 		
 		if(settingsBool == true){		
-			Gdx.app.log(MainKeepUp.TAG, "Settings Btn Clicked!");
-//			if(SplashScreen.bgMusic.isPlaying()){
-//				//SplashScreen.bgMusic.stop();
-//			}
 			_mainActivity.startUserPrefsPage();
 		}
 		
 		if(optionsBool == true){		
-			Gdx.app.log(MainKeepUp.TAG, "Options Btn Clicked!");
-//			if(SplashScreen.bgMusic.isPlaying()){
-//				//SplashScreen.bgMusic.stop();
-//			}
 			_mainActivity.startResourcePage();  // Testing resource Page // WORKS
+		}
+		if(googOutBool == true){
+			bounce3.play();
+			try {
+				_mainActivity.LogOut();
+				SignedIn = false;
+				_mainActivity.setUserName("");
+				
+				Log.i(MainKeepUp.TAG, "LOGGED OUT");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		
+		if(googBool == true){
+			bounce1.play();
+			if(_mainActivity.isOnline() == true){
+				if(_mainActivity.getSignedIn() == false){
+					try {
+						_mainActivity.Login();
+						SignedIn = true;
+					
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				}
+			}
+	
 		}
 		return true;
 	}
@@ -661,7 +649,6 @@ public class MainMenu implements Screen, InputProcessor{
 		// TODO Auto-generated method stub
 		return false;
 	}
-
 
 
 

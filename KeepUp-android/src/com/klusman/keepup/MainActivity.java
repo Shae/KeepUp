@@ -11,12 +11,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.renderscript.ProgramStore.BlendDstFunc;
 import android.util.Log;
 import android.widget.EditText;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.google.android.gms.games.Player;
@@ -34,6 +31,7 @@ import com.klusman.keepup.screens.GameSettings;
 
 public class MainActivity extends AndroidApplication implements GameHelperListener, GoogleInterface {
 	static Context context;
+	MainKeepUp _game;
 	public static GameHelper aHelper;
 	public SQLiteOpenHelper dbHelper;
 	public SQLiteDatabase database;
@@ -48,15 +46,20 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	SharedPreferences prefs;
 	public static boolean vibrate = true;
 	private OnLeaderboardScoresLoadedListener theLeaderboardListener;
-
+	int gameDif = 1;
+	int finalScore = 0;
+	AlertDialog difficultyDialog;
+	
+	
+	
 	public MainActivity(){
 		
-	
+
 		context = this;
 		Instance = this;
 		aHelper = new GameHelper(this);
 		aHelper.enableDebugLog(true, "KeepUp");
-	
+
 		//create a listener for getting raw data back from leaderboard
 		theLeaderboardListener = new OnLeaderboardScoresLoadedListener() {
 
@@ -73,12 +76,12 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
 		cfg.useGL20 = false;
 		aHelper.setup(this);
 		initialize(new MainKeepUp(MainActivity.this), cfg);
-		
+
 		
 		prefs = getSharedPreferences("userPrefs", MODE_PRIVATE);
 
@@ -89,7 +92,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	public String getUserName(){
 		return userName;
 	}
-	
+
 	public boolean isOnline() {
 		ConnectivityManager cm =
 				(ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -101,8 +104,8 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 		Log.i(MainKeepUp.TAG, "CONNECTION: Not Online");
 		return false;
 	}
-	
-	
+
+
 	@Override
 	public void onStart(){
 		super.onStart();
@@ -152,7 +155,6 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 				//@Override
 				public void run(){
 					aHelper.signOut();
-					userName = "";
 				}
 			});
 		}catch (final Exception ex){
@@ -195,7 +197,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	 * Negative button closes dialog.
 	 * @param Score
 	 */
-//TODO  
+	//TODO  
 	// DOUBLE CHECK: fix this for if the user is not connected to internet
 	public void notifyUser(int Score){
 		final int s = Score;
@@ -204,7 +206,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 
 				//@Override
 				public void run(){
-				
+
 					AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
 					String stringMsg;
 
@@ -215,7 +217,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 							stringMsg = userName + "\nYour final score was: " + s + "\nSaved to your Local Leaderboard. " ;
 						}
 					}else{
-						stringMsg = "FINAL SCORE: " + s + "\nSaved to your Local Leaderboard. ";
+						stringMsg = userName + "\nYour final score was: " + s + "\nSaved to your Local Leaderboard. " ;
 					}
 
 					// set title
@@ -229,7 +231,8 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 						public void onClick(DialogInterface dialog,int id) {
 							if(getSignedIn() == true){
 								if(getSignedIn() == true){
-									getScores();
+									//getScores();
+									whichLeaderboard();
 								}
 							}else{
 								Intent intent = new Intent(MainActivity.this, LocalLeaderboardList.class);
@@ -273,21 +276,19 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 					final AlertDialog.Builder alert = new AlertDialog.Builder(context);
 					final EditText input = new EditText(context);
 					alert.setTitle("Enter User Name");
-					alert.setMessage("Please enter you name for the Leaderboard.");
+					alert.setMessage("Please enter your name for the Leaderboard.");
 					alert.setView(input);
-					alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+					alert.setPositiveButton("Done", new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int whichButton) {
 							String value = input.getText().toString().trim();
-							Log.i(MainKeepUp.TAG, "INPUT: " + value);
+							//Log.i(MainKeepUp.TAG, "INPUT: " + value);
 							userName = value;
+							datasource.createScore(userName, finalScore);
+							notifyUser(finalScore);
 						}
 					});
 
-					alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int whichButton) {
-							dialog.cancel();
-						}
-					});
+
 					alert.show();   
 
 				}
@@ -298,7 +299,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	}
 
 	public void whichLeaderboard(){
-		
+
 		try {
 			runOnUiThread(new Runnable(){
 
@@ -306,7 +307,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 				public void run(){
 					AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
 					String stringMsg;
-	
+
 					stringMsg = "Which Leaderboard would you like to view?";
 
 					// set title
@@ -341,9 +342,9 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 		}
 
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Starts the page where the user can set the resource spawn ratio
 	 */		
@@ -352,19 +353,19 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 		startActivity(intent);
 	}
 
-	
+
 	/**
 	 * Starts the User Prefs page
 	 */		
 	public void startUserPrefsPage(){
 		Log.i(MainKeepUp.TAG, "Start User Prefs Page");
 		Intent intent = new Intent(this, GameSettings.class);
-		
-			startActivity(intent);
+
+		startActivity(intent);
 
 	}
-	
-	
+
+
 	public void checkAndPushAchievements(int SCORE, int kitsUsed, int pointsReceivedBeforeFirstResourceUsed){
 
 		if(SCORE <= 50){
@@ -407,24 +408,40 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 		Vibrator v = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
 		v.vibrate(howLong);
 	}
-	
+
 	public boolean getVibBool(){
 		prefs = getSharedPreferences("userPrefs", MODE_PRIVATE);
 		Log.i(MainKeepUp.TAG, "VibrateBool " + prefs.getBoolean("vibrateBool", true));
 		return prefs.getBoolean("vibrateBool", true);
 	}
-	
+
 	public boolean getSoundBool(){
 		prefs = getSharedPreferences("userPrefs", MODE_PRIVATE);
 		Log.i(MainKeepUp.TAG, "SoundBool " + prefs.getBoolean("soundBool", true));
 		return prefs.getBoolean("soundBool", true);
 	}
-	
+
 	public boolean getCourtBool(){
 		prefs = getSharedPreferences("userPrefs", MODE_PRIVATE);
 		Log.i(MainKeepUp.TAG, "DarkCourtBool " + prefs.getBoolean("darkCourt", true));
 		return prefs.getBoolean("darkCourt", true);
 	}
+
+	public void setUserName(String name){
+		userName = name;
+	}
+
+	public void setFinalScore(int newScore){
+		finalScore = newScore;
+	}
+
+	public void setDifficulty(int difficulty){
+		gameDif = difficulty;
+	}
+
+	public int getGameDifficulty(){
+		return gameDif;
+	}
 	
-	
+
 }

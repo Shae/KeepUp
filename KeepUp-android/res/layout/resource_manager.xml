@@ -18,7 +18,10 @@
         android:gravity="center"
         android:text="Resource Manager"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="30sp" />
+        android:textColor="@color/accent_green"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:typeface="serif" />
 
     <TextView
         android:id="@+id/subTitle"
@@ -28,7 +31,7 @@
         android:layout_marginTop="10dp"
         android:layout_weight="0.29"
         android:gravity="center"
-        android:text="Manage your unlocked resources and the % chance they spawn!"
+        android:text="Manage your resources by adjusting the chance they spawn!"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
@@ -40,7 +43,9 @@
         android:layout_marginTop="15dp"
         android:gravity="center"
         android:text="You have 100 points to spend"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textStyle="italic"
+        android:typeface="normal" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -69,6 +74,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Health Kit"
+                android:textColor="@color/red"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <TextView
@@ -93,7 +99,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="+"
+                android:text=" + "
                 android:textSize="25sp" />
 
             <TextView
@@ -112,7 +118,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="-"
+                android:text=" - "
                 android:textSize="25sp" />
 
         </LinearLayout>
@@ -146,6 +152,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Shield"
+                android:textColor="@color/sa_green"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <TextView
@@ -170,7 +177,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="+"
+                android:text=" + "
                 android:textSize="25sp" />
 
             <TextView
@@ -189,7 +196,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="-"
+                android:text=" - "
                 android:textSize="25sp" />
 
         </LinearLayout>
@@ -222,6 +229,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Freeze Time"
+                android:textColor="@color/blue"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <TextView
@@ -246,7 +254,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="+"
+                android:text=" + "
                 android:textSize="25sp" />
 
             <TextView
@@ -265,7 +273,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="-"
+                android:text=" - "
                 android:textSize="25sp" />
 
         </LinearLayout>
@@ -298,6 +306,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Bomb"
+                android:textColor="@color/yellow"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <TextView
@@ -306,7 +315,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_weight="0.91"
-                android:text="When collected will count down to explosion.  Will destroy any balls it collides with the explosion.  (Not harmful to you)"
+                android:text="When collected, count down to explosion.  Will destroy any balls it collides with the explosion.  (Not harmful to you)"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
         </LinearLayout>
 
@@ -322,7 +331,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="+"
+                android:text=" + "
                 android:textSize="25sp" />
 
             <TextView
@@ -341,7 +350,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="-"
+                android:text=" - "
                 android:textSize="25sp" />
 
         </LinearLayout>

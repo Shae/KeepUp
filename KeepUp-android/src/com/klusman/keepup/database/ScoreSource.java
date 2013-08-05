@@ -120,9 +120,9 @@ public class ScoreSource {
 	return Scores;
 } 
 	
-	public static List<ScoreObject> findAllLowToHigh(){
+	public static List<ScoreObject> findAllbyName(){
 		Log.i(MainKeepUp.TAG, "**START find all no Filter");
-		String orderBy =  DBOpenHelper.COLUMN_SCORE + " ASC";
+		String orderBy =  DBOpenHelper.COLUMN_NAME + " ASC";
 	List<ScoreObject> Scores = new ArrayList<ScoreObject>();
 	Cursor c = database.query(DBOpenHelper.TABLE_SCORES, allColumns, null, null, null, null, orderBy);
 		Log.i(MainKeepUp.TAG, "Scores List Returned " + c.getCount() + " rows");

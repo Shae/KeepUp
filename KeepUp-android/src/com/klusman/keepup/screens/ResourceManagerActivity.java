@@ -1,5 +1,7 @@
 package com.klusman.keepup.screens;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.klusman.keepup.MainActivity;
 import com.klusman.keepup.MainKeepUp;
 import com.klusman.keepup.R;
@@ -20,8 +22,9 @@ public class ResourceManagerActivity extends Activity{
 	int allPointsSpent = 100;
 	int PointsLeft = 100 - allPointsSpent;
 	
-	
-	
+	public static Sound bounceUp;
+	public static Sound bounceDwn;
+	public static Sound rockBottom;
 	
 	
 
@@ -50,7 +53,9 @@ public class ResourceManagerActivity extends Activity{
 		Button dwn3 = (Button)findViewById(R.id.minusBtn3);
 		Button dwn4 = (Button)findViewById(R.id.minusBtn4);
 
-		
+		bounceUp = Gdx.audio.newSound(Gdx.files.internal("audio/ballbounce04.wav"));
+		bounceDwn = Gdx.audio.newSound(Gdx.files.internal("audio/Ball_Bounce.wav"));
+		rockBottom = Gdx.audio.newSound(Gdx.files.internal("audio/HardBounce.wav"));
 
 		final TextView tv1 = (TextView)findViewById(R.id.value1);
 		tv1.setText(String.valueOf(MainActivity.spawnRateKit)+ "%");
@@ -71,10 +76,13 @@ public class ResourceManagerActivity extends Activity{
 			@Override
 			public void onClick(View arg0) {
 				if(PointsLeft > 0){
+					bounceUp.play(0.5f);
 					MainActivity.spawnRateKit = MainActivity.spawnRateKit + 1;
 					getPointsLeft();
 					tv1.setText(String.valueOf(MainActivity.spawnRateKit)+ "%");
 					textLeft.setText(getPointsString());
+				}else{
+					rockBottom.play(0.5f);
 				}
 			}
 		});
@@ -83,10 +91,14 @@ public class ResourceManagerActivity extends Activity{
 			@Override
 			public void onClick(View arg0) {
 				if(MainActivity.spawnRateKit > 1){
+					bounceDwn.play(0.5f);
 					MainActivity.spawnRateKit = MainActivity.spawnRateKit - 1;
 					getPointsLeft();
 					tv1.setText(String.valueOf(MainActivity.spawnRateKit)+ "%");
 					textLeft.setText(getPointsString());
+				}
+				if(MainActivity.spawnRateKit == 1){
+					rockBottom.play(0.5f);
 				}
 			}
 		});
@@ -97,10 +109,13 @@ public class ResourceManagerActivity extends Activity{
 			@Override
 			public void onClick(View arg0) {
 				if(PointsLeft > 0){
+					bounceUp.play(0.5f);
 					MainActivity.spawnRateShield = MainActivity.spawnRateShield + 1;
 					getPointsLeft();
 					tv2.setText(String.valueOf(MainActivity.spawnRateShield)+ "%");
 					textLeft.setText(getPointsString());
+				}else{
+					rockBottom.play(0.5f);
 				}
 			}
 		});
@@ -109,10 +124,15 @@ public class ResourceManagerActivity extends Activity{
 			@Override
 			public void onClick(View arg0) {
 				if(MainActivity.spawnRateShield > 1){
+					bounceDwn.play(0.5f);
 					MainActivity.spawnRateShield = MainActivity.spawnRateShield - 1;
 					getPointsLeft();
 					tv2.setText(String.valueOf(MainActivity.spawnRateShield)+ "%");
 					textLeft.setText(getPointsString());
+				}
+				if(MainActivity.spawnRateShield == 1){
+					rockBottom.play(0.5f);
+					
 				}
 			}
 		});
@@ -123,10 +143,13 @@ public class ResourceManagerActivity extends Activity{
 			@Override
 			public void onClick(View arg0) {
 				if(PointsLeft > 0){
+					bounceUp.play(0.5f);
 					MainActivity.spawnRateFreeze = MainActivity.spawnRateFreeze + 1;
 					getPointsLeft();
 					tv3.setText(String.valueOf(MainActivity.spawnRateFreeze) + "%");
 					textLeft.setText(getPointsString());
+				}else{
+					rockBottom.play(0.5f);
 				}
 			}
 		});
@@ -135,10 +158,14 @@ public class ResourceManagerActivity extends Activity{
 			@Override
 			public void onClick(View arg0) {
 				if(MainActivity.spawnRateFreeze > 1){
+					bounceDwn.play(0.5f);
 					MainActivity.spawnRateFreeze = MainActivity.spawnRateFreeze - 1;
 					getPointsLeft();
 					tv3.setText(String.valueOf(MainActivity.spawnRateFreeze)+ "%");
 					textLeft.setText(getPointsString());
+				}
+				if(MainActivity.spawnRateFreeze == 1){
+					rockBottom.play(0.5f);
 				}
 			}
 		});
@@ -149,10 +176,13 @@ public class ResourceManagerActivity extends Activity{
 			@Override
 			public void onClick(View arg0) {
 				if(PointsLeft > 0){
+					bounceUp.play(0.5f);
 					MainActivity.spawnRateBomb = MainActivity.spawnRateBomb + 1;
 					getPointsLeft();
 					tv4.setText(String.valueOf(MainActivity.spawnRateBomb)+ "%");
 					textLeft.setText(getPointsString());
+				}else{
+					rockBottom.play(0.5f);
 				}
 			}
 		});
@@ -161,11 +191,15 @@ public class ResourceManagerActivity extends Activity{
 			@Override
 			public void onClick(View arg0) {
 				if(MainActivity.spawnRateBomb > 1){
+					bounceDwn.play(0.5f);
 					MainActivity.spawnRateBomb = MainActivity.spawnRateBomb - 1;
 					getPointsLeft();
 					tv4.setText(String.valueOf(MainActivity.spawnRateBomb)+ "%");
 					textLeft.setText(getPointsString());
 					
+				}
+				if(MainActivity.spawnRateBomb == 1){
+					rockBottom.play(0.5f);
 				}
 			}
 		});
