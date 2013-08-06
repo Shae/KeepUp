@@ -1,5 +1,6 @@
 package com.klusman.keepup.screens;
 
+import android.util.Log;
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
@@ -8,7 +9,6 @@ import aurelienribon.tweenengine.TweenManager;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -37,10 +37,11 @@ public class SplashScreen implements Screen{
 	float screenRatio;
 	TweenManager manager;
 	private SpriteBatch batch;
-	public static Music bgMusic;
-	boolean playTheMusic;
+	//public static Music bgMusic;
+	//boolean playTheMusic;
 	
 	public SplashScreen( MainKeepUp game){
+		Log.i(MainKeepUp.TAG, "SplashScreen");
 		_mainActivity = MainActivity.Instance;
 		this.game = game;
 		x = Gdx.graphics.getWidth();
@@ -51,18 +52,13 @@ public class SplashScreen implements Screen{
 		camera = new OrthographicCamera(screenXRefactor, screenYRefactor);
 		Tween.registerAccessor(Sprite.class, new SpriteTween());
 		manager = new TweenManager();
-		playTheMusic = _mainActivity.getSoundBool();
+		//playTheMusic = _mainActivity.getSoundBool();
 	}
 
 	@Override
 	public void show() {
 
-		bgMusic = Gdx.audio.newMusic(Gdx.files.internal("audio/gymShoes16.mp3"));	
-		bgMusic.setLooping(true);  
-		bgMusic.setVolume(0.4f);
-		if(playTheMusic == true){
-			bgMusic.play();
-		}
+		
 
 		titleTx = new Texture(Gdx.files.internal("data/splashTitle.png"));
 		titleTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);	

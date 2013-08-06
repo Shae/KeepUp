@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.collision.Ray;
 import com.klusman.keepup.MainActivity;
 import com.klusman.keepup.MainKeepUp;
 
@@ -25,8 +27,12 @@ public class CreditsScreen implements Screen, InputProcessor{
 	float screenRatio;
 	private SpriteBatch batch;
 	
+	
 	Sprite creditsSprite;
 	Texture creditsTx;
+	
+	Sprite bugSprite;
+	Texture bugTx;
 	
 	
 	public CreditsScreen(MainKeepUp game){
@@ -54,6 +60,14 @@ public class CreditsScreen implements Screen, InputProcessor{
 		creditsSprite.setSize(screenXRefactor,  screenXRefactor * stretchRatioCredits);  
 		creditsSprite.setOrigin(creditsSprite.getWidth()/2, creditsSprite.getHeight()/2);
 		creditsSprite.setPosition(0 - creditsSprite.getWidth()/2, 0 - creditsSprite.getHeight()/2);
+		
+		bugTx = new Texture(Gdx.files.internal("data/reportBugBtn.png"));
+		bugTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		TextureRegion bugReg = new TextureRegion(bugTx, 0, 0, bugTx.getWidth(), bugTx.getHeight());
+		bugSprite = new Sprite(bugReg);
+		bugSprite.setSize(bugSprite.getWidth()*4,  bugSprite.getHeight()*4);  
+		bugSprite.setOrigin(bugSprite.getWidth()/2 , bugSprite.getHeight()/2);
+		bugSprite.setPosition(0 - bugSprite.getWidth()/2, -550 - bugSprite.getHeight()/2);
 	}
 	
 	@Override
@@ -65,6 +79,7 @@ public class CreditsScreen implements Screen, InputProcessor{
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 			creditsSprite.draw(batch);
+			bugSprite.draw(batch);
 		batch.end();
 	}
 
@@ -91,6 +106,7 @@ public class CreditsScreen implements Screen, InputProcessor{
 	@Override
 	public void dispose() {
 		creditsTx.dispose();
+		bugTx.dispose();
 	}
 
 	public void runGame(MainKeepUp game){
@@ -129,6 +145,15 @@ public class CreditsScreen implements Screen, InputProcessor{
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		Vector2 touchPos = new Vector2();
+		touchPos.set(Gdx.input.getX(), Gdx.input.getY());
+		Ray cameraRay = camera.getPickRay(touchPos.x, touchPos.y);
+		
+		boolean bugBool = bugSprite.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
+		
+		if(bugBool == true){
+			_mainActivity.bugReport();
+		}
 		
 		return false;
 	}

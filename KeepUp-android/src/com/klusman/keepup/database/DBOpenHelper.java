@@ -16,18 +16,21 @@ public class DBOpenHelper extends SQLiteOpenHelper{
 	public static final String COLUMN_ID = "scoreID";
 	public static final String COLUMN_NAME = "playerName";
 	public static final String COLUMN_SCORE = "playerScore";
+	public static final String COLUMN_DIFFICULTY = "gameDifficulty";
 
 	
 	public static final String TABLE_CREATE = "CREATE TABLE " + TABLE_SCORES + " (" +
 			COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
 			COLUMN_NAME + " TEXT NOT NULL, " +
-			COLUMN_SCORE + " INTEGER NOT NULL" +
+			COLUMN_SCORE + " INTEGER NOT NULL," +
+			COLUMN_DIFFICULTY + " INTEGER NOT NULL" +
 
 			")";
 	
 	
 	public DBOpenHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
+		Log.i(MainKeepUp.TAG, "DB Helper");
 	}
 
 	@Override
@@ -37,10 +40,6 @@ public class DBOpenHelper extends SQLiteOpenHelper{
 		Log.i(MainKeepUp.TAG, DATABASE_NAME + "Table has been created");
 	}
 
-//	public void getDBSize(SQLiteDatabase db){
-//		String s = "SELECT COUNT(*) FROM " + db
-//		int rowCount = db.execSQL(s);
-//	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

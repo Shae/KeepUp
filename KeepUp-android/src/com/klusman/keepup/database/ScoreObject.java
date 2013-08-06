@@ -5,6 +5,7 @@ public class ScoreObject {
 	 	public long id;
 	    public String name;
 	    public int score;
+	    public int difficulty;
 
 
 	    
@@ -35,7 +36,14 @@ public class ScoreObject {
 	    public void setScore(int type){
 	    	this.score = type;
 	    }
+////////////
+	    public int getDifficulty(){
+	    	return difficulty;
+	    }
 	    
+	    public void setDifficulty(int dif){
+	    	this.difficulty = dif;
+	    }	    
 	
 }  
 

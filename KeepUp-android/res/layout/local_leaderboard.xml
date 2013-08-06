@@ -14,17 +14,7 @@
     android:layout_marginBottom="10dp"
     android:layout_marginTop="20dp"
     android:orientation="horizontal" >
-
-    <RadioButton
-        android:id="@+id/radioByAlpha"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:checked="true"
-        android:text="Sort by Alpha"
-        tools:ignore="HardcodedText" />
-
+    
     <RadioButton
         android:id="@+id/radioScore"
         android:layout_width="wrap_content"
@@ -34,6 +24,16 @@
         android:text="Sort by Score"
         android:checked  = "true"
         tools:ignore="HardcodedText" />
+
+    <RadioButton
+        android:id="@+id/radioByAlpha"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:text="Sort by Alpha"
+        tools:ignore="HardcodedText" />
+
 
 </RadioGroup>
  

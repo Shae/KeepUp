@@ -12,8 +12,14 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.google.android.gms.games.Player;
@@ -50,10 +56,13 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	int finalScore = 0;
 	AlertDialog difficultyDialog;
 	
+	public static Music bgMusic;
+	boolean playTheMusic;
 	
+	public int Avatar = 1;
 	
 	public MainActivity(){
-		
+		Log.i(MainKeepUp.TAG, "MainAcitivy");
 
 		context = this;
 		Instance = this;
@@ -81,12 +90,24 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 		cfg.useGL20 = false;
 		aHelper.setup(this);
 		initialize(new MainKeepUp(MainActivity.this), cfg);
-
-		
 		prefs = getSharedPreferences("userPrefs", MODE_PRIVATE);
+
+		spawnRateKit = prefs.getInt("kitValue", 25);
+		spawnRateShield = prefs.getInt("shieldValue", 25);
+		spawnRateFreeze = prefs.getInt("freezeValue", 25);
+		spawnRateBomb = prefs.getInt("bombValue", 25);
+		
 
 		datasource = new ScoreSource(this);
 		datasource.open();
+		playTheMusic = getSoundBool();
+		
+		bgMusic = Gdx.audio.newMusic(Gdx.files.internal("audio/gymShoes16.mp3"));	
+		bgMusic.setLooping(true);  
+		bgMusic.setVolume(0.4f);
+		if(playTheMusic == true){
+			bgMusic.play();
+		}
 	}
 
 	public String getUserName(){
@@ -283,7 +304,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 							String value = input.getText().toString().trim();
 							//Log.i(MainKeepUp.TAG, "INPUT: " + value);
 							userName = value;
-							datasource.createScore(userName, finalScore);
+							datasource.createScore(userName, finalScore, gameDif);
 							notifyUser(finalScore);
 						}
 					});
@@ -443,5 +464,27 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 		return gameDif;
 	}
 	
+	
+	public int getAvatar(){
+		prefs = getSharedPreferences("userPrefs", MODE_PRIVATE);
+		return prefs.getInt("avatarChoice", 1);
+	}
+	
+	public void bugReport(){
+		
+				Intent i = new Intent(Intent.ACTION_SEND);
+				i.setType("message/rfc822");
+				i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"shae.klusman@gmail.com"});
+				i.putExtra(Intent.EXTRA_SUBJECT, "Bug Report - Dodgeball Extreme " + MainKeepUp.VERSION);
+				i.putExtra(Intent.EXTRA_TEXT   , "Please enter a description of the error here: ");
+				
+				try {
+				    startActivity(Intent.createChooser(i, "Send mail..."));
+				} catch (android.content.ActivityNotFoundException ex) {
+				    Toast.makeText(MainActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+				}
+				
+			
+	}
 
 }

@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical" >
-
+<LinearLayout 
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+   
     <TextView
         android:id="@+id/settingsTitle"
         android:layout_width="wrap_content"
@@ -11,8 +15,11 @@
         android:layout_gravity="center"
         android:layout_margin="20dp"
         android:text="Game Settings"
+        android:textColor="@color/accent_green"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="30sp" />
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:typeface="serif" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -66,7 +73,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="left"
-        android:layout_margin="10dp"
+        android:layout_margin="20dp"
         android:orientation="vertical" >
 
     <RadioButton
@@ -84,4 +91,145 @@
 
 </RadioGroup>
 
+    <TextView
+        android:id="@+id/textDif"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:text="Avatar Choice"
+        android:textColor="@color/blue"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:typeface="serif" />
+    
+    <RadioGroup
+        android:id="@+id/radioGrpAvatar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_margin="20dp"
+        android:orientation="vertical" >
+
+    <RadioButton
+        android:id="@+id/radioKid1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:checked="true"
+        android:drawableRight="@drawable/girl_in_red" />
+
+<!--         android:text="Girl in Red"  -->
+
+    <RadioButton
+        android:id="@+id/radioKid2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableRight="@drawable/girl_in_white"/>
+<!--         android:text="Girl in White"  -->
+    
+    <RadioButton
+        android:id="@+id/radioKid3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableRight="@drawable/girl_in_brown"/>
+       <!--  android:text="Girl in Brown"  -->
+        
+    <RadioButton
+        android:id="@+id/radioKid4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableRight="@drawable/boy_in_red"/>
+        <!-- android:text="Boy in Red"  -->
+    
+    <RadioButton
+        android:id="@+id/radioKid5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableRight="@drawable/boy_in_white"/>
+        <!-- android:text="Boy in White"  -->
+    
+    <RadioButton
+        android:id="@+id/radioKid6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableRight="@drawable/boy_in_tan"/>
+        <!-- android:text="Boy in Tan"  -->
+    
+    <RadioButton
+        android:id="@+id/radioKid7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableRight="@drawable/boy_in_black"/>
+<!--         android:text="Boy in Black"  -->
+
+</RadioGroup>
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Reset Leaderboard"
+        android:textColor="@color/yellow"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:typeface="serif" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="( Resets Local Leaderboard Only )"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <Button
+        android:id="@+id/resetLocalBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="20dp"
+        android:text="Reset Leaderboard"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:typeface="serif" />
+
+    <TextView
+        android:id="@+id/bugReportTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:text="Report a Bug"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/red"
+        android:textSize="35sp"
+        android:textStyle="bold"
+        android:typeface="serif" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="20dp"
+        android:text="( Internet Connection Required )"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <Button
+        android:id="@+id/bugReportBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="30dp"
+        android:text="Send Email"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:typeface="serif" />
+
 </LinearLayout>
+</ScrollView>

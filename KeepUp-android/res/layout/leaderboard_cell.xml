@@ -35,4 +35,17 @@
         android:typeface="serif"
         tools:ignore="HardcodedText" />
 
+    <TextView
+        android:id="@+id/textDif"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textScore"
+        android:layout_alignBottom="@+id/textScore"
+        android:layout_marginRight="10dp"
+        android:layout_toLeftOf="@+id/textScore"
+        android:text="Difficulty"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textStyle="italic"
+        android:typeface="serif" />
+
 </RelativeLayout>

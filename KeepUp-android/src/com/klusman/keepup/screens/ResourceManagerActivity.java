@@ -7,6 +7,7 @@ import com.klusman.keepup.MainKeepUp;
 import com.klusman.keepup.R;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,8 +27,8 @@ public class ResourceManagerActivity extends Activity{
 	public static Sound bounceDwn;
 	public static Sound rockBottom;
 	
-	
-
+	SharedPreferences prefs;
+	SharedPreferences.Editor editor; // = prefs.edit();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +40,8 @@ public class ResourceManagerActivity extends Activity{
       	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
       	setContentView(com.klusman.keepup.R.layout.resource_manager); 
       	
-      	
+      	prefs = getSharedPreferences("userPrefs", MODE_PRIVATE);
+      	editor = prefs.edit();
 		final TextView textLeft = (TextView)findViewById(R.id.pointsText);
 		textLeft.setText(getPointsString());
 
@@ -81,6 +83,7 @@ public class ResourceManagerActivity extends Activity{
 					getPointsLeft();
 					tv1.setText(String.valueOf(MainActivity.spawnRateKit)+ "%");
 					textLeft.setText(getPointsString());
+					
 				}else{
 					rockBottom.play(0.5f);
 				}
@@ -228,5 +231,63 @@ public class ResourceManagerActivity extends Activity{
 		return s;
 	}
 	
+	
+//	public void setKitPref(int newInt){
+//		editor.putInt("kitValue", newInt);
+//		editor.commit();
+//	}
+//	
+//	public void setShieldPref(int newInt){
+//		editor.putInt("shieldValue", newInt);
+//		editor.commit();
+//	}
+//	
+//	
+//	public void setFreezePref(int newInt){
+//		editor.putInt("freezeValue", newInt);
+//		editor.commit();
+//	}
+//	
+//	public void setBombPref(int newInt){
+//		editor.putInt("bombValue", newInt);
+//		editor.commit();
+//	}
 
+	
+//	public int getKitPref(){
+//		int kit = prefs.getInt("kitValue", 1);
+//		return kit;
+//	}
+//	
+//	public int getShieldPref(){
+//		int shield = prefs.getInt("shieldValue", 1);
+//		return shield;
+//	}
+//	
+//	public int getFreezePref(){
+//		int freeze = prefs.getInt("freezeValue", 1);
+//		return freeze;
+//	}
+//	
+//	public int getBombPref(){
+//		int bomb = prefs.getInt("bombValue", 1);
+//		return bomb;
+//	}
+
+
+
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		editor.putInt("kitValue", MainActivity.spawnRateKit);
+		editor.putInt("shieldValue", MainActivity.spawnRateShield);
+		editor.putInt("freezeValue", MainActivity.spawnRateFreeze);
+		editor.putInt("bombValue", MainActivity.spawnRateBomb);
+		editor.commit();
+		
+		
+	}
+	
+	
+	
 }

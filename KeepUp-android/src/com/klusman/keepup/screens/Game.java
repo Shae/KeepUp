@@ -56,7 +56,7 @@ public class Game implements Screen, InputProcessor {
 	static float y = Gdx.graphics.getHeight();
 	static float screenRatio = y/x;
 	public static final int screenXRefactor = 1000;
-	public static final int screenYRefactor = (int) (screenRatio * screenXRefactor);;
+	public static final int screenYRefactor = (int) (screenRatio * screenXRefactor);
 	TweenManager manager;
 
 	private SpriteBatch batch;
@@ -84,6 +84,7 @@ public class Game implements Screen, InputProcessor {
 	int SCORE = 0;
 	int kitsUsed = 0;
 	int pointsReceivedBeforeFirstResourceUsed = 0;
+	int avChoice = 1;
 	///////////////////////////////////////
 
 
@@ -235,7 +236,7 @@ public class Game implements Screen, InputProcessor {
 		hardBounce = Gdx.audio.newSound(Gdx.files.internal("audio/HardBounce.wav"));
 		timeBomb = Gdx.audio.newSound(Gdx.files.internal("audio/timeBombSound.wav"));
 		
-
+		
 		//// BACKGROUND
 		if(_mainActivity.getCourtBool() == true){
 			Log.i(MainKeepUp.TAG, "DARK COURT YARD");
@@ -271,7 +272,22 @@ public class Game implements Screen, InputProcessor {
 		go.setPosition(0 - go.getWidth()/2, 0f - go.getHeight()/2);
 
 		//// KID
-		kidTx = new Texture(Gdx.files.internal("data/kid.png"));
+		avChoice = _mainActivity.getAvatar();
+		if(avChoice == 1){
+			kidTx = new Texture(Gdx.files.internal("data/girlInRed.png"));
+		}else if(avChoice == 2){
+			kidTx = new Texture(Gdx.files.internal("data/girlInWhite.png"));
+		}else if(avChoice == 3){
+			kidTx = new Texture(Gdx.files.internal("data/girlInBrown.png"));
+		}else if(avChoice == 4){
+			kidTx = new Texture(Gdx.files.internal("data/boyInRed.png"));
+		}else if(avChoice == 5){
+			kidTx = new Texture(Gdx.files.internal("data/boyInWhite.png"));
+		}else if(avChoice == 6){
+			kidTx = new Texture(Gdx.files.internal("data/boyInTan.png"));
+		}else{
+			kidTx = new Texture(Gdx.files.internal("data/boyInBlack.png"));
+		}
 		kidTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		TextureRegion kidRegion = new TextureRegion(kidTx, 0, 0, kidTx.getWidth(), kidTx.getHeight());
 		float stretchRatioKid = (float) kidTx.getHeight() / kidTx.getWidth();
@@ -1063,7 +1079,7 @@ public class Game implements Screen, InputProcessor {
 						if(MainActivity.userName == ""){
 							_mainActivity.getUsername();  
 						}else{
-							_scoreSource.createScore(_mainActivity.userName, SCORE);
+							_scoreSource.createScore(_mainActivity.userName, SCORE, _mainActivity.getGameDifficulty());
 							_mainActivity.notifyUser(SCORE);
 							
 						}
@@ -1082,6 +1098,9 @@ public class Game implements Screen, InputProcessor {
 						
 						if(MainActivity.userName == ""){
 							_mainActivity.getUsername();  // Popup
+						}else{
+							_scoreSource.createScore(_mainActivity.userName, SCORE, _mainActivity.getGameDifficulty());
+							_mainActivity.notifyUser(SCORE);
 						}
 						
 					} catch (Exception e) {
@@ -1488,9 +1507,28 @@ public class Game implements Screen, InputProcessor {
 			Ray cameraRay = camera.getPickRay(touchPos.x, touchPos.y);
 			float xPos = cameraRay.origin.x;
 			float yPos = cameraRay.origin.y;
-
-			kid.setX(xPos - (kid.getWidth()/2));
-			kid.setY(yPos - (kid.getHeight()/2));
+			
+			if(xPos <= -500 + kid.getWidth()/2){
+				xPos = -500;
+				kid.setX(xPos);
+				
+			}else if(xPos >= 500 - kid.getWidth()){
+				xPos = 500 - kid.getWidth();
+				kid.setX(xPos - kid.getWidth() / 2);
+			}else{
+				kid.setX(xPos - kid.getWidth() / 2);  //the /2 is set for pointer center
+			}
+			
+			if(yPos <= ((screenYRefactor / 2) - (kid.getHeight()/2)) * -1){ 
+				yPos = (screenYRefactor / 2) * -1;
+				kid.setY(yPos);
+			}else if(yPos >= (screenYRefactor / 2) - (kid.getHeight()/2)){
+				yPos = (screenYRefactor / 2) - (kid.getHeight());
+				kid.setY(yPos);
+			}else{	
+				kid.setY(yPos - kid.getHeight() / 2);
+			}
+			
 
 			starSprite.setX(kid.getX());  // add the star sprite above character
 			starSprite.setY(kid.getY() + kid.getHeight());// add the star sprite above character

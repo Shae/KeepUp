@@ -1,6 +1,5 @@
 package com.klusman.keepup.screens;
 
-import android.content.SharedPreferences;
 import android.util.Log;
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Tween;
@@ -48,6 +47,9 @@ public class MainMenu implements Screen, InputProcessor{
 	Texture titleTx;
 	Sprite titleSprite;
 
+	Texture infoTx;
+	Sprite infoSprite;
+	
 	Texture ballGroupPng;
 	
 	Sprite RedBallButton;
@@ -86,6 +88,7 @@ public class MainMenu implements Screen, InputProcessor{
 	TweenCallback cbBOUNCE3;
 	
 	public MainMenu (MainKeepUp game){
+		Log.i(MainKeepUp.TAG, "MainMenu");
 		_mainActivity = MainActivity.Instance;
 		this.game = game;
 		x = Gdx.graphics.getWidth();
@@ -140,21 +143,36 @@ public class MainMenu implements Screen, InputProcessor{
 		titleSprite.setPosition(0 - titleSprite.getWidth()/2, 200);
 		titleSprite.setRotation(18);
 		
-		googTx = new Texture(Gdx.files.internal("data/googPlayBtn.png"));
+		
+		
+		infoTx = new Texture(Gdx.files.internal("data/infoBtn.png"));
+		infoTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);	
+		TextureRegion infoRegion = new TextureRegion(infoTx, 0, 0, infoTx.getWidth(), infoTx.getHeight());
+		infoSprite = new Sprite(infoRegion);
+		infoSprite.setSize(100,  100);  
+		infoSprite.setOrigin(infoSprite.getWidth()/2, infoSprite.getHeight()/2);
+		infoSprite.setPosition( (500 - (infoSprite.getWidth()/2)) * -1, (((screenYRefactor/2) - 75 ) - (infoSprite.getHeight()/2)) );
+		//infoSprite.setPosition(-475 , 500);
+		//infoSprite.setRotation(18);
+		
+		
+		//googTx = new Texture(Gdx.files.internal("data/googPlayBtn.png"));
+		googTx = new Texture(Gdx.files.internal("data/signInGoogle.png"));
 		googTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);	
-		TextureRegion googRegion = new TextureRegion(googTx, 0, 0, googTx.getWidth(), googTx.getHeight());
+		TextureRegion googRegion = new TextureRegion(googTx, 0, 0, googTx.getWidth(), 85);
 		googlePlay = new Sprite(googRegion);
-		googlePlay.setSize(googlePlay.getWidth() * 2f,  googlePlay.getHeight() * 2f);  
+		googlePlay.setSize(googlePlay.getWidth() * 1.5f,  googlePlay.getHeight() * 1.5f);  
 		googlePlay.setOrigin(googlePlay.getWidth()/2, googlePlay.getHeight()/2);
 		googlePlay.setPosition(-480, (screenYRefactor/2 * -1) + 10);
 		
-		googOutTx = new Texture(Gdx.files.internal("data/googOut.png"));
+		//googOutTx = new Texture(Gdx.files.internal("data/googOut.png"));
+		googOutTx = new Texture(Gdx.files.internal("data/signOutGoogle.png"));
 		googOutTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);	
-		TextureRegion googOutRegion = new TextureRegion(googOutTx, 0, 0, googOutTx.getWidth(), googOutTx.getHeight());
+		TextureRegion googOutRegion = new TextureRegion(googOutTx, 0, 0, googOutTx.getWidth(), 85);
 		googleOut = new Sprite(googOutRegion);
-		googleOut.setSize(googleOut.getWidth() * 2f,  googleOut.getHeight() * 2f);  
+		googleOut.setSize(googleOut.getWidth() * 1.5f,  googleOut.getHeight() * 1.5f);  
 		googleOut.setOrigin(googleOut.getWidth()/2, googleOut.getHeight()/2);
-		googleOut.setPosition(50, (screenYRefactor/2 * -1) + 10);
+		googleOut.setPosition(-480, (screenYRefactor/2 * -1) + 10);
 
 		
 		ballGroupPng = new Texture(Gdx.files.internal("data/ballGroupIcons2.png"));
@@ -436,6 +454,8 @@ public class MainMenu implements Screen, InputProcessor{
 			BlueBallButton.draw(batch);
 			OrngBallButton.draw(batch);
 			YellowBallButton.draw(batch);
+			infoSprite.draw(batch, 0.4f);
+
 			if(SignedIn == false){
 				googlePlay.draw(batch);
 			}else{
@@ -472,7 +492,7 @@ public class MainMenu implements Screen, InputProcessor{
 		ballGroupPng.dispose();
 		googTx.dispose();
 		googOutTx.dispose();
-		
+		infoTx.dispose();
 		
 	}
 
@@ -555,12 +575,16 @@ public class MainMenu implements Screen, InputProcessor{
 		boolean instructionBool = BlueBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
 		boolean settingsBool = OrngBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
 		boolean optionsBool = YellowBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
+		boolean infoBool = infoSprite.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
 		
 		boolean achievementsBool= false;
 		boolean googBool = false;
 		boolean googOutBool = false;
 		
-
+		if(infoBool == true){
+			game.setScreen(new CreditsScreen(game));	
+		}
+		
 		if(SignedIn == true){
 			achievementsBool = RedBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
 			googOutBool = googleOut.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
@@ -619,7 +643,7 @@ public class MainMenu implements Screen, InputProcessor{
 					try {
 						_mainActivity.Login();
 						SignedIn = true;
-					
+						tweenRed(); // to build the red button
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
