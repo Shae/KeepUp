@@ -185,6 +185,7 @@ public class Game implements Screen, InputProcessor {
 		deltaTime = Gdx.graphics.getDeltaTime();
 		Gdx.input.setInputProcessor(this);
 		Gdx.input.setCatchBackKey(true);
+		
 	}
 
 	@Override
@@ -197,6 +198,7 @@ public class Game implements Screen, InputProcessor {
 		}else{
 			scoreTimeInterval = 1f;
 		}
+		
 		gameState = GAME_READY;
 		invincibility = false;
 		shielded = false;
@@ -222,9 +224,9 @@ public class Game implements Screen, InputProcessor {
 
 		//// FONT SPECIFIC
 		generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/SourceFont.otf"));
-		font = generator.generateData(60);  // size based on the 1000px camera ratio
+		font = generator.generateData(65);  // size based on the 1000px camera ratio
 		gameText = new BitmapFont(font, font.getTextureRegion(), false);
-		gameText.setColor(200, 00, 00, 1);  
+		gameText.setColor(00, 200, 00, 1);  
 
 		/// AUDIO  ///
 		powerUp = Gdx.audio.newSound(Gdx.files.internal("audio/PowerUp.wav"));
@@ -412,7 +414,15 @@ public class Game implements Screen, InputProcessor {
 
 	@Override
 	public void resume() {
-
+		if(_mainActivity.getSoundBool() == true){
+			if(_mainActivity.isMusicPlaying() == false){
+				_mainActivity.playBgMusic(true);
+			}
+		}else{
+			if(_mainActivity.isMusicPlaying() == true){
+				_mainActivity.playBgMusic(false);
+			}
+		}
 	}
 
 	@Override
@@ -738,7 +748,7 @@ public class Game implements Screen, InputProcessor {
 		bg.draw(batch);
 
 		gameText.setFixedWidthGlyphs("Score: " + SCORE);
-		gameText.draw(batch, "Score: " + SCORE, -480, (screenYRefactor / 2) - 5);
+		gameText.draw(batch, "Score: " + SCORE, -480, (screenYRefactor / 2) - 15);
 
 
 		if((invincibility == false) && (shielded == false)){
@@ -1059,57 +1069,56 @@ public class Game implements Screen, InputProcessor {
 		}
 	}
 
-
+/**
+ * Checks the number of X's against the player.  If 3 >= 
+ * this function starts the game over and score submit functions
+ */
 
 	//TODO
 	public void checkStrikeOut(){
 		if(Marks.size >= 3){
 			boolean submited = false;
 			_mainActivity.setFinalScore(SCORE);
+			boolean online = _mainActivity.isOnline();
+			boolean signedIn = _mainActivity.getSignedIn();
+			String uName = _mainActivity.getSavedUserName();
 
 			if(submited == false){
 				// if Online and Signed in
-				
-				if((_mainActivity.isOnline() == true) && (_mainActivity.getSignedIn() == true)){
+
+				if((online == true) && (signedIn == true)){
 					_mainActivity.checkAndPushAchievements(SCORE, kitsUsed, pointsReceivedBeforeFirstResourceUsed);
 					_mainActivity.submitScore(SCORE);  // SEND SCORE to Google Play
 					submited = true;
 					try {
 						
-						if(MainActivity.userName == ""){
+						if(uName == ""){
 							_mainActivity.getUsername();  
 						}else{
-							_scoreSource.createScore(_mainActivity.userName, SCORE, _mainActivity.getGameDifficulty());
+							_scoreSource.createScore(uName, SCORE, _mainActivity.getGameDifficulty());
 							_mainActivity.notifyUser(SCORE);
-							
 						}
 						
-						//_mainActivity.notifyUser(SCORE);
+						
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
+						Log.i(MainKeepUp.TAG, "3Strike, failed to create google+ or local post");
 						e.printStackTrace();
 					}
 					
 
-				}else{  // not signed 
+				}else if ((online == true)  && (signedIn == false)){  // not signed 
 					// SUBMIT TO LOCAL LEADERBOARD
 					submited = true;
 					try {
-						
-						if(MainActivity.userName == ""){
-							_mainActivity.getUsername();  // Popup
-						}else{
-							_scoreSource.createScore(_mainActivity.userName, SCORE, _mainActivity.getGameDifficulty());
-							_mainActivity.notifyUser(SCORE);
-						}
-						
+						_mainActivity.getUsername();  
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					//_scoreSource.createScore(_mainActivity.getUserName(), SCORE);  // move to popups
-					
-					
+				
+						
+				}else{
+					submited = true;
+					_mainActivity.getUsername();
 				}
 			}
 			gameState = GAME_OVER;
@@ -1519,14 +1528,17 @@ public class Game implements Screen, InputProcessor {
 				kid.setX(xPos - kid.getWidth() / 2);  //the /2 is set for pointer center
 			}
 			
-			if(yPos <= ((screenYRefactor / 2) - (kid.getHeight()/2)) * -1){ 
+			//if(yPos <= ((screenYRefactor / 2) - (kid.getHeight()/2)) * -1){ 
+			if(yPos <= ((screenYRefactor / 2)) * -1){ 
 				yPos = (screenYRefactor / 2) * -1;
 				kid.setY(yPos);
-			}else if(yPos >= (screenYRefactor / 2) - (kid.getHeight()/2)){
+			//}else if(yPos >= (screenYRefactor / 2) - (kid.getHeight()/2)){
+			}else if(yPos >= (screenYRefactor / 2) - (kid.getHeight())){
 				yPos = (screenYRefactor / 2) - (kid.getHeight());
 				kid.setY(yPos);
 			}else{	
-				kid.setY(yPos - kid.getHeight() / 2);
+				//kid.setY(yPos - kid.getHeight() / 2);
+				kid.setY(yPos);
 			}
 			
 

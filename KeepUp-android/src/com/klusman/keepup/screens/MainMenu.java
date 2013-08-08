@@ -112,14 +112,14 @@ public class MainMenu implements Screen, InputProcessor{
 	}
 
 	public void checkLogin(){
- 
 		if(Online == true){
-			SignedIn = _mainActivity.getSignedIn();
-			
+			SignedIn = _mainActivity.getSignedIn();	
 		}else{
 			SignedIn = false;
 		}
 	}
+	
+	
 	
 	public void checkOnLIneStatus(){
 		Online = _mainActivity.isOnline();
@@ -143,8 +143,6 @@ public class MainMenu implements Screen, InputProcessor{
 		titleSprite.setPosition(0 - titleSprite.getWidth()/2, 200);
 		titleSprite.setRotation(18);
 		
-		
-		
 		infoTx = new Texture(Gdx.files.internal("data/infoBtn.png"));
 		infoTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);	
 		TextureRegion infoRegion = new TextureRegion(infoTx, 0, 0, infoTx.getWidth(), infoTx.getHeight());
@@ -152,27 +150,24 @@ public class MainMenu implements Screen, InputProcessor{
 		infoSprite.setSize(100,  100);  
 		infoSprite.setOrigin(infoSprite.getWidth()/2, infoSprite.getHeight()/2);
 		infoSprite.setPosition( (500 - (infoSprite.getWidth()/2)) * -1, (((screenYRefactor/2) - 75 ) - (infoSprite.getHeight()/2)) );
-		//infoSprite.setPosition(-475 , 500);
-		//infoSprite.setRotation(18);
-		
 		
 		//googTx = new Texture(Gdx.files.internal("data/googPlayBtn.png"));
 		googTx = new Texture(Gdx.files.internal("data/signInGoogle.png"));
 		googTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);	
-		TextureRegion googRegion = new TextureRegion(googTx, 0, 0, googTx.getWidth(), 85);
+		TextureRegion googRegion = new TextureRegion(googTx, 0, 0, googTx.getWidth(), 92);
 		googlePlay = new Sprite(googRegion);
-		googlePlay.setSize(googlePlay.getWidth() * 1.5f,  googlePlay.getHeight() * 1.5f);  
+		googlePlay.setSize(googlePlay.getWidth() * 1.3f,  googlePlay.getHeight() * 1.3f);  
 		googlePlay.setOrigin(googlePlay.getWidth()/2, googlePlay.getHeight()/2);
-		googlePlay.setPosition(-480, (screenYRefactor/2 * -1) + 10);
+		googlePlay.setPosition(-480, (screenYRefactor/2 * -1) + 20);
 		
 		//googOutTx = new Texture(Gdx.files.internal("data/googOut.png"));
 		googOutTx = new Texture(Gdx.files.internal("data/signOutGoogle.png"));
 		googOutTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);	
-		TextureRegion googOutRegion = new TextureRegion(googOutTx, 0, 0, googOutTx.getWidth(), 85);
+		TextureRegion googOutRegion = new TextureRegion(googOutTx, 0, 0, googOutTx.getWidth(), 92);
 		googleOut = new Sprite(googOutRegion);
-		googleOut.setSize(googleOut.getWidth() * 1.5f,  googleOut.getHeight() * 1.5f);  
+		googleOut.setSize(googleOut.getWidth() * 1.3f,  googleOut.getHeight() * 1.3f);  
 		googleOut.setOrigin(googleOut.getWidth()/2, googleOut.getHeight()/2);
-		googleOut.setPosition(-480, (screenYRefactor/2 * -1) + 10);
+		googleOut.setPosition(-480, (screenYRefactor/2 * -1) + 20);
 
 		
 		ballGroupPng = new Texture(Gdx.files.internal("data/ballGroupIcons2.png"));
@@ -187,14 +182,12 @@ public class MainMenu implements Screen, InputProcessor{
 		
 		BlueBallButton = new Sprite(BlueButton);
 		BlueBallButton.setSize(20,  20); 
-		//BlueBallButton.setOrigin(BlueBallButton.getWidth()/2, BlueBallButton.getHeight()/2);
 		BlueBallButton.setPosition(-10, - 90);
 		BlueBallButton.setColor(1, 1, 1, 0);
 		
 		GreenBallButton = new Sprite(GreenButton);
 		GreenBallButton.setSize(20,  20); 
 		//GreenBallButton.setOrigin(GreenBallButton.getWidth()/2, GreenBallButton.getHeight()/2);
-		//GreenBallButton.setPosition(0 - GreenBallButton.getWidth() /2, - 100 - (GreenBallButton.getHeight()/ 2));
 		GreenBallButton.setPosition(-10, - 90);
 		GreenBallButton.setColor(1, 1, 1, 0);
 		
@@ -228,7 +221,6 @@ public class MainMenu implements Screen, InputProcessor{
 			@Override
 			public void onEvent(int type, BaseTween<?> source) {
 				tweenPurple();  // what method to call when Event is triggered
-				//_mainActivity.vibrate(75);
 			}
 		};
 		
@@ -236,7 +228,6 @@ public class MainMenu implements Screen, InputProcessor{
 			@Override
 			public void onEvent(int type, BaseTween<?> source) {
 				tweenBlue();  // what method to call when Event is triggered
-				//_mainActivity.vibrate(50);
 			}
 		};
 		
@@ -244,7 +235,6 @@ public class MainMenu implements Screen, InputProcessor{
 			@Override
 			public void onEvent(int type, BaseTween<?> source) {
 				tweenOrng();  // what method to call when Event is triggered
-				//_mainActivity.vibrate(50);
 			}
 		};
 		
@@ -252,7 +242,6 @@ public class MainMenu implements Screen, InputProcessor{
 			@Override
 			public void onEvent(int type, BaseTween<?> source) {
 				tweenYellow();  // what method to call when Event is triggered
-				//_mainActivity.vibrate(50);
 			}
 		};
 		
@@ -261,7 +250,6 @@ public class MainMenu implements Screen, InputProcessor{
 			public void onEvent(int type, BaseTween<?> source) {
 				if(SignedIn == true){
 					tweenRed();  
-				//	_mainActivity.vibrate(50);
 				}
 			}
 		};
@@ -271,7 +259,6 @@ public class MainMenu implements Screen, InputProcessor{
 		cbRed = new TweenCallback() {
 			@Override
 			public void onEvent(int type, BaseTween<?> source) {
-				//_mainActivity.vibrate(50);
 			}
 		};
 		
@@ -482,7 +469,15 @@ public class MainMenu implements Screen, InputProcessor{
 
 	@Override
 	public void resume() {
-		
+		if(_mainActivity.getSoundBool() == true){
+			if(_mainActivity.isMusicPlaying() == false){
+				_mainActivity.playBgMusic(true);
+			}
+		}else{
+			if(_mainActivity.isMusicPlaying() == true){
+				_mainActivity.playBgMusic(false);
+			}
+		}
 		
 	}
 
@@ -622,13 +617,12 @@ public class MainMenu implements Screen, InputProcessor{
 			_mainActivity.startResourcePage();  // Testing resource Page // WORKS
 		}
 		if(googOutBool == true){
-			bounce3.play();
+			
 			try {
 				_mainActivity.LogOut();
 				SignedIn = false;
 				_mainActivity.setUserName("");
-				
-				Log.i(MainKeepUp.TAG, "LOGGED OUT");
+
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -637,7 +631,7 @@ public class MainMenu implements Screen, InputProcessor{
 		
 		
 		if(googBool == true){
-			bounce1.play();
+			
 			if(_mainActivity.isOnline() == true){
 				if(_mainActivity.getSignedIn() == false){
 					try {

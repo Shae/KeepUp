@@ -18,7 +18,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class ResourceManagerActivity extends Activity{
-
+	MainActivity _mainActivity;
 	int MaxPoints = 100;
 	int allPointsSpent = 100;
 	int PointsLeft = 100 - allPointsSpent;
@@ -34,11 +34,21 @@ public class ResourceManagerActivity extends Activity{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		
-		Log.i(MainKeepUp.TAG, "step 1");
+		_mainActivity = MainActivity.Instance;
+
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
       	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
       	setContentView(com.klusman.keepup.R.layout.resource_manager); 
+      	
+    	if(_mainActivity.getSoundBool() == true){
+			if(_mainActivity.isMusicPlaying() == false){
+				_mainActivity.playBgMusic(true);
+			}
+		}else{
+			if(_mainActivity.isMusicPlaying() == true){
+				_mainActivity.playBgMusic(false);
+			}
+		}
       	
       	prefs = getSharedPreferences("userPrefs", MODE_PRIVATE);
       	editor = prefs.edit();
@@ -232,48 +242,6 @@ public class ResourceManagerActivity extends Activity{
 	}
 	
 	
-//	public void setKitPref(int newInt){
-//		editor.putInt("kitValue", newInt);
-//		editor.commit();
-//	}
-//	
-//	public void setShieldPref(int newInt){
-//		editor.putInt("shieldValue", newInt);
-//		editor.commit();
-//	}
-//	
-//	
-//	public void setFreezePref(int newInt){
-//		editor.putInt("freezeValue", newInt);
-//		editor.commit();
-//	}
-//	
-//	public void setBombPref(int newInt){
-//		editor.putInt("bombValue", newInt);
-//		editor.commit();
-//	}
-
-	
-//	public int getKitPref(){
-//		int kit = prefs.getInt("kitValue", 1);
-//		return kit;
-//	}
-//	
-//	public int getShieldPref(){
-//		int shield = prefs.getInt("shieldValue", 1);
-//		return shield;
-//	}
-//	
-//	public int getFreezePref(){
-//		int freeze = prefs.getInt("freezeValue", 1);
-//		return freeze;
-//	}
-//	
-//	public int getBombPref(){
-//		int bomb = prefs.getInt("bombValue", 1);
-//		return bomb;
-//	}
-
 
 
 	@Override

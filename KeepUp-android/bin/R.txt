@@ -138,11 +138,12 @@ int layout user_settings 0x7f030005
 int string achievement_1000_points 0x7f06001b
 int string achievement_500_points 0x7f060019
 int string achievement_750_points 0x7f06001a
+int string achievement_No_Medic_for_Me 0x7f06001c
 int string achievement_doctor_doctor 0x7f060018
 int string achievement_quick_death 0x7f060016
 int string achievement_thrify_business 0x7f060017
 int string app_id 0x7f060015
-int string app_name 0x7f06001f
+int string app_name 0x7f060020
 int string auth_client_needs_enabling_title 0x7f060010
 int string auth_client_needs_installation_title 0x7f060011
 int string auth_client_needs_update_title 0x7f060012
@@ -164,9 +165,9 @@ int string common_google_play_services_update_text 0x7f060008
 int string common_google_play_services_update_title 0x7f060007
 int string common_signin_button_text 0x7f06000d
 int string common_signin_button_text_long 0x7f06000e
-int string leaderboard_ID 0x7f06001c
-int string leaderboard_easy 0x7f06001d
-int string leaderboard_hard 0x7f06001e
+int string leaderboard_ID 0x7f06001d
+int string leaderboard_easy 0x7f06001e
+int string leaderboard_hard 0x7f06001f
 int[] styleable MapAttrs { 0x7f010000, 0x7f010001, 0x7f010002, 0x7f010003, 0x7f010004, 0x7f010005, 0x7f010006, 0x7f010007, 0x7f010008, 0x7f010009, 0x7f01000a, 0x7f01000b, 0x7f01000c, 0x7f01000d }
 int styleable MapAttrs_cameraBearing 1
 int styleable MapAttrs_cameraTargetLat 2

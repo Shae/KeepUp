@@ -49,9 +49,6 @@ public class InstructionsScreen implements Screen, InputProcessor{
 	TextureRegion instReg6;
 	Array<TextureRegion> InstRegionHolder;
 	
-	
-	
-	
 	public InstructionsScreen(MainKeepUp game){
 		this.game = game;
 		_mainActivity = MainActivity.Instance;
@@ -134,6 +131,15 @@ public class InstructionsScreen implements Screen, InputProcessor{
 		instructionsSprite.setOrigin(instructionsSprite.getWidth()/2, instructionsSprite.getHeight()/2);
 		instructionsSprite.setPosition(0 - instructionsSprite.getWidth()/2, 0 - instructionsSprite.getHeight()/2);
 		
+		if(_mainActivity.getSoundBool() == true){
+			if(_mainActivity.isMusicPlaying() == false){
+				_mainActivity.playBgMusic(true);
+			}
+		}else{
+			if(_mainActivity.isMusicPlaying() == true){
+				_mainActivity.playBgMusic(false);
+			}
+		}
 	}
 
 	@Override

@@ -265,11 +265,12 @@ containing a value of this type.
         public static final int achievement_1000_points=0x7f06001b;
         public static final int achievement_500_points=0x7f060019;
         public static final int achievement_750_points=0x7f06001a;
+        public static final int achievement_No_Medic_for_Me=0x7f06001c;
         public static final int achievement_doctor_doctor=0x7f060018;
         public static final int achievement_quick_death=0x7f060016;
         public static final int achievement_thrify_business=0x7f060017;
         public static final int app_id=0x7f060015;
-        public static final int app_name=0x7f06001f;
+        public static final int app_name=0x7f060020;
         /**   Title for notification shown when GooglePlayServices needs to be
         enabled for a application to work. [CHAR LIMIT=70] 
          */
@@ -348,9 +349,9 @@ containing a value of this type.
         /**  Long form sign-in button text [CHAR LIMIT=30] 
          */
         public static final int common_signin_button_text_long=0x7f06000e;
-        public static final int leaderboard_ID=0x7f06001c;
-        public static final int leaderboard_easy=0x7f06001d;
-        public static final int leaderboard_hard=0x7f06001e;
+        public static final int leaderboard_ID=0x7f06001d;
+        public static final int leaderboard_easy=0x7f06001e;
+        public static final int leaderboard_hard=0x7f06001f;
     }
     public static final class styleable {
         /** Attributes that can be used with a MapAttrs.

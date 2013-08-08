@@ -82,6 +82,16 @@ public class DifficultySetupScreen implements Screen, InputProcessor {
 		hardSprite.setPosition(0 - hardSprite.getWidth()/2, -450 - hardSprite.getHeight()/2);
 		
 		bounce1 = Gdx.audio.newSound(Gdx.files.internal("audio/ballbounce04.wav"));
+		
+		if(_mainActivity.getSoundBool() == true){
+			if(_mainActivity.isMusicPlaying() == false){
+				_mainActivity.playBgMusic(true);
+			}
+		}else{
+			if(_mainActivity.isMusicPlaying() == true){
+				_mainActivity.playBgMusic(false);
+			}
+		}
 	}
 	
 	@Override

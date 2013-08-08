@@ -52,6 +52,16 @@ public class GameSettings extends Activity {
 
 		prefs = getSharedPreferences("userPrefs", MODE_PRIVATE);
 
+		if(_mainActivity.getSoundBool() == true){
+			if(_mainActivity.isMusicPlaying() == false){
+				_mainActivity.playBgMusic(true);
+			}
+		}else{
+			if(_mainActivity.isMusicPlaying() == true){
+				_mainActivity.playBgMusic(false);
+			}
+		}
+		
 		soundTog = (ToggleButton)findViewById(R.id.togBtnBgSound);
 		soundTog.setChecked(getPrefDataSoundBool());
 		soundTog.setOnClickListener(new OnClickListener() {

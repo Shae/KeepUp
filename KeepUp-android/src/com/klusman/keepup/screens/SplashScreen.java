@@ -87,25 +87,37 @@ public class SplashScreen implements Screen{
 				tweenCompleted();  // what method to call when Event is triggered
 			}
 		};
+		
+
 
 		Tween.to(titleSprite, SpriteTween.ALPHA, 1.5f)
 		.target(1)
 		.ease(TweenEquations.easeInQuad)
 		.start(manager);  // start the tween using the passed in manager
-
+		
+		
 		Tween.to(titleSprite, SpriteTween.POSITION_XY, 2f)
-		.targetRelative(0, 200 + titleSprite.getHeight()/2).start(manager);
+		.targetRelative(0, 200 + titleSprite.getHeight()/2)
+		.setCallback(cb)  // set a callback listener
+		.setCallbackTriggers(TweenCallback.COMPLETE)  // set the trigger for the listener
+		.start(manager);
+		
 		
 		Tween.to(nameSprite, SpriteTween.ALPHA, 1.5f)
 		.target(1)
 		.ease(TweenEquations.easeInQuad)
 		.repeatYoyo(1, .5f)  // repeat once after X 
-		.setCallback(cb)  // set a callback listener
-		.setCallbackTriggers(TweenCallback.COMPLETE)  // set the trigger for the listener
 		.start(manager);  // start the tween using the passed in manager
 
+		
+		
+		
+		
+		
 	}  // END SHOW
 
+	
+	
 	protected void tweenCompleted() {
 
 		Gdx.app.log(MainKeepUp.TAG, "Splash Tween COMPLETE");

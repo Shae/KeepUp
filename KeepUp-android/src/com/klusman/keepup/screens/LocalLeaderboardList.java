@@ -48,6 +48,15 @@ public class LocalLeaderboardList extends Activity {
       	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
       	setContentView(com.klusman.keepup.R.layout.local_leaderboard); 
       	
+//    	if(_mainActivity.getSoundBool() == true){
+//			if(_mainActivity.isMusicPlaying() == false){
+//				_mainActivity.playBgMusic(true);
+//			}
+//		}else{
+//			if(_mainActivity.isMusicPlaying() == true){
+//				_mainActivity.playBgMusic(false);
+//			}
+//		}
       
       	try {
 			_scoreList =  ScoreSource.findAllNoFilter();

@@ -68,6 +68,16 @@ public class CreditsScreen implements Screen, InputProcessor{
 		bugSprite.setSize(bugSprite.getWidth()*4,  bugSprite.getHeight()*4);  
 		bugSprite.setOrigin(bugSprite.getWidth()/2 , bugSprite.getHeight()/2);
 		bugSprite.setPosition(0 - bugSprite.getWidth()/2, -550 - bugSprite.getHeight()/2);
+		
+		if(_mainActivity.getSoundBool() == true){
+			if(_mainActivity.isMusicPlaying() == false){
+				_mainActivity.playBgMusic(true);
+			}
+		}else{
+			if(_mainActivity.isMusicPlaying() == true){
+				_mainActivity.playBgMusic(false);
+			}
+		}
 	}
 	
 	@Override

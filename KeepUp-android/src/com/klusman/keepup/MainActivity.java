@@ -12,9 +12,6 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -58,6 +55,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	
 	public static Music bgMusic;
 	boolean playTheMusic;
+	boolean popupActive = false;
 	
 	public int Avatar = 1;
 	
@@ -110,9 +108,6 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 		}
 	}
 
-	public String getUserName(){
-		return userName;
-	}
 
 	public boolean isOnline() {
 		ConnectivityManager cm =
@@ -176,6 +171,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 				//@Override
 				public void run(){
 					aHelper.signOut();
+					userName = "";
 				}
 			});
 		}catch (final Exception ex){
@@ -222,6 +218,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	// DOUBLE CHECK: fix this for if the user is not connected to internet
 	public void notifyUser(int Score){
 		final int s = Score;
+		setPopupActive(true);
 		try {
 			runOnUiThread(new Runnable(){
 
@@ -253,11 +250,13 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 							if(getSignedIn() == true){
 								if(getSignedIn() == true){
 									//getScores();
+									setPopupActive(false);
 									whichLeaderboard();
 								}
 							}else{
+								setPopupActive(false);
 								Intent intent = new Intent(MainActivity.this, LocalLeaderboardList.class);
-								startActivity(intent);				
+								startActivity(intent);	
 							}
 							Log.i(MainKeepUp.TAG, "Leaderboard");
 						}
@@ -288,6 +287,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	 */
 
 	public void getUsername(){
+		setPopupActive(true);
 		try {
 			runOnUiThread(new Runnable(){
 
@@ -299,10 +299,11 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 					alert.setTitle("Enter User Name");
 					alert.setMessage("Please enter your name for the Leaderboard.");
 					alert.setView(input);
+					alert.setCancelable(false);
 					alert.setPositiveButton("Done", new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int whichButton) {
 							String value = input.getText().toString().trim();
-							//Log.i(MainKeepUp.TAG, "INPUT: " + value);
+							setPopupActive(false);
 							userName = value;
 							datasource.createScore(userName, finalScore, gameDif);
 							notifyUser(finalScore);
@@ -320,7 +321,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	}
 
 	public void whichLeaderboard(){
-
+		setPopupActive(true);
 		try {
 			runOnUiThread(new Runnable(){
 
@@ -337,15 +338,16 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 					alertDialogBuilder
 					.setMessage(stringMsg)
 					.setCancelable(false)
-
 					.setPositiveButton("Google+",new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog,int id) {
+							setPopupActive(false);
 							getScores();
 						}
 
 					})
 					.setNegativeButton("Local",new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog,int id) {
+							setPopupActive(false);
 							getLocalLeaderboard();
 							dialog.cancel();
 						}
@@ -418,6 +420,15 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 			aHelper.getGamesClient().incrementAchievement(getString(R.string.achievement_doctor_doctor), kitsUsed);
 			Log.i(MainKeepUp.TAG, "Achievement: Doctor! Doctor!");
 		}
+		
+		if(gameDif == 3){
+			if(SCORE > 800){
+				if(kitsUsed == 0){
+					aHelper.getGamesClient().unlockAchievement(getString(R.string.achievement_No_Medic_for_Me));
+					Log.i(MainKeepUp.TAG, "Achievement: No Medic for Me! HARD MODE");
+				}
+			}
+		}
 	}
 
 	public void getLocalLeaderboard(){
@@ -486,5 +497,33 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 				
 			
 	}
+	
+	public String getSavedUserName(){
+		return userName;
+	}
 
+	public void setPopupActive(boolean bool){
+		popupActive = bool;
+	}
+	
+	public boolean getPopupActive (){
+		return popupActive;
+	}
+	
+	public boolean isMusicPlaying(){
+		
+		if(bgMusic.isPlaying()){
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public void playBgMusic(boolean bool){
+		if(bool == true){
+			bgMusic.play();
+		}else{
+			bgMusic.stop();
+		}
+	}
 }
