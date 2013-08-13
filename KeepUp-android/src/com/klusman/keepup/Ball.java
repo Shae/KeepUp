@@ -29,6 +29,7 @@ public class Ball {
 	public boolean collision;
 	public final Circle circle;
 	double randNumXLoc;
+	boolean blownUp = false;
 	
 	
 	public Ball (float randX, float size, float speed){
@@ -199,4 +200,11 @@ public class Ball {
 		circle.setPosition(xPos, yPos);
 	}
 
+	public void setBlownUp(boolean hit){
+		blownUp = hit;
+	}
+	
+	public boolean getBlownUpStatus(){
+		return blownUp;
+	}
 }

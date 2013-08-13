@@ -1,5 +1,7 @@
 package com.klusman.keepup;
 
+import android.util.Log;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -189,15 +191,17 @@ public void draw(SpriteBatch batch) {
 	bombSprite.draw(batch);
 }
 
-public boolean checkBombCountdown(float deltaTime){
+public boolean checkBombCountdown(float deltaTime, int numBalls){
 
 	if(theDeltaBombTime >= deltaTime){  // under time limit do nada
 		boomTimeToBlow = false;
+		//Log.i(MainKeepUp.TAG, "Number of balls : " + numBalls);
 		return false;
 	}else{
 		if(boomTimeToBlow == false){  // check to set once and not repeat
 			startedlastphaseAt = deltaTime + 1.0f;
 			boomTimeToBlow = true;
+		//	Log.i(MainKeepUp.TAG, "Number of balls : " + numBalls);
 		}
 		return true;
 	}

@@ -56,6 +56,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	public static Music bgMusic;
 	boolean playTheMusic;
 	boolean popupActive = false;
+	boolean isSignedInFromMainMenu = false;
 	
 	public int Avatar = 1;
 	
@@ -142,12 +143,14 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 
 	public void onSignInFailed() {
 		System.out.println("sign in failed");
+		isSignedInFromMainMenu = false;
 	}
 
 	public void onSignInSucceeded() {
 		System.out.println("sign in succeeded");
 		Player player = aHelper.getGamesClient().getCurrentPlayer();
 		userName = player.getDisplayName();
+		isSignedInFromMainMenu = true;
 	}
 
 	public void Login() {
@@ -366,11 +369,27 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 
 	}
 
+	public void achievement50(){
+		aHelper.getGamesClient().unlockAchievement(getString(R.string.achievement_quick_death));
+	}
+	
+	public void achievement500(){
+		aHelper.getGamesClient().unlockAchievement(getString(R.string.achievement_500_points));
+	}
+	
+	public void achievement750(){
+		aHelper.getGamesClient().unlockAchievement(getString(R.string.achievement_750_points));
+	}
+	
+	public void achievement1000(){
+		aHelper.getGamesClient().unlockAchievement(getString(R.string.achievement_1000_points));
+	}
 
-
-	/**
-	 * Starts the page where the user can set the resource spawn ratio
-	 */		
+	public void achievementKitsUsed(){
+		//increase Doctor Doctor achievement by 1
+		aHelper.getGamesClient().incrementAchievement(getString(R.string.achievement_doctor_doctor), 1);
+	}
+	
 	public void startResourcePage(){
 		Intent intent = new Intent(this, ResourceManagerActivity.class);
 		startActivity(intent);
@@ -391,35 +410,35 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 
 	public void checkAndPushAchievements(int SCORE, int kitsUsed, int pointsReceivedBeforeFirstResourceUsed){
 
-		if(SCORE <= 50){
-			aHelper.getGamesClient().unlockAchievement(getString(R.string.achievement_quick_death));
-			Log.i(MainKeepUp.TAG, "Achievement: Quick Death");
-		}
+//		if(SCORE <= 50){
+//			aHelper.getGamesClient().unlockAchievement(getString(R.string.achievement_quick_death));
+//			Log.i(MainKeepUp.TAG, "Achievement: Quick Death");
+//		}
+//
+//		if(pointsReceivedBeforeFirstResourceUsed >= 300){
+//			aHelper.getGamesClient().unlockAchievement(getString(R.string.achievement_thrify_business));
+//			Log.i(MainKeepUp.TAG, "Achievement: Thrifty Business");
+//		}
+//
+//		if(SCORE >= 500){
+//			aHelper.getGamesClient().unlockAchievement(getString(R.string.achievement_500_points));
+//			Log.i(MainKeepUp.TAG, "Achievement: 500 points");
+//		}
+//
+//		if(SCORE >= 750){
+//			aHelper.getGamesClient().unlockAchievement(getString(R.string.achievement_750_points));
+//			Log.i(MainKeepUp.TAG, "Achievement: 750 points");
+//		}
+//
+//		if(SCORE >= 1000){
+//			aHelper.getGamesClient().unlockAchievement(getString(R.string.achievement_1000_points));
+//			Log.i(MainKeepUp.TAG, "Achievement: 1000 points");
+//		}
 
-		if(pointsReceivedBeforeFirstResourceUsed >= 300){
-			aHelper.getGamesClient().unlockAchievement(getString(R.string.achievement_thrify_business));
-			Log.i(MainKeepUp.TAG, "Achievement: Thrifty Business");
-		}
-
-		if(SCORE >= 500){
-			aHelper.getGamesClient().unlockAchievement(getString(R.string.achievement_500_points));
-			Log.i(MainKeepUp.TAG, "Achievement: 500 points");
-		}
-
-		if(SCORE >= 750){
-			aHelper.getGamesClient().unlockAchievement(getString(R.string.achievement_750_points));
-			Log.i(MainKeepUp.TAG, "Achievement: 750 points");
-		}
-
-		if(SCORE >= 1000){
-			aHelper.getGamesClient().unlockAchievement(getString(R.string.achievement_1000_points));
-			Log.i(MainKeepUp.TAG, "Achievement: 1000 points");
-		}
-
-		if(kitsUsed >= 1){
-			aHelper.getGamesClient().incrementAchievement(getString(R.string.achievement_doctor_doctor), kitsUsed);
-			Log.i(MainKeepUp.TAG, "Achievement: Doctor! Doctor!");
-		}
+//		if(kitsUsed >= 1){
+//			aHelper.getGamesClient().incrementAchievement(getString(R.string.achievement_doctor_doctor), kitsUsed);
+//			Log.i(MainKeepUp.TAG, "Achievement: Doctor! Doctor!");
+//		}
 		
 		if(gameDif == 3){
 			if(SCORE > 800){
@@ -443,19 +462,19 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 
 	public boolean getVibBool(){
 		prefs = getSharedPreferences("userPrefs", MODE_PRIVATE);
-		Log.i(MainKeepUp.TAG, "VibrateBool " + prefs.getBoolean("vibrateBool", true));
+		//Log.i(MainKeepUp.TAG, "VibrateBool " + prefs.getBoolean("vibrateBool", true));
 		return prefs.getBoolean("vibrateBool", true);
 	}
 
 	public boolean getSoundBool(){
 		prefs = getSharedPreferences("userPrefs", MODE_PRIVATE);
-		Log.i(MainKeepUp.TAG, "SoundBool " + prefs.getBoolean("soundBool", true));
+		//Log.i(MainKeepUp.TAG, "SoundBool " + prefs.getBoolean("soundBool", true));
 		return prefs.getBoolean("soundBool", true);
 	}
 
 	public boolean getCourtBool(){
 		prefs = getSharedPreferences("userPrefs", MODE_PRIVATE);
-		Log.i(MainKeepUp.TAG, "DarkCourtBool " + prefs.getBoolean("darkCourt", true));
+		//Log.i(MainKeepUp.TAG, "DarkCourtBool " + prefs.getBoolean("darkCourt", true));
 		return prefs.getBoolean("darkCourt", true);
 	}
 
@@ -482,7 +501,6 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	}
 	
 	public void bugReport(){
-		
 				Intent i = new Intent(Intent.ACTION_SEND);
 				i.setType("message/rfc822");
 				i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"shae.klusman@gmail.com"});
@@ -494,8 +512,6 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 				} catch (android.content.ActivityNotFoundException ex) {
 				    Toast.makeText(MainActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
 				}
-				
-			
 	}
 	
 	public String getSavedUserName(){
@@ -511,11 +527,9 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	}
 	
 	public boolean isMusicPlaying(){
-		
 		if(bgMusic.isPlaying()){
 			return true;
 		}
-		
 		return false;
 	}
 	
@@ -526,4 +540,9 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 			bgMusic.stop();
 		}
 	}
+	
+	public boolean isPlayerSignedIn(){
+		return isSignedInFromMainMenu;
+	}
+	
 }

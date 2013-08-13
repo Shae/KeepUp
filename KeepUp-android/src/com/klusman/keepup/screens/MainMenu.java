@@ -39,7 +39,7 @@ public class MainMenu implements Screen, InputProcessor{
 	public static Sound bounce2;
 	public static Sound bounce3;
 	public String textureAddress;
-	boolean SignedIn = false;
+	public boolean SignedIn = false;
 	boolean Online = false;
 	
 	SpriteBatch batch;
@@ -514,7 +514,7 @@ public class MainMenu implements Screen, InputProcessor{
 		Vector2 touchPos = new Vector2();
 		touchPos.set(Gdx.input.getX(), Gdx.input.getY());
 		Ray cameraRay = camera.getPickRay(touchPos.x, touchPos.y);
-		Gdx.app.log(MainKeepUp.TAG, "Touch Ray Coords: X:" + cameraRay.origin.x + " Y:" + cameraRay.origin.y);
+		//Gdx.app.log(MainKeepUp.TAG, "Touch Ray Coords: X:" + cameraRay.origin.x + " Y:" + cameraRay.origin.y);
 
 		boolean playBool = GreenBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
 		boolean leaderboardBool = PurpleBallButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);

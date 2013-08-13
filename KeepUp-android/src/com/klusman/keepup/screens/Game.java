@@ -63,6 +63,8 @@ public class Game implements Screen, InputProcessor {
 
 	float deltaTime;
 	float elapsedTime;
+	float ballSpawnTimer;
+	float ballDifSpawnTime;
 	float FreezeTimer = 4f;
 	float resourceTimer = 7f;
 	float scoreTime = 2f;
@@ -73,11 +75,12 @@ public class Game implements Screen, InputProcessor {
 	float bombTime = 2f;
 	float deltaBombTime;
 
+
 	float ticker;
 	float timeLimit = 20.0f;
 	float invincibilityTime;
 	float spawnRate = 7;
-	
+
 	int starLoop;
 	int countDownFrame = 0;
 	/// Achievement / Leaderboard stuff ///
@@ -92,6 +95,8 @@ public class Game implements Screen, InputProcessor {
 	double randNumSize;
 	double randNumSpeed;
 
+
+	boolean isSignedIn = false;
 	boolean pauseGame;
 	boolean kidMovable;
 	boolean kidMove;
@@ -102,7 +107,12 @@ public class Game implements Screen, InputProcessor {
 	boolean shielded;
 	boolean freeze;
 	boolean firstResourceUsed = true;
-
+	boolean ach50 = false;
+	boolean ach500 = false;
+	boolean ach750 = false;
+	boolean ach1000 = false;
+	boolean gameCheck = false;
+	boolean firstResource = false;
 
 	public Texture bombTx;
 	TextureRegion bombRegion;
@@ -129,7 +139,7 @@ public class Game implements Screen, InputProcessor {
 	TextureRegion countGo;
 	private Sprite CountSprite;
 	Array<TextureRegion> countHolder;
-	
+
 	private Sprite starSprite;
 
 	private Texture psTx;
@@ -172,7 +182,7 @@ public class Game implements Screen, InputProcessor {
 	public static Array<LifeMarks> Marks;
 	public Array<Sprite> starArray;
 	Animation starAnimation;
-
+	//AchievementsHandler achHandler;
 
 
 	public Game( MainKeepUp game){
@@ -185,7 +195,7 @@ public class Game implements Screen, InputProcessor {
 		deltaTime = Gdx.graphics.getDeltaTime();
 		Gdx.input.setInputProcessor(this);
 		Gdx.input.setCatchBackKey(true);
-		
+
 	}
 
 	@Override
@@ -198,7 +208,18 @@ public class Game implements Screen, InputProcessor {
 		}else{
 			scoreTimeInterval = 1f;
 		}
-		
+
+		if(gameDifficulty == 1){
+			ballSpawnTimer = 9;
+			ballDifSpawnTime = 9;
+		}if(gameDifficulty == 2){
+			ballSpawnTimer = 7;
+			ballDifSpawnTime = 7;
+		}else{
+			ballSpawnTimer = 5;
+			ballDifSpawnTime = 5;
+		}
+		isSignedIn = _mainActivity.isPlayerSignedIn();
 		gameState = GAME_READY;
 		invincibility = false;
 		shielded = false;
@@ -234,18 +255,17 @@ public class Game implements Screen, InputProcessor {
 		bounce1 = Gdx.audio.newSound(Gdx.files.internal("audio/ballbounce04.wav"));
 		bounce2 = Gdx.audio.newSound(Gdx.files.internal("audio/ballBounce03.wav"));
 		bounce3 = Gdx.audio.newSound(Gdx.files.internal("audio/ballBounce02.wav"));
-		
+
 		hardBounce = Gdx.audio.newSound(Gdx.files.internal("audio/HardBounce.wav"));
 		timeBomb = Gdx.audio.newSound(Gdx.files.internal("audio/timeBombSound.wav"));
-		
-		
+
+
 		//// BACKGROUND
 		if(_mainActivity.getCourtBool() == true){
-			Log.i(MainKeepUp.TAG, "DARK COURT YARD");
+			//Log.i(MainKeepUp.TAG, "DARK COURT YARD");
 			bgTx = new Texture(Gdx.files.internal("data/darkCOURT_lrg.png"));
 		}else{
-			//TODO  Add lighter courtyard png
-			Log.i(MainKeepUp.TAG, "LIGHT COURT YARD");
+			//Log.i(MainKeepUp.TAG, "LIGHT COURT YARD");
 			bgTx = new Texture(Gdx.files.internal("data/lightCOURT_lrg.png"));
 		}
 		bgTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);	
@@ -355,14 +375,14 @@ public class Game implements Screen, InputProcessor {
 		countHolder.add(count1);
 		countGo  = new TextureRegion(countDownNumTx, 0, 768, countDownNumTx.getWidth(), 256); 
 		countHolder.add(countGo);
-		
+
 		CountSprite = new Sprite(countHolder.get(countDownFrame));
 		CountSprite.setSize(CountSprite.getWidth() * 2, CountSprite.getHeight() * 2);
 		CountSprite.setOrigin(CountSprite.getWidth()/2, CountSprite.getHeight()/2);
 		CountSprite.setPosition(0 - CountSprite.getWidth()/2 , 0 - CountSprite.getHeight()/2);	
-		//TODO
-		
-		
+
+
+
 		//// Restart Btn
 		restartBtnTx = new Texture(Gdx.files.internal("data/restartBtn.png"));
 		restartBtnTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);
@@ -371,6 +391,8 @@ public class Game implements Screen, InputProcessor {
 		restartBtn.setSize(300f , 150f );
 		restartBtn.setOrigin(restartBtn.getWidth()/2, restartBtn.getHeight()/2);
 		restartBtn.setPosition(0 - restartBtn.getWidth()/2, -600);	
+
+		//achHandler = new AchievementsHandler();
 
 	}
 
@@ -382,6 +404,17 @@ public class Game implements Screen, InputProcessor {
 			gameReady();
 			break;
 		case GAME_RUNNING:
+
+			//TODO
+			if(Balls.size > 0){
+				for(Ball ball: Balls) {
+					if(ball.getBlownUpStatus() == true){
+						Log.i(MainKeepUp.TAG, "dead ball removed before render");
+						Balls.removeValue(ball, true);
+						//Balls.removeIndex(Balls.indexOf(ball, true));
+					}
+				};
+			}
 			updateBallTimer(deltaTime);
 			updateResourceTimer(deltaTime);
 			gameRunning();
@@ -437,7 +470,7 @@ public class Game implements Screen, InputProcessor {
 		star2Tx.dispose();
 		generator.dispose();
 		countDownNumTx.dispose();
-		
+
 		if(Balls.size > 0){
 			for(Ball ball: Balls) {
 				ball.ballTx.dispose();
@@ -501,6 +534,20 @@ public class Game implements Screen, InputProcessor {
 	 * returns a random number between 40 and 90
 	 */
 	public float getRandomSize(){
+		int high;
+		int low;
+		
+		if(gameDifficulty == 1){
+			high = 110;
+			low = 60;
+		}if(gameDifficulty == 1){
+			high = 100;
+			low = 50;
+		}else{
+			high = 90;
+			low = 40;
+		}
+		
 		float r;
 		randNumSize = Math.random();  // random 0.0 to 1.0
 		if (randNumSize < 0.01){
@@ -592,7 +639,7 @@ public class Game implements Screen, InputProcessor {
 	}
 
 
-	
+
 	/**
 	 * Using deltaTime this method cycles through an array of TextureRegions
 	 * and animates a sprite.
@@ -621,21 +668,13 @@ public class Game implements Screen, InputProcessor {
 
 	public void updateBallTimer(float deltaTime){
 		elapsedTime = deltaTime;
-		if(Balls.size == 0){
-			if(elapsedTime >= 5){
-				makeNewBall();
-			}
-		}else{
-			if((elapsedTime / (4 + (4 - gameDifficulty))) > Balls.size){  
-				// Make a new ball every 7 seconds on Easy
-				// Make a new ball every 6 seconds on Medium
-				// Make a new ball every 5 seconds on Hard
-				makeNewBall();
-			}
+		if(deltaTime >= ballSpawnTimer){
+			ballSpawnTimer = deltaTime + ballDifSpawnTime;
+			makeNewBall();
 		}
 	}
 
-	
+
 	/**
 	 * Using the deltaTime, this method checks the current time
 	 * against the elapsed time.  If the elapsed time in greater than 
@@ -644,29 +683,29 @@ public class Game implements Screen, InputProcessor {
 	 */
 	public void updateResourceTimer(float deltaTime){
 		elapsedTime = deltaTime;
-		
+
 		if(elapsedTime > resourceTimer){
-			
+
 			// Pull User defined resource spawn values
 			int health = MainActivity.spawnRateKit;
-			
+
 			int shield = MainActivity.spawnRateKit + 
 					MainActivity.spawnRateShield;
-			
+
 			int freeze = MainActivity.spawnRateKit + 
 					MainActivity.spawnRateShield + 
 					MainActivity.spawnRateFreeze;
-			
+
 			int bomb = MainActivity.spawnRateKit + 
 					MainActivity.spawnRateShield + 
 					MainActivity.spawnRateFreeze + 
 					MainActivity.spawnRateBomb;
-			
+
 			// Get Random # 1 - 100
 			int r = (int) (Math.random() * 100);  
-			
-			
-			
+
+
+
 			// Determine which resource is spawned
 			if (r <= health){
 				makeNewKit();
@@ -679,7 +718,7 @@ public class Game implements Screen, InputProcessor {
 			}else{
 				// no spawn
 			}
-			
+
 			// Reset elapsed time
 			resourceTimer = elapsedTime + spawnRate;  
 		}
@@ -691,7 +730,6 @@ public class Game implements Screen, InputProcessor {
 
 	}
 
-//TODO
 	public void gameReady(){
 		scoreUpdate();
 		checkStrikeOut();
@@ -702,22 +740,22 @@ public class Game implements Screen, InputProcessor {
 		batch.setProjectionMatrix(camera.combined);
 
 		elapsedTime = deltaTime;
-		
-		
+
+
 		if(elapsedTime > 1 + countDownFrame){  
-			
+
 			if(countDownFrame <= 3){
 				CountSprite.setRegion(countHolder.get(countDownFrame));
 			}
 			countDownFrame=(countDownFrame+1);
 		} 
-		
+
 		if(countDownFrame == 4){
 			gameState = GAME_RUNNING;
-			
+
 		}
-	
-		
+
+
 		batch.begin();
 		bg.draw(batch);
 
@@ -727,11 +765,11 @@ public class Game implements Screen, InputProcessor {
 
 		kid.draw(batch);
 		starSprite.draw(batch);
-		
+
 		batch.end();
-		
-		
-		
+
+
+
 	}
 
 
@@ -760,6 +798,7 @@ public class Game implements Screen, InputProcessor {
 		starSprite.draw(batch);
 
 		if(Balls.size > 0){
+			Log.i(MainKeepUp.TAG, "Ball Array size = " + Balls.size);
 			for(Ball ball: Balls) {
 				ball.draw(batch);
 			};
@@ -832,7 +871,14 @@ public class Game implements Screen, InputProcessor {
 
 		if(Balls.size > 0){
 			for(Ball ball: Balls) {
-				ballLoopCheckAndSet(ball);
+				if(ball.getBlownUpStatus() == false){
+					ballLoopCheckAndSet(ball);
+				}else{
+					Log.i(MainKeepUp.TAG, "dead ball");
+					//	Balls.removeValue(ball, true);
+					//TODO
+					//Balls.removeIndex(Balls.indexOf(ball, true));
+				}
 			};
 		}
 
@@ -872,7 +918,7 @@ public class Game implements Screen, InputProcessor {
 						bomb.setBombRotationAngle(5);
 
 
-						if (bomb.checkBombCountdown(deltaTime) == false){ 
+						if (bomb.checkBombCountdown(deltaTime, numberOfBalls()) == false){ 
 							//Gdx.app.log(MainKeepUp.TAG, "BOMB STILL COUNTING DOWN");	
 
 						}else{  // If count down is Over
@@ -1069,13 +1115,43 @@ public class Game implements Screen, InputProcessor {
 		}
 	}
 
-/**
- * Checks the number of X's against the player.  If 3 >= 
- * this function starts the game over and score submit functions
- */
+	/**
+	 * Checks the number of X's against the player.  If 3 >= 
+	 * this function starts the game over and score submit functions
+	 */
 
-	//TODO
 	public void checkStrikeOut(){
+		if(isSignedIn == true){
+
+
+			if((SCORE <= 50) && (ach50 == false)){
+				_mainActivity.achievement50();
+				ach50 = true;
+			}
+
+			if((SCORE >= 500) && (ach500 == false)){
+				_mainActivity.achievement500();
+				Log.i(MainKeepUp.TAG, "Achievement: 500 points");
+				ach500 = true;
+			}
+
+			if((SCORE >= 750) && (ach750 == false)){
+				_mainActivity.achievement750();
+				Log.i(MainKeepUp.TAG, "Achievement: 750 points");
+				ach750 = true;
+			}
+
+			if((SCORE >= 1000) && (ach1000 == false)){
+				_mainActivity.achievement1000();
+				Log.i(MainKeepUp.TAG, "Achievement: 1000 points");
+				ach1000 = true;
+			}
+
+		}
+
+
+
+
 		if(Marks.size >= 3){
 			boolean submited = false;
 			_mainActivity.setFinalScore(SCORE);
@@ -1091,20 +1167,20 @@ public class Game implements Screen, InputProcessor {
 					_mainActivity.submitScore(SCORE);  // SEND SCORE to Google Play
 					submited = true;
 					try {
-						
+
 						if(uName == ""){
 							_mainActivity.getUsername();  
 						}else{
 							_scoreSource.createScore(uName, SCORE, _mainActivity.getGameDifficulty());
 							_mainActivity.notifyUser(SCORE);
 						}
-						
-						
+
+
 					} catch (Exception e) {
 						Log.i(MainKeepUp.TAG, "3Strike, failed to create google+ or local post");
 						e.printStackTrace();
 					}
-					
+
 
 				}else if ((online == true)  && (signedIn == false)){  // not signed 
 					// SUBMIT TO LOCAL LEADERBOARD
@@ -1114,8 +1190,8 @@ public class Game implements Screen, InputProcessor {
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-				
-						
+
+
 				}else{
 					submited = true;
 					_mainActivity.getUsername();
@@ -1126,106 +1202,111 @@ public class Game implements Screen, InputProcessor {
 	}
 
 
-	
+
 	public void ballLoopCheckAndSet(Ball ball){
 		Sprite ballSprite = ball.getBallSprite();
-		boolean blownUp = false;
 
-		if(Bombs.size > 0){
-			for(Bomb bomb: Bombs) {
-				if(bomb.checkDestructionPhase() == true){
-					Sprite b = bomb.getBombSprite();
-					boolean bombVsCircleOverlap = ball.getOverlapBool(b.getBoundingRectangle() );
+		//		if(ball.getBlownUpStatus() == true){
+		//			//Balls.removeValue(ball, true);
+		//			Log.i(MainKeepUp.TAG, " Ball is flat? : " + ball.getBlownUpStatus());
+		//		}else{
+		if( freeze == false){
 
-					if(bombVsCircleOverlap == true){
-						blownUp = true;
-						Balls.removeValue(ball, true);
-					}
-				}
-			}
-		}
+			float xPosition = ball.getXPosition();
+			float yPosition = ball.getYPosition();
+			float yPosSpriteHeight = yPosition + ballSprite.getWidth();
+			float moveX;
+			float moveY;
 
 
-		if(freeze == false){
-			if(blownUp == false){
-				float xPosition = ball.getXPosition();
-				float yPosition = ball.getYPosition();
-				float yPosSpriteHeight = yPosition + ballSprite.getWidth();
-				float moveX;
-				float moveY;
-
-
-				if(xPosition + ballSprite.getHeight() >= (screenXRefactor/2)){
-					//Gdx.app.log(TAG, "Out of bounds Down");  
-					ball.setXSpeed(ball.getXSpeed() * -1);
-					ball.setXPosition(ball.getXPosition() + ball.getXSpeed());
-					bounce3.play(.7f);
-				}
-
-				if(yPosSpriteHeight >= screenYRefactor / 2){
-					//Gdx.app.log(TAG, "Out of bounds Right");
-					ball.setYSpeed(ball.getYSpeed() * -1);
-					ball.setYPosition(ball.getYPosition() + ball.getYSpeed());
-					bounce1.play(.6f);	
-				}
-				if(xPosition <= (screenXRefactor/2) * -1){
-					//Gdx.app.log(TAG, "Out of bounds Up");
-					ball.setXSpeed(ball.getXSpeed() * -1);
-					ball.setXPosition(ball.getXPosition() + ball.getXSpeed());
-					bounce2.play(.5f);
-				} 
-				if(yPosition <= (screenYRefactor / 2) * -1){
-					//Gdx.app.log(TAG, "Out of bounds Left");
-					ball.setYSpeed(ball.getYSpeed() * -1);
-					ball.setYPosition(ball.getYPosition() + ball.getYSpeed());
-
-					bounce1.play(.8f);	
-				}
-
+			if(xPosition + ballSprite.getHeight() >= (screenXRefactor/2)){
+				//Gdx.app.log(TAG, "Out of bounds Down");  
+				ball.setXSpeed(ball.getXSpeed() * -1);
 				ball.setXPosition(ball.getXPosition() + ball.getXSpeed());
+				bounce3.play(.7f);
+			}
+
+			if(yPosSpriteHeight >= screenYRefactor / 2){
+				//Gdx.app.log(TAG, "Out of bounds Right");
+				ball.setYSpeed(ball.getYSpeed() * -1);
 				ball.setYPosition(ball.getYPosition() + ball.getYSpeed());
-				//float bRotate = ballSprite.getRotation() + rotationSpeed;
+				bounce1.play(.6f);	
+			}
+			if(xPosition <= (screenXRefactor/2) * -1){
+				//Gdx.app.log(TAG, "Out of bounds Up");
+				ball.setXSpeed(ball.getXSpeed() * -1);
+				ball.setXPosition(ball.getXPosition() + ball.getXSpeed());
+				bounce2.play(.5f);
+			} 
+			if(yPosition <= (screenYRefactor / 2) * -1){
+				//Gdx.app.log(TAG, "Out of bounds Left");
+				ball.setYSpeed(ball.getYSpeed() * -1);
+				ball.setYPosition(ball.getYPosition() + ball.getYSpeed());
 
-				moveX = Interpolation.linear.apply(ball.getXPosition(), ball.getXPosition() + ball.getXSpeed(), 1);
-				moveY = Interpolation.linear.apply(ball.getYPosition(), ball.getYPosition() + ball.getYSpeed(), 1);
+				bounce1.play(.8f);	
+			}
 
-				ballSprite.setX(moveX);
-				ballSprite.setY(moveY);
-				ball.setCircleXY(moveX + ballSprite.getWidth()/2 , moveY + ballSprite.getHeight()/2 );
-				//ballSprite.setRotation(bRotate);
+			ball.setXPosition(ball.getXPosition() + ball.getXSpeed());
+			ball.setYPosition(ball.getYPosition() + ball.getYSpeed());
+			//float bRotate = ballSprite.getRotation() + rotationSpeed;
 
-				boolean kidVsCircleOverlap = ball.getOverlapBool(kid.getBoundingRectangle() );
+			moveX = Interpolation.linear.apply(ball.getXPosition(), ball.getXPosition() + ball.getXSpeed(), 1);
+			moveY = Interpolation.linear.apply(ball.getYPosition(), ball.getYPosition() + ball.getYSpeed(), 1);
 
-				if(kidVsCircleOverlap == true){
-					if(ball.collision == false){  //  check for current collision
-						if(shielded == false){
-							if(invincibility == false){
-								if(_mainActivity.getVibBool() == true){
-									_mainActivity.vibrate(300);
-								}
-								invincibility = true;
-								deltaShieldTime = Gdx.graphics.getDeltaTime();
-								addLifeMark();
-								kidHit = true;
-								buzzer.play(.05f);
-								ball.collision = true;  // sets current collision
-								ball.setYSpeed(ball.getYSpeed() * -1);
-								ball.setXSpeed(ball.getYSpeed() * -1);
+			ballSprite.setX(moveX);
+			ballSprite.setY(moveY);
+			ball.setCircleXY(moveX + ballSprite.getWidth()/2 , moveY + ballSprite.getHeight()/2 );
+			//ballSprite.setRotation(bRotate);
 
-								ball.setXPosition(ball.getXPosition() + ball.getXSpeed());
-								ball.setYPosition(ball.getYPosition() + ball.getYSpeed());
-								ballSprite.setX(moveX);
-								ballSprite.setY(moveY);
+			boolean kidVsCircleOverlap = ball.getOverlapBool(kid.getBoundingRectangle() );
 
-								ball.setCircleXY(moveX + ballSprite.getWidth()/2 , moveY + ballSprite.getHeight()/2 );
+			if(kidVsCircleOverlap == true){
+				if(ball.collision == false){  //  check for current collision
+					if(shielded == false){
+						if(invincibility == false){
+							if(_mainActivity.getVibBool() == true){
+								_mainActivity.vibrate(300);
 							}
+							invincibility = true;
+							deltaShieldTime = Gdx.graphics.getDeltaTime();
+							addLifeMark();
+							kidHit = true;
+							buzzer.play(.05f);
+							ball.collision = true;  // sets current collision
+							ball.setYSpeed(ball.getYSpeed() * -1);
+							ball.setXSpeed(ball.getYSpeed() * -1);
+
+							ball.setXPosition(ball.getXPosition() + ball.getXSpeed());
+							ball.setYPosition(ball.getYPosition() + ball.getYSpeed());
+							ballSprite.setX(moveX);
+							ballSprite.setY(moveY);
+
+							ball.setCircleXY(moveX + ballSprite.getWidth()/2 , moveY + ballSprite.getHeight()/2 );
 						}
 					}
-				}else{
-					ball.collision = false;  // resets to false after overlap ends
+				}
+			}else{
+				ball.collision = false;  // resets to false after overlap ends
+			}
+
+			if(Bombs.size > 0){
+				for(Bomb bomb: Bombs) {
+					if(bomb.checkDestructionPhase() == true){
+						Sprite b = bomb.getBombSprite();
+						boolean bombVsCircleOverlap = ball.getOverlapBool(b.getBoundingRectangle() );
+
+						if(bombVsCircleOverlap == true){
+							ball.setBlownUp(true);
+							Log.i(MainKeepUp.TAG, "BALL HIT BY BOMB");
+							//	Balls.removeValue(ball, true);
+							//Balls.removeIndex(Balls.indexOf(ball, true));
+							//TODO	
+						}
+					}
 				}
 			}
 		}
+		//}
 	}
 
 
@@ -1264,6 +1345,9 @@ public class Game implements Screen, InputProcessor {
 			powerUp.play(.05f);
 			removeLifeMark();	
 			kitsUsed = kitsUsed + 1;  // increase kit count for final point 
+			if(isSignedIn == true){
+				_mainActivity.achievementKitsUsed();
+			}
 			MedKits.removeValue(kit, true);  
 			if(firstResourceUsed == true){
 				pointsReceivedBeforeFirstResourceUsed = SCORE;
@@ -1516,23 +1600,23 @@ public class Game implements Screen, InputProcessor {
 			Ray cameraRay = camera.getPickRay(touchPos.x, touchPos.y);
 			float xPos = cameraRay.origin.x;
 			float yPos = cameraRay.origin.y;
-			
+
 			if(xPos <= -500 + kid.getWidth()/2){
 				xPos = -500;
 				kid.setX(xPos);
-				
+
 			}else if(xPos >= 500 - kid.getWidth()){
 				xPos = 500 - kid.getWidth();
 				kid.setX(xPos - kid.getWidth() / 2);
 			}else{
 				kid.setX(xPos - kid.getWidth() / 2);  //the /2 is set for pointer center
 			}
-			
+
 			//if(yPos <= ((screenYRefactor / 2) - (kid.getHeight()/2)) * -1){ 
 			if(yPos <= ((screenYRefactor / 2)) * -1){ 
 				yPos = (screenYRefactor / 2) * -1;
 				kid.setY(yPos);
-			//}else if(yPos >= (screenYRefactor / 2) - (kid.getHeight()/2)){
+				//}else if(yPos >= (screenYRefactor / 2) - (kid.getHeight()/2)){
 			}else if(yPos >= (screenYRefactor / 2) - (kid.getHeight())){
 				yPos = (screenYRefactor / 2) - (kid.getHeight());
 				kid.setY(yPos);
@@ -1540,7 +1624,7 @@ public class Game implements Screen, InputProcessor {
 				//kid.setY(yPos - kid.getHeight() / 2);
 				kid.setY(yPos);
 			}
-			
+
 
 			starSprite.setX(kid.getX());  // add the star sprite above character
 			starSprite.setY(kid.getY() + kid.getHeight());// add the star sprite above character
@@ -1581,8 +1665,9 @@ public class Game implements Screen, InputProcessor {
 		return false;
 	}
 
-	private void startTimer(float deltaTime){
-		
+
+	public int numberOfBalls(){
+		return Balls.size;
 	}
 
 }
