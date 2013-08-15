@@ -116,7 +116,6 @@
         android:id="@+id/radioKid1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
         android:checked="true"
         android:drawableRight="@drawable/girl_in_red" />
 

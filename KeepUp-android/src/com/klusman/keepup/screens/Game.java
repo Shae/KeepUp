@@ -534,37 +534,42 @@ public class Game implements Screen, InputProcessor {
 	 * returns a random number between 40 and 90
 	 */
 	public float getRandomSize(){
-		int high;
-		int low;
-		
+//		int high;
+//		int low;
+		int add;
 		if(gameDifficulty == 1){
-			high = 110;
-			low = 60;
+//			high = 180;
+//			low = 90;
+			add = 90;
 		}if(gameDifficulty == 1){
-			high = 100;
-			low = 50;
+//			high = 150;
+//			low = 70;
+			add = 70;
 		}else{
-			high = 90;
-			low = 40;
+//			high = 110;
+//			low = 50;
+			add = 50;
 		}
 		
-		float r;
+		//float r;
 		randNumSize = Math.random();  // random 0.0 to 1.0
 		if (randNumSize < 0.01){
 			randNumSize = 0.01;
 		}
 		double rand = (randNumSize * 100);  // 1 to 1
 
-		if (rand <= 40){   // check if too small (no smaller then 40)
-			r = (float)rand + 40; // Makes a number greater than 41
-			return r;
-		} else if (rand >= 90){  // makes sure its not to big (no larger than 90) 
-			r = (float)rand - 10; // makes a number less than 90
-			return r;
-		}else{
-			r = (float)rand;
-			return r;
-		}
+//		if (rand <= low){   
+//			r = (float)rand + low; 
+//			return r;
+//		} else if (rand >= high){ 
+//			r = high; 
+//			return r;
+//		}else{
+//			r = (float)rand;
+//			return r;
+//		}
+		float myRand = (float) rand + add;
+		return myRand;
 	}
 
 	/**
@@ -1206,10 +1211,6 @@ public class Game implements Screen, InputProcessor {
 	public void ballLoopCheckAndSet(Ball ball){
 		Sprite ballSprite = ball.getBallSprite();
 
-		//		if(ball.getBlownUpStatus() == true){
-		//			//Balls.removeValue(ball, true);
-		//			Log.i(MainKeepUp.TAG, " Ball is flat? : " + ball.getBlownUpStatus());
-		//		}else{
 		if( freeze == false){
 
 			float xPosition = ball.getXPosition();
@@ -1298,7 +1299,7 @@ public class Game implements Screen, InputProcessor {
 						if(bombVsCircleOverlap == true){
 							ball.setBlownUp(true);
 							Log.i(MainKeepUp.TAG, "BALL HIT BY BOMB");
-							//	Balls.removeValue(ball, true);
+							//Balls.removeValue(ball, true);
 							//Balls.removeIndex(Balls.indexOf(ball, true));
 							//TODO	
 						}

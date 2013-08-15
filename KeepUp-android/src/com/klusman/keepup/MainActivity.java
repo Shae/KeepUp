@@ -33,6 +33,8 @@ import com.klusman.keepup.screens.GameSettings;
 
 
 public class MainActivity extends AndroidApplication implements GameHelperListener, GoogleInterface {
+	
+
 	static Context context;
 	MainKeepUp _game;
 	public static GameHelper aHelper;
@@ -78,13 +80,14 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 				}
 			}
 		};
+		
 	}
 
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		//Debug.startMethodTracing("dodgeball");
 		AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
 		cfg.useGL20 = false;
 		aHelper.setup(this);
@@ -134,7 +137,14 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 		super.onStop();
 		aHelper.onStop();
 	}
-
+	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		//Debug.stopMethodTracing();
+	}
+	
 	@Override
 	public void onActivityResult(int request, int response, Intent data) {
 		super.onActivityResult(request, response, data);

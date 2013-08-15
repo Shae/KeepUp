@@ -72,7 +72,7 @@ public class Ball {
 		
 		
 		PositionX = randX; // random position -500 to 500 
-		PositionY = Game.screenYRefactor / 2 - 100;
+		PositionY = Game.screenYRefactor / 2 - (sizeX + 10);
 		rotationDirection = true;
 		collision = false;
 		
