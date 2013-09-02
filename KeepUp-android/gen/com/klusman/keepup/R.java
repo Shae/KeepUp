@@ -195,63 +195,64 @@ containing a value of this type.
         public static final int yellow_ball=0x7f020024;
     }
     public static final class id {
-        public static final int MusicToggleTitle=0x7f050025;
-        public static final int bugReportBtn=0x7f050038;
-        public static final int bugReportTitle=0x7f050036;
+        public static final int MusicToggleTitle=0x7f050026;
+        public static final int bugReportBtn=0x7f050039;
+        public static final int bugReportTitle=0x7f050037;
         public static final int hybrid=0x7f050004;
         public static final int list=0x7f05000b;
-        public static final int minusBtn1=0x7f050013;
-        public static final int minusBtn2=0x7f050018;
-        public static final int minusBtn3=0x7f05001d;
-        public static final int minusBtn4=0x7f050022;
+        public static final int minusBtn1=0x7f050014;
+        public static final int minusBtn2=0x7f050019;
+        public static final int minusBtn3=0x7f05001e;
+        public static final int minusBtn4=0x7f050023;
         public static final int none=0x7f050000;
         public static final int normal=0x7f050001;
-        public static final int plusBtn1=0x7f050011;
-        public static final int plusBtn2=0x7f050016;
-        public static final int plusBtn3=0x7f05001b;
-        public static final int plusBtn4=0x7f050020;
+        public static final int plusBtn1=0x7f050012;
+        public static final int plusBtn2=0x7f050017;
+        public static final int plusBtn3=0x7f05001c;
+        public static final int plusBtn4=0x7f050021;
         public static final int pointsText=0x7f05000e;
         public static final int radioByAlpha=0x7f05000a;
-        public static final int radioCourtColorDark=0x7f050029;
-        public static final int radioCourtColorLight=0x7f05002a;
+        public static final int radioCourtColorDark=0x7f05002a;
+        public static final int radioCourtColorLight=0x7f05002b;
         public static final int radioGrp=0x7f050008;
-        public static final int radioGrpAvatar=0x7f05002b;
-        public static final int radioGrpSettings=0x7f050028;
-        public static final int radioKid1=0x7f05002c;
-        public static final int radioKid2=0x7f05002d;
-        public static final int radioKid3=0x7f05002e;
-        public static final int radioKid4=0x7f05002f;
-        public static final int radioKid5=0x7f050030;
-        public static final int radioKid6=0x7f050031;
-        public static final int radioKid7=0x7f050032;
+        public static final int radioGrpAvatar=0x7f05002c;
+        public static final int radioGrpSettings=0x7f050029;
+        public static final int radioKid1=0x7f05002d;
+        public static final int radioKid2=0x7f05002e;
+        public static final int radioKid3=0x7f05002f;
+        public static final int radioKid4=0x7f050030;
+        public static final int radioKid5=0x7f050031;
+        public static final int radioKid6=0x7f050032;
+        public static final int radioKid7=0x7f050033;
         public static final int radioScore=0x7f050009;
-        public static final int resSub1=0x7f050010;
-        public static final int resSub2=0x7f050015;
-        public static final int resSub3=0x7f05001a;
-        public static final int resSub4=0x7f05001f;
-        public static final int resTitle1=0x7f05000f;
-        public static final int resTitle2=0x7f050014;
-        public static final int resTitle3=0x7f050019;
-        public static final int resTitle4=0x7f05001e;
-        public static final int resetLocalBtn=0x7f050035;
+        public static final int resSub1=0x7f050011;
+        public static final int resSub2=0x7f050016;
+        public static final int resSub3=0x7f05001b;
+        public static final int resSub4=0x7f050020;
+        public static final int resTitle1=0x7f050010;
+        public static final int resTitle2=0x7f050015;
+        public static final int resTitle3=0x7f05001a;
+        public static final int resTitle4=0x7f05001f;
+        public static final int resetLocalBtn=0x7f050036;
+        public static final int resetPoints=0x7f05000f;
         public static final int resourceTitle=0x7f05000c;
         public static final int satellite=0x7f050002;
-        public static final int settingsTitle=0x7f050023;
+        public static final int settingsTitle=0x7f050024;
         public static final int subTitle=0x7f05000d;
         public static final int terrain=0x7f050003;
         public static final int textDif=0x7f050007;
         public static final int textName=0x7f050005;
         public static final int textScore=0x7f050006;
-        public static final int textView1=0x7f050037;
-        public static final int textView2=0x7f050033;
-        public static final int textView3=0x7f050034;
-        public static final int togBtnBgSound=0x7f050024;
-        public static final int togBtnVibrate=0x7f050026;
-        public static final int value1=0x7f050012;
-        public static final int value2=0x7f050017;
-        public static final int value3=0x7f05001c;
-        public static final int value4=0x7f050021;
-        public static final int vibTitle=0x7f050027;
+        public static final int textView1=0x7f050038;
+        public static final int textView2=0x7f050034;
+        public static final int textView3=0x7f050035;
+        public static final int togBtnBgSound=0x7f050025;
+        public static final int togBtnVibrate=0x7f050027;
+        public static final int value1=0x7f050013;
+        public static final int value2=0x7f050018;
+        public static final int value3=0x7f05001d;
+        public static final int value4=0x7f050022;
+        public static final int vibTitle=0x7f050028;
     }
     public static final class layout {
         public static final int leaderboard_cell=0x7f030000;
@@ -407,7 +408,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:cameraBearing
+          @attr name com.klusman.keepup:cameraBearing
         */
         public static final int MapAttrs_cameraBearing = 1;
         /**
@@ -421,7 +422,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:cameraTargetLat
+          @attr name com.klusman.keepup:cameraTargetLat
         */
         public static final int MapAttrs_cameraTargetLat = 2;
         /**
@@ -435,7 +436,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:cameraTargetLng
+          @attr name com.klusman.keepup:cameraTargetLng
         */
         public static final int MapAttrs_cameraTargetLng = 3;
         /**
@@ -449,7 +450,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:cameraTilt
+          @attr name com.klusman.keepup:cameraTilt
         */
         public static final int MapAttrs_cameraTilt = 4;
         /**
@@ -463,7 +464,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:cameraZoom
+          @attr name com.klusman.keepup:cameraZoom
         */
         public static final int MapAttrs_cameraZoom = 5;
         /**
@@ -483,7 +484,7 @@ containing a value of this type.
 <tr><td><code>terrain</code></td><td>3</td><td></td></tr>
 <tr><td><code>hybrid</code></td><td>4</td><td></td></tr>
 </table>
-          @attr name android:mapType
+          @attr name com.klusman.keepup:mapType
         */
         public static final int MapAttrs_mapType = 0;
         /**
@@ -497,7 +498,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:uiCompass
+          @attr name com.klusman.keepup:uiCompass
         */
         public static final int MapAttrs_uiCompass = 6;
         /**
@@ -511,7 +512,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:uiRotateGestures
+          @attr name com.klusman.keepup:uiRotateGestures
         */
         public static final int MapAttrs_uiRotateGestures = 7;
         /**
@@ -525,7 +526,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:uiScrollGestures
+          @attr name com.klusman.keepup:uiScrollGestures
         */
         public static final int MapAttrs_uiScrollGestures = 8;
         /**
@@ -539,7 +540,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:uiTiltGestures
+          @attr name com.klusman.keepup:uiTiltGestures
         */
         public static final int MapAttrs_uiTiltGestures = 9;
         /**
@@ -553,7 +554,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:uiZoomControls
+          @attr name com.klusman.keepup:uiZoomControls
         */
         public static final int MapAttrs_uiZoomControls = 10;
         /**
@@ -567,7 +568,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:uiZoomGestures
+          @attr name com.klusman.keepup:uiZoomGestures
         */
         public static final int MapAttrs_uiZoomGestures = 11;
         /**
@@ -581,7 +582,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:useViewLifecycle
+          @attr name com.klusman.keepup:useViewLifecycle
         */
         public static final int MapAttrs_useViewLifecycle = 12;
         /**
@@ -595,7 +596,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:zOrderOnTop
+          @attr name com.klusman.keepup:zOrderOnTop
         */
         public static final int MapAttrs_zOrderOnTop = 13;
     };

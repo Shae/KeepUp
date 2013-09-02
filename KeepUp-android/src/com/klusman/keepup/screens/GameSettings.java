@@ -11,7 +11,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -39,8 +38,8 @@ public class GameSettings extends Activity {
 	RadioButton kid7;
 	Button email;
 	Button resetLeaderboard;
-	
-	
+
+
 	public GameSettings (){
 		_mainActivity = MainActivity.Instance;
 	}
@@ -61,7 +60,7 @@ public class GameSettings extends Activity {
 				_mainActivity.playBgMusic(false);
 			}
 		}
-		
+
 		soundTog = (ToggleButton)findViewById(R.id.togBtnBgSound);
 		soundTog.setChecked(getPrefDataSoundBool());
 		soundTog.setOnClickListener(new OnClickListener() {
@@ -71,11 +70,11 @@ public class GameSettings extends Activity {
 				if(soundTog.isChecked() == true){
 					setPrefSound(true);
 					soundTog.setChecked(true);
-					_mainActivity.bgMusic.play();
+					_mainActivity.playBgMusic(true);
 				}else{
 					setPrefSound(false);
 					soundTog.setChecked(false);
-					_mainActivity.bgMusic.stop();
+					_mainActivity.playBgMusic(false);
 				}
 
 			}
@@ -105,7 +104,7 @@ public class GameSettings extends Activity {
 
 		email = (Button)findViewById(R.id.bugReportBtn);
 		email.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View arg0) {
 				Intent i = new Intent(Intent.ACTION_SEND);
@@ -114,23 +113,23 @@ public class GameSettings extends Activity {
 				i.putExtra(Intent.EXTRA_SUBJECT, "Bug Report - Dodgeball Extreme " + MainKeepUp.VERSION);
 				i.putExtra(Intent.EXTRA_TEXT   , "Please enter a description of the error here: ");
 				try {
-				    startActivity(Intent.createChooser(i, "Send mail..."));
+					startActivity(Intent.createChooser(i, "Send mail..."));
 				} catch (android.content.ActivityNotFoundException ex) {
-				    Toast.makeText(GameSettings.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+					Toast.makeText(GameSettings.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
 				}
-				
+
 			}
 		});
-		
+
 		resetLeaderboard = (Button)findViewById(R.id.resetLocalBtn);
 		resetLeaderboard.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				resetLeaderboard();
 			}
 		});
-		
+
 	}
 
 
@@ -189,15 +188,11 @@ public class GameSettings extends Activity {
 
 				case R.id.radioCourtColorDark:
 					editor.putBoolean("darkCourt", true);
-					//dark.setChecked(true);
-					Log.i(MainKeepUp.TAG, "dark court TRUE");
 					editor.commit();
 					break;
 
 				case R.id.radioCourtColorLight:	
 					editor.putBoolean("darkCourt", false);
-					//dark.setChecked(false);
-					Log.i(MainKeepUp.TAG, "dark court FALSE");
 					editor.commit();
 					break;
 
@@ -223,17 +218,14 @@ public class GameSettings extends Activity {
 			public void onCheckedChanged(RadioGroup arg0, int id) {
 				switch (id) {
 				case R.id.radioKid1:
-					//_mainActivity.setAvatar(1);
 					editor.putInt("avatarChoice", 1);	
 					editor.commit();
 					break;
 				case R.id.radioKid2:
-					//_mainActivity.setAvatar(2);
 					editor.putInt("avatarChoice", 2);		
 					editor.commit();
 					break;
 				case R.id.radioKid3:
-					//_mainActivity.setAvatar(3);
 					editor.putInt("avatarChoice", 3);
 					editor.commit();
 					break;
@@ -242,17 +234,14 @@ public class GameSettings extends Activity {
 					editor.commit();
 					break;
 				case R.id.radioKid5:
-					//_mainActivity.setAvatar(5);
 					editor.putInt("avatarChoice", 5);
 					editor.commit();
 					break;
 				case R.id.radioKid6:
-					//_mainActivity.setAvatar(6);
 					editor.putInt("avatarChoice", 6);
 					editor.commit();
 					break;
 				case R.id.radioKid7:
-					//_mainActivity.setAvatar(7);
 					editor.putInt("avatarChoice", 7);
 					editor.commit();
 					break;
@@ -263,10 +252,9 @@ public class GameSettings extends Activity {
 			}
 		});
 	}
-	
+
 	public void getAvatarRadioInfoAndSet(){
 		int avatar = prefs.getInt("avatarChoice", 1);
-		Log.i(MainKeepUp.TAG, " Avatar choice : " + avatar);
 		if( avatar == 1){
 			kid1.setChecked(true);
 		}else if( avatar == 2){
@@ -283,7 +271,7 @@ public class GameSettings extends Activity {
 			kid7.setChecked(true);
 		}	
 	}
-	
+
 	public void resetLeaderboard(){
 
 		try {
@@ -329,6 +317,6 @@ public class GameSettings extends Activity {
 
 	}
 
-	
-	
+
+
 }

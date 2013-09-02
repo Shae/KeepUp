@@ -60,8 +60,6 @@ public class Ball {
 		}
 		
 		
-		
-		
 		ballTx = new Texture(Gdx.files.internal(textureAddress));
 		ballTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		TextureRegion ballRegion = new TextureRegion(ballTx, 0, 0, ballTx.getWidth(), ballTx.getHeight());
@@ -133,21 +131,10 @@ public class Ball {
 	}
 	
 	public boolean getOverlapBool(Rectangle r){
-		//Gdx.app.log(MainKeepUp.TAG,	 "getOverLap");
 		boolean sect = Intersector.overlaps(circle, r); 
 		return sect;
 	}
 	
-////
-//	public int getRotationSpeed(){
-//		return rotationSpeed;
-//	}
-//	
-//	public void setRotationSpeed(int rotSpeed){
-//		rotationSpeed = rotSpeed;
-//	}
-
-////	
 	public boolean getRotation(){
 		return rotationDirection;
 	}
@@ -156,7 +143,7 @@ public class Ball {
 		rotationDirection = boolRotationDirection;
 	}
 	
-////	
+
 	public boolean getCollision(){
 		return collision;
 	}
@@ -165,7 +152,7 @@ public class Ball {
 		collision = boolCollision;
 	}
 	
-////	
+
 	public float getXPosition(){
 		return PositionX;
 	}
@@ -174,7 +161,7 @@ public class Ball {
 		PositionX = xPos;
 	}
 	
-////
+
 	public float getYPosition(){
 		return PositionY;
 	}
@@ -183,7 +170,7 @@ public class Ball {
 		PositionY = yPos;
 	}
 	
-////
+
 	public Sprite getBallSprite(){
 		return ballSprite;
 	}
@@ -191,7 +178,7 @@ public class Ball {
 	public void draw(SpriteBatch batch) {
 		ballSprite.draw(batch);
 	}
-////
+
 	public float getCircleX(){
 		return circle.x;
 	}

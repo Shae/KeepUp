@@ -3,14 +3,12 @@ package com.klusman.keepup.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.klusman.keepup.MainActivity;
-import com.klusman.keepup.MainKeepUp;
 import com.klusman.keepup.R;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
@@ -22,25 +20,26 @@ public class ResourceManagerActivity extends Activity{
 	int MaxPoints = 100;
 	int allPointsSpent = 100;
 	int PointsLeft = 100 - allPointsSpent;
-	
+
 	public static Sound bounceUp;
 	public static Sound bounceDwn;
 	public static Sound rockBottom;
-	
+	TextView textLeft;
+
 	SharedPreferences prefs;
 	SharedPreferences.Editor editor; // = prefs.edit();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		_mainActivity = MainActivity.Instance;
 
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-      	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-      	setContentView(com.klusman.keepup.R.layout.resource_manager); 
-      	
-    	if(_mainActivity.getSoundBool() == true){
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		setContentView(com.klusman.keepup.R.layout.resource_manager); 
+
+		if(_mainActivity.getSoundBool() == true){
 			if(_mainActivity.isMusicPlaying() == false){
 				_mainActivity.playBgMusic(true);
 			}
@@ -49,11 +48,12 @@ public class ResourceManagerActivity extends Activity{
 				_mainActivity.playBgMusic(false);
 			}
 		}
-      	
-      	prefs = getSharedPreferences("userPrefs", MODE_PRIVATE);
-      	editor = prefs.edit();
-		final TextView textLeft = (TextView)findViewById(R.id.pointsText);
+
+		prefs = getSharedPreferences("userPrefs", MODE_PRIVATE);
+		editor = prefs.edit();
+		textLeft = (TextView)findViewById(R.id.pointsText);
 		textLeft.setText(getPointsString());
+		Button resetBtn = (Button)findViewById(R.id.resetPoints);
 
 		Button up1 = (Button)findViewById(R.id.plusBtn1);
 		Button up2 = (Button)findViewById(R.id.plusBtn2);
@@ -74,16 +74,32 @@ public class ResourceManagerActivity extends Activity{
 
 		final TextView tv2 = (TextView)findViewById(R.id.value2);
 		tv2.setText(String.valueOf(MainActivity.spawnRateShield+ "%"));
-	
+
 		final TextView tv3 = (TextView)findViewById(R.id.value3);
 		tv3.setText(String.valueOf(MainActivity.spawnRateFreeze)+ "%");
 
 		final TextView tv4 = (TextView)findViewById(R.id.value4);
 		tv4.setText(String.valueOf(MainActivity.spawnRateBomb)+ "%");
 
-		
-	
-		
+
+		resetBtn.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				MainActivity.spawnRateKit = 1;
+				tv1.setText(String.valueOf(MainActivity.spawnRateKit)+ "%");
+				MainActivity.spawnRateShield = 1;
+				tv2.setText(String.valueOf(MainActivity.spawnRateShield)+ "%");
+				MainActivity.spawnRateFreeze = 1;
+				tv3.setText(String.valueOf(MainActivity.spawnRateFreeze)+ "%");
+				MainActivity.spawnRateBomb = 1;
+				tv4.setText(String.valueOf(MainActivity.spawnRateBomb)+ "%");
+				getPointsLeft();
+				textLeft.setText(getPointsString());
+
+			}
+		});
+
 		up1.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -93,13 +109,13 @@ public class ResourceManagerActivity extends Activity{
 					getPointsLeft();
 					tv1.setText(String.valueOf(MainActivity.spawnRateKit)+ "%");
 					textLeft.setText(getPointsString());
-					
+
 				}else{
 					rockBottom.play(0.5f);
 				}
 			}
 		});
-		
+
 		dwn1.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -115,9 +131,9 @@ public class ResourceManagerActivity extends Activity{
 				}
 			}
 		});
-	
+
 		///////////
-		
+
 		up2.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -132,7 +148,7 @@ public class ResourceManagerActivity extends Activity{
 				}
 			}
 		});
-		
+
 		dwn2.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -145,13 +161,13 @@ public class ResourceManagerActivity extends Activity{
 				}
 				if(MainActivity.spawnRateShield == 1){
 					rockBottom.play(0.5f);
-					
+
 				}
 			}
 		});
-	
+
 		/////////////
-		
+
 		up3.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -166,7 +182,7 @@ public class ResourceManagerActivity extends Activity{
 				}
 			}
 		});
-		
+
 		dwn3.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -182,9 +198,9 @@ public class ResourceManagerActivity extends Activity{
 				}
 			}
 		});
-		
+
 		//////////////
-		
+
 		up4.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -199,7 +215,7 @@ public class ResourceManagerActivity extends Activity{
 				}
 			}
 		});
-		
+
 		dwn4.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -209,21 +225,25 @@ public class ResourceManagerActivity extends Activity{
 					getPointsLeft();
 					tv4.setText(String.valueOf(MainActivity.spawnRateBomb)+ "%");
 					textLeft.setText(getPointsString());
-					
+
 				}
 				if(MainActivity.spawnRateBomb == 1){
 					rockBottom.play(0.5f);
 				}
 			}
 		});
-		
-	
-		
-		
+
+		if(PointsLeft == 0){
+			textLeft.setTextColor(getResources().getColor(R.color.accent_green));
+		}else{
+			textLeft.setTextColor(getResources().getColor(R.color.red));
+		}
+
+
 	}
-	
-	
-	
+
+
+
 	private void getPointsLeft(){
 		int addAll = MainActivity.spawnRateKit + 
 				MainActivity.spawnRateShield + 
@@ -231,17 +251,22 @@ public class ResourceManagerActivity extends Activity{
 				MainActivity.spawnRateBomb;
 		allPointsSpent = addAll;
 		PointsLeft = 100 - allPointsSpent;
-		
-		
+		if(PointsLeft == 0){
+			textLeft.setTextColor(getResources().getColor(R.color.accent_green));
+		}else{
+			textLeft.setTextColor(getResources().getColor(R.color.red));
+		}
+
+
 	}
-	
+
 	//TODO fix plural
 	public String getPointsString(){
 		String s = "You have " + PointsLeft + " points left to spend";
 		return s;
 	}
-	
-	
+
+
 
 
 	@Override
@@ -252,10 +277,10 @@ public class ResourceManagerActivity extends Activity{
 		editor.putInt("freezeValue", MainActivity.spawnRateFreeze);
 		editor.putInt("bombValue", MainActivity.spawnRateBomb);
 		editor.commit();
-		
-		
+
+
 	}
-	
-	
-	
+
+
+
 }

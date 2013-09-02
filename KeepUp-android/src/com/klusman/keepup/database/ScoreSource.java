@@ -2,16 +2,12 @@ package com.klusman.keepup.database;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.klusman.keepup.MainKeepUp;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 public class ScoreSource {
 
@@ -26,20 +22,15 @@ public class ScoreSource {
 	};
 
 	public ScoreSource(Context context){
-
 		dbHelper = new DBOpenHelper(context);
-		Log.i(MainKeepUp.TAG, "DB Score Source");
-
 	}
 
 
 	public void open() throws SQLException {
 		database = dbHelper.getWritableDatabase();
-		Log.i(MainKeepUp.TAG , "Database OPENED");
 	}
 
 	public void close() {
-		Log.i(MainKeepUp.TAG , "Database CLOSED");
 		dbHelper.close();
 	}
 
@@ -56,8 +47,6 @@ public class ScoreSource {
 		cursor.moveToFirst();
 		ScoreObject newScore = cursorToScore(cursor);
 		cursor.close();
-
-		Log.i(MainKeepUp.TAG, "Score Built");
 		return newScore;
 
 	};
@@ -78,20 +67,16 @@ public class ScoreSource {
 
 		try {
 			database.insert(DBOpenHelper.TABLE_SCORES, null, cv);
-			Log.i(MainKeepUp.TAG, "Saved to local leaderboard");
 		} catch (Exception e) {
-			Log.i(MainKeepUp.TAG, "FAILED to Save to local leaderboard");
 			e.printStackTrace();
 		}
 
 	}
 
 	public static List<ScoreObject> findAllNoFilter(){
-		Log.i(MainKeepUp.TAG, "**START find all no Filter");
 		String orderBy =  DBOpenHelper.COLUMN_SCORE + " DESC";
 		List<ScoreObject> Scores = new ArrayList<ScoreObject>();
 		Cursor c = database.query(DBOpenHelper.TABLE_SCORES, allColumns, null, null, null, null, orderBy);
-		Log.i(MainKeepUp.TAG, "Scores List Returned " + c.getCount() + " rows");
 
 		if(c.getCount() > 0){
 			while(c.moveToNext()){
@@ -107,11 +92,9 @@ public class ScoreSource {
 	} 
 
 	public static List<ScoreObject> findAllHighToLow(){
-		Log.i(MainKeepUp.TAG, "**START find all no Filter");
 		String orderBy =  DBOpenHelper.COLUMN_SCORE + " DESC";
 		List<ScoreObject> Scores = new ArrayList<ScoreObject>();
 		Cursor c = database.query(DBOpenHelper.TABLE_SCORES, allColumns, null, null, null, null, orderBy);
-		Log.i(MainKeepUp.TAG, "Scores List Returned " + c.getCount() + " rows");
 
 		if(c.getCount() > 0){
 			while(c.moveToNext()){
@@ -127,11 +110,9 @@ public class ScoreSource {
 	} 
 
 	public static List<ScoreObject> findAllbyName(){
-		Log.i(MainKeepUp.TAG, "**START find all no Filter");
 		String orderBy =  DBOpenHelper.COLUMN_NAME + " ASC";
 		List<ScoreObject> Scores = new ArrayList<ScoreObject>();
 		Cursor c = database.query(DBOpenHelper.TABLE_SCORES, allColumns, null, null, null, null, orderBy);
-		Log.i(MainKeepUp.TAG, "Scores List Returned " + c.getCount() + " rows");
 
 		if(c.getCount() > 0){
 			while(c.moveToNext()){
@@ -150,9 +131,7 @@ public class ScoreSource {
 
 	public void deleteTableAndRebuild(){
 		database.execSQL("DROP TABLE IF EXISTS " + DBOpenHelper.TABLE_SCORES);
-		Log.i(MainKeepUp.TAG, "DROP TABLE");
 		database.execSQL(DBOpenHelper.TABLE_CREATE);
-		Log.i(MainKeepUp.TAG, "REBUILD TABLE");
 	}
 
 }

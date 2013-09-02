@@ -23,31 +23,29 @@ public class FreezeMotionTimer {
 	public boolean rotationDirection;
 	public boolean collision;
 	double randNumXLoc;
-	
-	
+
+
 	public FreezeMotionTimer(float randX, float speed){
-		
-		
+
+
 		textureAddress = "data/timeClock.png";
 		sizeX = 65f; 
 		sizeY = 65f; 
 		xSpeed = 0; 
 		ySpeed = -speed; 
-		//rotationSpeed = 5;
 		PositionY = 600f;
 		PositionX = randX; 
 		rotationDirection = true;
 		collision = false;
-		
-		
+
+
 		timerTx = new Texture(Gdx.files.internal(textureAddress));
 		timerTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		TextureRegion timerRegion = new TextureRegion(timerTx, 0, 0, timerTx.getWidth(), timerTx.getHeight());
 		timerSprite = new Sprite(timerRegion);
-		//ballSprite.rotate(90);
 		timerSprite.setSize(sizeX, sizeY);
 		timerSprite.setOrigin(timerSprite.getWidth()/2, timerSprite.getHeight()/2);
-		
+
 		PositionX = randX; // random position -500 to 500 
 		PositionY = Game.screenYRefactor / 2 - 100;
 		if(randX >= 0 ){   // set random X position plus a 10 point buffer
@@ -57,101 +55,88 @@ public class FreezeMotionTimer {
 			PositionX = randX + (timerSprite.getWidth() + 10);
 			timerSprite.setPosition(PositionX , PositionY );
 		}
-		
-		
-		
+
+
+
 	}
-	
-////
-public float getSizeX(){
-	return sizeX;
-}
 
-public float getSizeY(){
-	return sizeY;
-}
+	////
+	public float getSizeX(){
+		return sizeX;
+	}
 
-public void setSizeXY(float floatSizeX, float floatSizeY){
-	sizeX = floatSizeX;
-	sizeY = floatSizeY;
-	timerSprite.setSize(sizeX, sizeY);
-	timerSprite.setOrigin(timerSprite.getWidth()/2, timerSprite.getHeight()/2);
-}
+	public float getSizeY(){
+		return sizeY;
+	}
 
-////
-public float getXSpeed(){
-	return xSpeed;
-}
+	public void setSizeXY(float floatSizeX, float floatSizeY){
+		sizeX = floatSizeX;
+		sizeY = floatSizeY;
+		timerSprite.setSize(sizeX, sizeY);
+		timerSprite.setOrigin(timerSprite.getWidth()/2, timerSprite.getHeight()/2);
+	}
 
-public float getYSpeed(){
-	return ySpeed;
-}
+	////
+	public float getXSpeed(){
+		return xSpeed;
+	}
 
-public void setXSpeed(float floatXSpeed){
-	xSpeed = floatXSpeed;
-}
+	public float getYSpeed(){
+		return ySpeed;
+	}
 
-public void setYSpeed(float floatYSpeed){
-	ySpeed = floatYSpeed;
-}
-	
+	public void setXSpeed(float floatXSpeed){
+		xSpeed = floatXSpeed;
+	}
 
-////
-//public int getRotationSpeed(){
-//	return rotationSpeed;
-//}
-//
-//public void setRotationSpeed(int rotSpeed){
-//	rotationSpeed = rotSpeed;
-//}
+	public void setYSpeed(float floatYSpeed){
+		ySpeed = floatYSpeed;
+	}
 
-////
-public boolean getRotation(){
-	return rotationDirection;
-}
 
-public void setRotation(boolean boolRotationDirection){
-	rotationDirection = boolRotationDirection;
-}
+	public boolean getRotation(){
+		return rotationDirection;
+	}
 
-////
-public boolean getCollision(){
-	return collision;
-}
+	public void setRotation(boolean boolRotationDirection){
+		rotationDirection = boolRotationDirection;
+	}
 
-public void setCollision(boolean boolCollision){
-	collision = boolCollision;
-}
+	////
+	public boolean getCollision(){
+		return collision;
+	}
 
-////
-public float getXPosition(){
-	return PositionX;
-}
+	public void setCollision(boolean boolCollision){
+		collision = boolCollision;
+	}
 
-public void setXPosition(float xPos){
-	PositionX = xPos;
-}
+	////
+	public float getXPosition(){
+		return PositionX;
+	}
 
-////
-public float getYPosition(){
-	return PositionY;
-}
+	public void setXPosition(float xPos){
+		PositionX = xPos;
+	}
 
-public void setYPosition(float yPos){
-	PositionY = yPos;
-}
+	////
+	public float getYPosition(){
+		return PositionY;
+	}
 
-////
-public Sprite getTimerSprite(){
-	return timerSprite;
-}
+	public void setYPosition(float yPos){
+		PositionY = yPos;
+	}
 
-public void draw(SpriteBatch batch) {
-	timerSprite.draw(batch);
-}
+	////
+	public Sprite getTimerSprite(){
+		return timerSprite;
+	}
 
-	
-	
-	
-	
+	public void draw(SpriteBatch batch) {
+		timerSprite.draw(batch);
+	}
+
+
 }

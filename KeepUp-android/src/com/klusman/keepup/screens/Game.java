@@ -1,6 +1,5 @@
 package com.klusman.keepup.screens;
 
-import android.util.Log;
 import aurelienribon.tweenengine.TweenManager;
 
 import com.badlogic.gdx.Gdx;
@@ -20,7 +19,6 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeBitmapFontData;
 import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.math.Interpolation;
-
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
@@ -41,7 +39,6 @@ public class Game implements Screen, InputProcessor {
 	MainKeepUp game;
 	ScoreSource _scoreSource;
 
-	private static String TAG = "KeepUp";
 	public static final int GAME_READY = 0; 
 	public static final int GAME_RUNNING = 1; 
 	public static final int GAME_PAUSED = 2; 
@@ -405,13 +402,11 @@ public class Game implements Screen, InputProcessor {
 			break;
 		case GAME_RUNNING:
 
-			//TODO
 			if(Balls.size > 0){
 				for(Ball ball: Balls) {
 					if(ball.getBlownUpStatus() == true){
-						Log.i(MainKeepUp.TAG, "dead ball removed before render");
+						//Log.i(MainKeepUp.TAG, "dead ball removed before render");
 						Balls.removeValue(ball, true);
-						//Balls.removeIndex(Balls.indexOf(ball, true));
 					}
 				};
 			}
@@ -534,23 +529,23 @@ public class Game implements Screen, InputProcessor {
 	 * returns a random number between 40 and 90
 	 */
 	public float getRandomSize(){
-//		int high;
-//		int low;
+		//		int high;
+		//		int low;
 		int add;
 		if(gameDifficulty == 1){
-//			high = 180;
-//			low = 90;
+			//			high = 180;
+			//			low = 90;
 			add = 90;
 		}if(gameDifficulty == 1){
-//			high = 150;
-//			low = 70;
+			//			high = 150;
+			//			low = 70;
 			add = 70;
 		}else{
-//			high = 110;
-//			low = 50;
+			//			high = 110;
+			//			low = 50;
 			add = 50;
 		}
-		
+
 		//float r;
 		randNumSize = Math.random();  // random 0.0 to 1.0
 		if (randNumSize < 0.01){
@@ -558,16 +553,16 @@ public class Game implements Screen, InputProcessor {
 		}
 		double rand = (randNumSize * 100);  // 1 to 1
 
-//		if (rand <= low){   
-//			r = (float)rand + low; 
-//			return r;
-//		} else if (rand >= high){ 
-//			r = high; 
-//			return r;
-//		}else{
-//			r = (float)rand;
-//			return r;
-//		}
+		//		if (rand <= low){   
+		//			r = (float)rand + low; 
+		//			return r;
+		//		} else if (rand >= high){ 
+		//			r = high; 
+		//			return r;
+		//		}else{
+		//			r = (float)rand;
+		//			return r;
+		//		}
 		float myRand = (float) rand + add;
 		return myRand;
 	}
@@ -640,7 +635,6 @@ public class Game implements Screen, InputProcessor {
 		//Gdx.app.log(MainKeepUp.TAG, "Make New Bomb");
 		Bomb bomb = new Bomb(getRandomXLocation(), getRandomSpeed());
 		Bombs.add(bomb);
-		Gdx.app.log(MainKeepUp.TAG, "bombCount :" + Bombs.size);
 	}
 
 
@@ -803,7 +797,6 @@ public class Game implements Screen, InputProcessor {
 		starSprite.draw(batch);
 
 		if(Balls.size > 0){
-			Log.i(MainKeepUp.TAG, "Ball Array size = " + Balls.size);
 			for(Ball ball: Balls) {
 				ball.draw(batch);
 			};
@@ -879,10 +872,7 @@ public class Game implements Screen, InputProcessor {
 				if(ball.getBlownUpStatus() == false){
 					ballLoopCheckAndSet(ball);
 				}else{
-					Log.i(MainKeepUp.TAG, "dead ball");
-					//	Balls.removeValue(ball, true);
-					//TODO
-					//Balls.removeIndex(Balls.indexOf(ball, true));
+
 				}
 			};
 		}
@@ -1136,19 +1126,16 @@ public class Game implements Screen, InputProcessor {
 
 			if((SCORE >= 500) && (ach500 == false)){
 				_mainActivity.achievement500();
-				Log.i(MainKeepUp.TAG, "Achievement: 500 points");
 				ach500 = true;
 			}
 
 			if((SCORE >= 750) && (ach750 == false)){
 				_mainActivity.achievement750();
-				Log.i(MainKeepUp.TAG, "Achievement: 750 points");
 				ach750 = true;
 			}
 
 			if((SCORE >= 1000) && (ach1000 == false)){
 				_mainActivity.achievement1000();
-				Log.i(MainKeepUp.TAG, "Achievement: 1000 points");
 				ach1000 = true;
 			}
 
@@ -1179,16 +1166,12 @@ public class Game implements Screen, InputProcessor {
 							_scoreSource.createScore(uName, SCORE, _mainActivity.getGameDifficulty());
 							_mainActivity.notifyUser(SCORE);
 						}
-
-
 					} catch (Exception e) {
-						Log.i(MainKeepUp.TAG, "3Strike, failed to create google+ or local post");
 						e.printStackTrace();
 					}
 
 
 				}else if ((online == true)  && (signedIn == false)){  // not signed 
-					// SUBMIT TO LOCAL LEADERBOARD
 					submited = true;
 					try {
 						_mainActivity.getUsername();  
@@ -1220,36 +1203,30 @@ public class Game implements Screen, InputProcessor {
 			float moveY;
 
 
-			if(xPosition + ballSprite.getHeight() >= (screenXRefactor/2)){
-				//Gdx.app.log(TAG, "Out of bounds Down");  
+			if(xPosition + ballSprite.getHeight() >= (screenXRefactor/2)){ 
 				ball.setXSpeed(ball.getXSpeed() * -1);
 				ball.setXPosition(ball.getXPosition() + ball.getXSpeed());
 				bounce3.play(.7f);
 			}
 
 			if(yPosSpriteHeight >= screenYRefactor / 2){
-				//Gdx.app.log(TAG, "Out of bounds Right");
 				ball.setYSpeed(ball.getYSpeed() * -1);
 				ball.setYPosition(ball.getYPosition() + ball.getYSpeed());
 				bounce1.play(.6f);	
 			}
 			if(xPosition <= (screenXRefactor/2) * -1){
-				//Gdx.app.log(TAG, "Out of bounds Up");
 				ball.setXSpeed(ball.getXSpeed() * -1);
 				ball.setXPosition(ball.getXPosition() + ball.getXSpeed());
 				bounce2.play(.5f);
 			} 
 			if(yPosition <= (screenYRefactor / 2) * -1){
-				//Gdx.app.log(TAG, "Out of bounds Left");
 				ball.setYSpeed(ball.getYSpeed() * -1);
 				ball.setYPosition(ball.getYPosition() + ball.getYSpeed());
-
 				bounce1.play(.8f);	
 			}
 
 			ball.setXPosition(ball.getXPosition() + ball.getXSpeed());
 			ball.setYPosition(ball.getYPosition() + ball.getYSpeed());
-			//float bRotate = ballSprite.getRotation() + rotationSpeed;
 
 			moveX = Interpolation.linear.apply(ball.getXPosition(), ball.getXPosition() + ball.getXSpeed(), 1);
 			moveY = Interpolation.linear.apply(ball.getYPosition(), ball.getYPosition() + ball.getYSpeed(), 1);
@@ -1257,7 +1234,6 @@ public class Game implements Screen, InputProcessor {
 			ballSprite.setX(moveX);
 			ballSprite.setY(moveY);
 			ball.setCircleXY(moveX + ballSprite.getWidth()/2 , moveY + ballSprite.getHeight()/2 );
-			//ballSprite.setRotation(bRotate);
 
 			boolean kidVsCircleOverlap = ball.getOverlapBool(kid.getBoundingRectangle() );
 
@@ -1281,7 +1257,6 @@ public class Game implements Screen, InputProcessor {
 							ball.setYPosition(ball.getYPosition() + ball.getYSpeed());
 							ballSprite.setX(moveX);
 							ballSprite.setY(moveY);
-
 							ball.setCircleXY(moveX + ballSprite.getWidth()/2 , moveY + ballSprite.getHeight()/2 );
 						}
 					}
@@ -1295,31 +1270,23 @@ public class Game implements Screen, InputProcessor {
 					if(bomb.checkDestructionPhase() == true){
 						Sprite b = bomb.getBombSprite();
 						boolean bombVsCircleOverlap = ball.getOverlapBool(b.getBoundingRectangle() );
-
 						if(bombVsCircleOverlap == true){
 							ball.setBlownUp(true);
-							Log.i(MainKeepUp.TAG, "BALL HIT BY BOMB");
-							//Balls.removeValue(ball, true);
-							//Balls.removeIndex(Balls.indexOf(ball, true));
-							//TODO	
 						}
 					}
 				}
 			}
 		}
-		//}
 	}
 
 
 	public void kitLoopCheckAndSet(healthKit kit){
 		Sprite kitSprite = kit.getKitSprite();
 
-		//float xPosition = kit.getXPosition();
 		float yPosition = kit.getYPosition();
 		float yPosSpriteHeight = yPosition + kitSprite.getWidth();
 
 		if(yPosSpriteHeight >= screenYRefactor / 2){
-			//Gdx.app.log(TAG, "Out of bounds Right");
 			kit.setYSpeed(kit.getYSpeed() * -1);
 			kit.setYPosition(kit.getYPosition() + kit.getYSpeed());
 			hardBounce.play(0.5f);	
@@ -1327,17 +1294,14 @@ public class Game implements Screen, InputProcessor {
 
 
 		if(yPosition <= (screenYRefactor / 2) * -1){
-			//Gdx.app.log(TAG, "Out of bounds Left");
 			kit.setYSpeed(kit.getYSpeed() * -1);
 			kit.setYPosition(kit.getYPosition() + kit.getYSpeed());
 			hardBounce.play(0.5f);	
 		}
 
-		//kit.setXPosition(kit.getXPosition());
 		kit.setYPosition(kit.getYPosition() + kit.getYSpeed());
 
 		float moveY = Interpolation.linear.apply(kit.getYPosition(), kit.getYPosition() + kit.getYSpeed(), 1);
-		//kitSprite.setX(kit.getXPosition());
 		kitSprite.setY(moveY);
 
 		boolean kidVSKitOverlap = kitSprite.getBoundingRectangle().overlaps(kid.getBoundingRectangle());
@@ -1366,7 +1330,6 @@ public class Game implements Screen, InputProcessor {
 
 
 		if(yPosSpriteHeight >= screenYRefactor / 2){
-			//Gdx.app.log(TAG, "Out of bounds Right");
 			shield.setYSpeed(shield.getYSpeed() * -1);
 			shield.setYPosition(shield.getYPosition() + shield.getYSpeed());
 			hardBounce.play(0.5f);	
@@ -1374,18 +1337,15 @@ public class Game implements Screen, InputProcessor {
 
 
 		if(yPosition <= (screenYRefactor / 2) * -1){
-			//Gdx.app.log(TAG, "Out of bounds Left");
 			shield.setYSpeed(shield.getYSpeed() * -1);
 			shield.setYPosition(shield.getYPosition() + shield.getYSpeed());
 			hardBounce.play(0.5f);	
 		}
 
-		//shield.setXPosition(xPosition);
 		shield.setYPosition(shield.getYPosition() + shield.getYSpeed());
 
 		float moveY = Interpolation.linear.apply(shield.getYPosition(), shield.getYPosition() + shield.getYSpeed(), 1);
 		ShieldSprite.setY(moveY);
-		//ShieldSprite.setX(shield.getXPosition());
 		boolean kidVSShieldOverlap = ShieldSprite.getBoundingRectangle().overlaps(kid.getBoundingRectangle());
 
 		if(kidVSShieldOverlap == true){	
@@ -1405,12 +1365,10 @@ public class Game implements Screen, InputProcessor {
 	public void bombLoopCheckAndSet(Bomb bomb){
 
 		Sprite bombSprite = bomb.getBombSprite();
-		//float xPosition = bomb.getXPosition();
 		float yPosition = bomb.getYPosition();
 		float yPosSpriteHeight = yPosition + bombSprite.getWidth();
 
 		if(yPosSpriteHeight >= screenYRefactor / 2){
-			//Gdx.app.log(TAG, "Out of bounds Right");
 			bomb.setYSpeed(bomb.getYSpeed() * -1);
 			bomb.setYPosition(bomb.getYPosition() + bomb.getYSpeed());
 			if(bomb.collision == false){
@@ -1420,7 +1378,6 @@ public class Game implements Screen, InputProcessor {
 
 
 		if(yPosition <= (screenYRefactor / 2) * -1){
-			//Gdx.app.log(TAG, "Out of bounds Left");
 			bomb.setYSpeed(bomb.getYSpeed() * -1);
 			bomb.setYPosition(bomb.getYPosition() + bomb.getYSpeed());
 			if(bomb.collision == false){
@@ -1437,7 +1394,6 @@ public class Game implements Screen, InputProcessor {
 		if(kidVSBombOverlap == true){	
 			if(bomb.getCollision() == false){
 				bomb.setCollision(true);
-				Gdx.app.log(TAG, "BOMB!!!!");
 				bomb.setTheDeltaBombTime(deltaTime);
 				timeBomb.play(.07f);
 				bomb.setYSpeed(0);
@@ -1532,13 +1488,11 @@ public class Game implements Screen, InputProcessor {
 			pauseGame = false;
 			gameState = GAME_RUNNING;
 			kidMovable = true;
-			Gdx.app.log(TAG, "RESUME GAME" );
 			resume();
 		}else{
 			gameState = GAME_PAUSED;
 			pauseGame = true;
 			kidMovable = false;
-			Gdx.app.log(TAG, "GAME PAUSED" );
 			pause();
 		}
 	}
@@ -1549,9 +1503,7 @@ public class Game implements Screen, InputProcessor {
 		Vector2 touchPos = new Vector2();
 		touchPos.set(Gdx.input.getX(), Gdx.input.getY());
 		Ray cameraRay = camera.getPickRay(touchPos.x, touchPos.y);
-
 		boolean kidDown = kid.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
-
 		if(kidMovable == true){
 			if(kidDown == true){	
 				kidMove = true;
@@ -1568,7 +1520,6 @@ public class Game implements Screen, InputProcessor {
 		Vector2 touchPos = new Vector2();
 		touchPos.set(Gdx.input.getX(), Gdx.input.getY());
 		Ray cameraRay = camera.getPickRay(touchPos.x, touchPos.y);
-		//Gdx.app.log(TAG, "Touch Ray Coords: X:" + cameraRay.origin.x + " Y:" + cameraRay.origin.y);
 		boolean touchPause = pause.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y);
 
 		if(touchPause == true){
@@ -1613,16 +1564,13 @@ public class Game implements Screen, InputProcessor {
 				kid.setX(xPos - kid.getWidth() / 2);  //the /2 is set for pointer center
 			}
 
-			//if(yPos <= ((screenYRefactor / 2) - (kid.getHeight()/2)) * -1){ 
 			if(yPos <= ((screenYRefactor / 2)) * -1){ 
 				yPos = (screenYRefactor / 2) * -1;
 				kid.setY(yPos);
-				//}else if(yPos >= (screenYRefactor / 2) - (kid.getHeight()/2)){
 			}else if(yPos >= (screenYRefactor / 2) - (kid.getHeight())){
 				yPos = (screenYRefactor / 2) - (kid.getHeight());
 				kid.setY(yPos);
 			}else{	
-				//kid.setY(yPos - kid.getHeight() / 2);
 				kid.setY(yPos);
 			}
 

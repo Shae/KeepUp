@@ -33,7 +33,7 @@ import com.klusman.keepup.screens.GameSettings;
 
 
 public class MainActivity extends AndroidApplication implements GameHelperListener, GoogleInterface {
-	
+
 
 	static Context context;
 	MainKeepUp _game;
@@ -54,14 +54,14 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	int gameDif = 1;
 	int finalScore = 0;
 	AlertDialog difficultyDialog;
-	
+
 	public static Music bgMusic;
 	boolean playTheMusic;
 	boolean popupActive = false;
 	boolean isSignedInFromMainMenu = false;
-	
+
 	public int Avatar = 1;
-	
+
 	public MainActivity(){
 		Log.i(MainKeepUp.TAG, "MainAcitivy");
 
@@ -80,14 +80,13 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 				}
 			}
 		};
-		
+
 	}
 
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//Debug.startMethodTracing("dodgeball");
 		AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
 		cfg.useGL20 = false;
 		aHelper.setup(this);
@@ -98,12 +97,12 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 		spawnRateShield = prefs.getInt("shieldValue", 25);
 		spawnRateFreeze = prefs.getInt("freezeValue", 25);
 		spawnRateBomb = prefs.getInt("bombValue", 25);
-		
+
 
 		datasource = new ScoreSource(this);
 		datasource.open();
 		playTheMusic = getSoundBool();
-		
+
 		bgMusic = Gdx.audio.newMusic(Gdx.files.internal("audio/gymShoes16.mp3"));	
 		bgMusic.setLooping(true);  
 		bgMusic.setVolume(0.4f);
@@ -114,8 +113,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 
 
 	public boolean isOnline() {
-		ConnectivityManager cm =
-				(ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo netInfo = cm.getActiveNetworkInfo();
 		if (netInfo != null && netInfo.isConnectedOrConnecting()) {
 			Log.i(MainKeepUp.TAG, "CONNECTION: Online");
@@ -137,14 +135,12 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 		super.onStop();
 		aHelper.onStop();
 	}
-	
+
 	@Override
 	protected void onDestroy() {
-		// TODO Auto-generated method stub
 		super.onDestroy();
-		//Debug.stopMethodTracing();
 	}
-	
+
 	@Override
 	public void onActivityResult(int request, int response, Intent data) {
 		super.onActivityResult(request, response, data);
@@ -152,12 +148,10 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	}
 
 	public void onSignInFailed() {
-		System.out.println("sign in failed");
 		isSignedInFromMainMenu = false;
 	}
 
 	public void onSignInSucceeded() {
-		System.out.println("sign in succeeded");
 		Player player = aHelper.getGamesClient().getCurrentPlayer();
 		userName = player.getDisplayName();
 		isSignedInFromMainMenu = true;
@@ -198,7 +192,6 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	}
 
 	public void submitScore(int _score) {
-		//System.out.println("in submit score");
 		aHelper.getGamesClient().submitScore(getString(R.string.leaderboard_ID), _score);
 	}
 
@@ -227,14 +220,12 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	 * Negative button closes dialog.
 	 * @param Score
 	 */
-	//TODO  
-	// DOUBLE CHECK: fix this for if the user is not connected to internet
+
 	public void notifyUser(int Score){
 		final int s = Score;
 		setPopupActive(true);
 		try {
 			runOnUiThread(new Runnable(){
-
 				//@Override
 				public void run(){
 
@@ -251,18 +242,16 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 						stringMsg = userName + "\nYour final score was: " + s + "\nSaved to your Local Leaderboard. " ;
 					}
 
-					// set title
 					alertDialogBuilder.setTitle("-- GAME OVER --");
-					// set dialog message
 					alertDialogBuilder
 					.setMessage(stringMsg)
 					.setCancelable(false)
 
 					.setPositiveButton("View Leaderboard",new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog,int id) {
-							if(getSignedIn() == true){
+
+							if((isOnline() == true) && (getSignedIn() == true)){
 								if(getSignedIn() == true){
-									//getScores();
 									setPopupActive(false);
 									whichLeaderboard();
 								}
@@ -271,20 +260,15 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 								Intent intent = new Intent(MainActivity.this, LocalLeaderboardList.class);
 								startActivity(intent);	
 							}
-							Log.i(MainKeepUp.TAG, "Leaderboard");
 						}
 					})
 					.setNegativeButton("Done",new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog,int id) {
-							Log.i(MainKeepUp.TAG, "Done");
 							dialog.cancel();
 						}
 					});
 
-					// create alert dialog
 					AlertDialog alertDialog = alertDialogBuilder.create();
-
-					// show it
 					alertDialog.show();
 				}
 			});
@@ -344,10 +328,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 					String stringMsg;
 
 					stringMsg = "Which Leaderboard would you like to view?";
-
-					// set title
 					alertDialogBuilder.setTitle("-- Leaderboard Menu --");
-					// set dialog message
 					alertDialogBuilder
 					.setMessage(stringMsg)
 					.setCancelable(false)
@@ -366,10 +347,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 						}
 					});
 
-					// create alert dialog
 					AlertDialog alertDialog = alertDialogBuilder.create();
-
-					// show it
 					alertDialog.show();
 				}
 			});
@@ -382,24 +360,23 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	public void achievement50(){
 		aHelper.getGamesClient().unlockAchievement(getString(R.string.achievement_quick_death));
 	}
-	
+
 	public void achievement500(){
 		aHelper.getGamesClient().unlockAchievement(getString(R.string.achievement_500_points));
 	}
-	
+
 	public void achievement750(){
 		aHelper.getGamesClient().unlockAchievement(getString(R.string.achievement_750_points));
 	}
-	
+
 	public void achievement1000(){
 		aHelper.getGamesClient().unlockAchievement(getString(R.string.achievement_1000_points));
 	}
 
 	public void achievementKitsUsed(){
-		//increase Doctor Doctor achievement by 1
 		aHelper.getGamesClient().incrementAchievement(getString(R.string.achievement_doctor_doctor), 1);
 	}
-	
+
 	public void startResourcePage(){
 		Intent intent = new Intent(this, ResourceManagerActivity.class);
 		startActivity(intent);
@@ -410,7 +387,6 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	 * Starts the User Prefs page
 	 */		
 	public void startUserPrefsPage(){
-		Log.i(MainKeepUp.TAG, "Start User Prefs Page");
 		Intent intent = new Intent(this, GameSettings.class);
 
 		startActivity(intent);
@@ -418,38 +394,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	}
 
 
-	public void checkAndPushAchievements(int SCORE, int kitsUsed, int pointsReceivedBeforeFirstResourceUsed){
-
-//		if(SCORE <= 50){
-//			aHelper.getGamesClient().unlockAchievement(getString(R.string.achievement_quick_death));
-//			Log.i(MainKeepUp.TAG, "Achievement: Quick Death");
-//		}
-//
-//		if(pointsReceivedBeforeFirstResourceUsed >= 300){
-//			aHelper.getGamesClient().unlockAchievement(getString(R.string.achievement_thrify_business));
-//			Log.i(MainKeepUp.TAG, "Achievement: Thrifty Business");
-//		}
-//
-//		if(SCORE >= 500){
-//			aHelper.getGamesClient().unlockAchievement(getString(R.string.achievement_500_points));
-//			Log.i(MainKeepUp.TAG, "Achievement: 500 points");
-//		}
-//
-//		if(SCORE >= 750){
-//			aHelper.getGamesClient().unlockAchievement(getString(R.string.achievement_750_points));
-//			Log.i(MainKeepUp.TAG, "Achievement: 750 points");
-//		}
-//
-//		if(SCORE >= 1000){
-//			aHelper.getGamesClient().unlockAchievement(getString(R.string.achievement_1000_points));
-//			Log.i(MainKeepUp.TAG, "Achievement: 1000 points");
-//		}
-
-//		if(kitsUsed >= 1){
-//			aHelper.getGamesClient().incrementAchievement(getString(R.string.achievement_doctor_doctor), kitsUsed);
-//			Log.i(MainKeepUp.TAG, "Achievement: Doctor! Doctor!");
-//		}
-		
+	public void checkAndPushAchievements(int SCORE, int kitsUsed, int pointsReceivedBeforeFirstResourceUsed){		
 		if(gameDif == 3){
 			if(SCORE > 800){
 				if(kitsUsed == 0){
@@ -472,19 +417,16 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 
 	public boolean getVibBool(){
 		prefs = getSharedPreferences("userPrefs", MODE_PRIVATE);
-		//Log.i(MainKeepUp.TAG, "VibrateBool " + prefs.getBoolean("vibrateBool", true));
 		return prefs.getBoolean("vibrateBool", true);
 	}
 
 	public boolean getSoundBool(){
 		prefs = getSharedPreferences("userPrefs", MODE_PRIVATE);
-		//Log.i(MainKeepUp.TAG, "SoundBool " + prefs.getBoolean("soundBool", true));
 		return prefs.getBoolean("soundBool", true);
 	}
 
 	public boolean getCourtBool(){
 		prefs = getSharedPreferences("userPrefs", MODE_PRIVATE);
-		//Log.i(MainKeepUp.TAG, "DarkCourtBool " + prefs.getBoolean("darkCourt", true));
 		return prefs.getBoolean("darkCourt", true);
 	}
 
@@ -503,27 +445,27 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	public int getGameDifficulty(){
 		return gameDif;
 	}
-	
-	
+
+
 	public int getAvatar(){
 		prefs = getSharedPreferences("userPrefs", MODE_PRIVATE);
 		return prefs.getInt("avatarChoice", 1);
 	}
-	
+
 	public void bugReport(){
-				Intent i = new Intent(Intent.ACTION_SEND);
-				i.setType("message/rfc822");
-				i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"shae.klusman@gmail.com"});
-				i.putExtra(Intent.EXTRA_SUBJECT, "Bug Report - Dodgeball Extreme " + MainKeepUp.VERSION);
-				i.putExtra(Intent.EXTRA_TEXT   , "Please enter a description of the error here: ");
-				
-				try {
-				    startActivity(Intent.createChooser(i, "Send mail..."));
-				} catch (android.content.ActivityNotFoundException ex) {
-				    Toast.makeText(MainActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
-				}
+		Intent i = new Intent(Intent.ACTION_SEND);
+		i.setType("message/rfc822");
+		i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"shae.klusman@gmail.com"});
+		i.putExtra(Intent.EXTRA_SUBJECT, "Bug Report - Dodgeball Extreme " + MainKeepUp.VERSION);
+		i.putExtra(Intent.EXTRA_TEXT   , "Please enter a description of the error here: ");
+
+		try {
+			startActivity(Intent.createChooser(i, "Send mail..."));
+		} catch (android.content.ActivityNotFoundException ex) {
+			Toast.makeText(MainActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+		}
 	}
-	
+
 	public String getSavedUserName(){
 		return userName;
 	}
@@ -531,18 +473,18 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	public void setPopupActive(boolean bool){
 		popupActive = bool;
 	}
-	
+
 	public boolean getPopupActive (){
 		return popupActive;
 	}
-	
+
 	public boolean isMusicPlaying(){
 		if(bgMusic.isPlaying()){
 			return true;
 		}
 		return false;
 	}
-	
+
 	public void playBgMusic(boolean bool){
 		if(bool == true){
 			bgMusic.play();
@@ -550,9 +492,9 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 			bgMusic.stop();
 		}
 	}
-	
+
 	public boolean isPlayerSignedIn(){
 		return isSignedInFromMainMenu;
 	}
-	
+
 }

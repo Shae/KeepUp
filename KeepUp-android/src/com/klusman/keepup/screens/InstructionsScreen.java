@@ -1,7 +1,5 @@
 package com.klusman.keepup.screens;
 
-import android.util.Log;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
@@ -30,7 +28,7 @@ public class InstructionsScreen implements Screen, InputProcessor{
 	float y;
 	float screenRatio;
 	private SpriteBatch batch;
-	
+
 	int touchCount = 0;
 	Texture instructionsTx1;
 	Texture instructionsTx2;
@@ -40,7 +38,7 @@ public class InstructionsScreen implements Screen, InputProcessor{
 	Texture instructionsTx6;
 	Sprite instructionsSprite;
 	int textureRegionLengthByRatio;
-	
+
 	TextureRegion instReg1;
 	TextureRegion instReg2;
 	TextureRegion instReg3;
@@ -48,7 +46,7 @@ public class InstructionsScreen implements Screen, InputProcessor{
 	TextureRegion instReg5;
 	TextureRegion instReg6;
 	Array<TextureRegion> InstRegionHolder;
-	
+
 	public InstructionsScreen(MainKeepUp game){
 		this.game = game;
 		_mainActivity = MainActivity.Instance;
@@ -65,7 +63,7 @@ public class InstructionsScreen implements Screen, InputProcessor{
 		touchCount = 0;
 		InstRegionHolder = new Array<TextureRegion>();
 	}
-	
+
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -73,64 +71,54 @@ public class InstructionsScreen implements Screen, InputProcessor{
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-		
 		instructionsSprite.draw(batch);
-			
 		batch.end();
-		
+
 	}
 
 	@Override
 	public void resize(int width, int height) {
-		
+
 	}
 
 	@Override
 	public void show() {
-	
-		//instructionsTx = new Texture(Gdx.files.internal("data/InstBgPages.png"));
+
 		instructionsTx1 = new Texture(Gdx.files.internal("data/instPg1.png"));
 		instructionsTx1.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		Log.i(MainKeepUp.TAG, "500x by " + textureRegionLengthByRatio + "y");
 		instReg1 = new TextureRegion(instructionsTx1,    0, 0, 500, textureRegionLengthByRatio);
 		InstRegionHolder.add(instReg1);
-		
+
 		instructionsTx2 = new Texture(Gdx.files.internal("data/instPg2.png"));
 		instructionsTx2.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		Log.i(MainKeepUp.TAG, "500x by " + textureRegionLengthByRatio + "y");
 		instReg2 = new TextureRegion(instructionsTx2,    0, 0, 500, textureRegionLengthByRatio);
 		InstRegionHolder.add(instReg2);
-		
+
 		instructionsTx3 = new Texture(Gdx.files.internal("data/instPg3.png"));
 		instructionsTx3.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		Log.i(MainKeepUp.TAG, "500x by " + textureRegionLengthByRatio + "y");
 		instReg3 = new TextureRegion(instructionsTx3,    0, 0, 500, textureRegionLengthByRatio);
 		InstRegionHolder.add(instReg3);
-		
+
 		instructionsTx4 = new Texture(Gdx.files.internal("data/instPg4.png"));
 		instructionsTx4.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		Log.i(MainKeepUp.TAG, "500x by " + textureRegionLengthByRatio + "y");
 		instReg4 = new TextureRegion(instructionsTx4,    0, 0, 500, textureRegionLengthByRatio);
 		InstRegionHolder.add(instReg4);
-		
+
 		instructionsTx5 = new Texture(Gdx.files.internal("data/instPg5.png"));
 		instructionsTx5.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		Log.i(MainKeepUp.TAG, "500x by " + textureRegionLengthByRatio + "y");
 		instReg5 = new TextureRegion(instructionsTx5,    0, 0, 500, textureRegionLengthByRatio);
 		InstRegionHolder.add(instReg5);
-		
+
 		instructionsTx6 = new Texture(Gdx.files.internal("data/instPg6.png"));
 		instructionsTx6.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		Log.i(MainKeepUp.TAG, "500x by " + textureRegionLengthByRatio + "y");
 		instReg6 = new TextureRegion(instructionsTx6,    0, 0, 500, textureRegionLengthByRatio);
 		InstRegionHolder.add(instReg6);
 
 		instructionsSprite = new Sprite(InstRegionHolder.get(0));
-		//instructionsSprite = new Sprite(instReg1);
 		instructionsSprite.setSize(screenXRefactor,  screenYRefactor);  
 		instructionsSprite.setOrigin(instructionsSprite.getWidth()/2, instructionsSprite.getHeight()/2);
 		instructionsSprite.setPosition(0 - instructionsSprite.getWidth()/2, 0 - instructionsSprite.getHeight()/2);
-		
+
 		if(_mainActivity.getSoundBool() == true){
 			if(_mainActivity.isMusicPlaying() == false){
 				_mainActivity.playBgMusic(true);
@@ -149,12 +137,12 @@ public class InstructionsScreen implements Screen, InputProcessor{
 
 	@Override
 	public void pause() {
-		
+
 	}
 
 	@Override
 	public void resume() {
-		
+
 	}
 
 	@Override
@@ -170,8 +158,8 @@ public class InstructionsScreen implements Screen, InputProcessor{
 	@Override
 	public boolean keyDown(int keycode) {
 		if(keycode == Keys.BACK){
-			   game.setScreen(new MainMenu(game));
-	        }
+			game.setScreen(new MainMenu(game));
+		}
 		return false;
 	}
 
@@ -202,15 +190,15 @@ public class InstructionsScreen implements Screen, InputProcessor{
 			}
 			else if(touchCount == 3){
 				instructionsSprite.setRegion(InstRegionHolder.get(3));
-				
+
 			}
 			else if(touchCount == 4){
 				instructionsSprite.setRegion(InstRegionHolder.get(4));
-				
+
 			}
 			else if(touchCount == 5){
 				instructionsSprite.setRegion(InstRegionHolder.get(5));
-				
+
 			}
 			else if(touchCount == 6){
 				game.setScreen(new MainMenu(game));

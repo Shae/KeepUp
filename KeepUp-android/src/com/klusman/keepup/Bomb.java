@@ -1,7 +1,5 @@
 package com.klusman.keepup;
 
-import android.util.Log;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -44,7 +42,6 @@ public class Bomb {
 		sizeY = 65f; 
 		xSpeed = 0; 
 		ySpeed = -speed; 
-		//rotationSpeed = 5;
 		PositionY = 600f;
 		PositionX = randX; 
 		rotationDirection = true;
@@ -57,12 +54,6 @@ public class Bomb {
 		
 		TextureRegion bombRegion1 = new TextureRegion(bombTx, 0, 0, bombTx.getWidth(), 64);
 		bombRegion2 = new TextureRegion(bombTx, 0, 64, bombTx.getWidth(), 64);
-		
-		//textureHolder.add(bombRegion1);
-		//TextureRegion bombRegion2 = new TextureRegion(bombTx, 0, 64, bombTx.getWidth(), 64);
-		//textureHolder.add(bombRegion2);
-		
-
 		bombSprite = new Sprite(bombRegion1);
 		bombSprite.setSize(sizeX, sizeY);
 		bombSprite.setOrigin(bombSprite.getWidth()/2, bombSprite.getHeight()/2);
@@ -195,13 +186,11 @@ public boolean checkBombCountdown(float deltaTime, int numBalls){
 
 	if(theDeltaBombTime >= deltaTime){  // under time limit do nada
 		boomTimeToBlow = false;
-		//Log.i(MainKeepUp.TAG, "Number of balls : " + numBalls);
 		return false;
 	}else{
 		if(boomTimeToBlow == false){  // check to set once and not repeat
 			startedlastphaseAt = deltaTime + 1.0f;
 			boomTimeToBlow = true;
-		//	Log.i(MainKeepUp.TAG, "Number of balls : " + numBalls);
 		}
 		return true;
 	}

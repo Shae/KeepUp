@@ -25,7 +25,6 @@ public class SplashScreen implements Screen{
 	MainKeepUp game;
 	Texture titleTx;
 	Sprite titleSprite;
-
 	Texture nameTx;
 	Sprite nameSprite;
 
@@ -37,11 +36,9 @@ public class SplashScreen implements Screen{
 	float screenRatio;
 	TweenManager manager;
 	private SpriteBatch batch;
-	//public static Music bgMusic;
-	//boolean playTheMusic;
-	
+
+
 	public SplashScreen( MainKeepUp game){
-		Log.i(MainKeepUp.TAG, "SplashScreen");
 		_mainActivity = MainActivity.Instance;
 		this.game = game;
 		x = Gdx.graphics.getWidth();
@@ -52,13 +49,13 @@ public class SplashScreen implements Screen{
 		camera = new OrthographicCamera(screenXRefactor, screenYRefactor);
 		Tween.registerAccessor(Sprite.class, new SpriteTween());
 		manager = new TweenManager();
-		//playTheMusic = _mainActivity.getSoundBool();
+
 	}
 
 	@Override
 	public void show() {
 
-		
+
 
 		titleTx = new Texture(Gdx.files.internal("data/splashTitle.png"));
 		titleTx.setFilter(TextureFilter.Linear, TextureFilter.Linear);	
@@ -80,49 +77,36 @@ public class SplashScreen implements Screen{
 		nameSprite.setColor(1, 1, 1, 0);
 		batch = new SpriteBatch();
 
-
 		TweenCallback cb = new TweenCallback() {
 			@Override
 			public void onEvent(int type, BaseTween<?> source) {
 				tweenCompleted();  // what method to call when Event is triggered
 			}
 		};
-		
 
 
 		Tween.to(titleSprite, SpriteTween.ALPHA, 1.5f)
 		.target(1)
 		.ease(TweenEquations.easeInQuad)
 		.start(manager);  // start the tween using the passed in manager
-		
-		
+
 		Tween.to(titleSprite, SpriteTween.POSITION_XY, 2f)
 		.targetRelative(0, 200 + titleSprite.getHeight()/2)
 		.setCallback(cb)  // set a callback listener
 		.setCallbackTriggers(TweenCallback.COMPLETE)  // set the trigger for the listener
 		.start(manager);
-		
-		
+
 		Tween.to(nameSprite, SpriteTween.ALPHA, 1.5f)
 		.target(1)
 		.ease(TweenEquations.easeInQuad)
 		.repeatYoyo(1, .5f)  // repeat once after X 
 		.start(manager);  // start the tween using the passed in manager
 
-		
-		
-		
-		
-		
 	}  // END SHOW
 
-	
-	
+
 	protected void tweenCompleted() {
-
-		Gdx.app.log(MainKeepUp.TAG, "Splash Tween COMPLETE");
 		game.setScreen(new MainMenu(game));  // Send to MainMenu after tween complete
-
 	}
 
 
@@ -139,35 +123,25 @@ public class SplashScreen implements Screen{
 		camera.update();  // update the camera
 
 		batch.begin();
-			titleSprite.draw(batch);
-			nameSprite.draw(batch);
+		titleSprite.draw(batch);
+		nameSprite.draw(batch);
 		batch.end();
-
-
 	}
 
 	@Override
 	public void resize(int width, int height) {
-
-
 	}
 
 	@Override
 	public void hide() {
-		
-
 	}
 
 	@Override
 	public void pause() {
-
-
 	}
 
 	@Override
 	public void resume() {
-
-
 	}
 
 	@Override
